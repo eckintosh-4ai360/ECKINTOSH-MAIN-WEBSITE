@@ -826,6 +826,114 @@ export const CASE_STUDIES: CaseStudy[] = [
       { title: "Instant Merchant Onboarding", desc: "Sellers list products straight from smartphone cameras with automated pricing catalog." },
       { title: "Unified MoMo Checkout", desc: "One-click checkout supporting MTN MoMo, Telecel Cash, and Visa/Mastercard." }
     ]
+  },
+  {
+    id: "pharmacy-case",
+    title: "Pharmacy Management System",
+    client: "Community Pharmacy Group",
+    industry: "Health • Compliance • Retail",
+    tags: ["Health", "Retail", "Compliance"],
+    summary: "Dispensing, batch-level stock control and NHIS claims for a multi-branch pharmacy group losing money to expiry.",
+    challenge: "Stock was tracked on a spreadsheet with no batch or expiry visibility, so drugs regularly expired on the shelf. NHIS claim files were assembled by hand at month end, and rejected lines were rarely chased because nobody could tell which ones had failed.",
+    solution: "We built a dispensing counter that enforces first-expiry-first-out picking, warns on interactions against the patient file, and prints labels and receipts in one action. Claim lines now build themselves from what was actually dispensed, and a near-expiry dashboard flags stock while it can still be sold or returned.",
+    architecture: [
+      "React counter application with offline cache for outages",
+      "PostgreSQL batch ledger with FEFO picking rules",
+      "Automated reorder point calculation per branch",
+      "NHIS claim file export with rejection tracking"
+    ],
+    technologies: ["React", "TypeScript", "Node.js", "PostgreSQL", "Barcode Scanners", "Thermal Printers"],
+    impact: [
+      { metric: "-68%", detail: "Reduction in expiry write-offs within two quarters" },
+      { metric: "42s", detail: "Average dispensing turnaround at the counter" },
+      { metric: "99.2%", detail: "Match between physical stock counts and system" }
+    ],
+    heroImage: "/images/case-pharmacy.jpg",
+    uiHighlights: [
+      { title: "Dispensing Counter", desc: "Search, interaction check, label print and receipt in a single flow." },
+      { title: "Near-Expiry Dashboard", desc: "Surfaces at-risk batches early enough to discount or return them." }
+    ]
+  },
+  {
+    id: "retail-pos-case",
+    title: "Inventory & Point of Sale Rollout",
+    client: "Six-Branch Retail Chain",
+    industry: "Retail • Multi-branch • Payments",
+    tags: ["Retail", "Mobile Money", "E-Commerce"],
+    summary: "An offline-first POS and stock engine deployed across six branches, giving the owner live visibility for the first time.",
+    challenge: "Each branch kept its own book. Head office learned what had been sold days later, stock counts never reconciled, and a single internet outage stopped trading entirely because the previous system was cloud-only.",
+    solution: "We deployed a touch POS that writes locally first and syncs when connectivity returns, so tills keep working through outages. Stock transfers, variance reasons and cashier shift reconciliation are all captured at the point of action, and owners see consolidated takings on their phone as they happen.",
+    architecture: [
+      "IndexedDB write-ahead queue with conflict-safe sync",
+      "Node.js sync service with per-branch reconciliation",
+      "Mobile Money and card tender with split payments",
+      "Consolidated owner dashboard across all branches"
+    ],
+    technologies: ["React", "TypeScript", "Node.js", "PostgreSQL", "IndexedDB", "Paystack"],
+    impact: [
+      { metric: "11s", detail: "Average checkout time, scan to receipt" },
+      { metric: "-41%", detail: "Reduction in unexplained stock shrinkage" },
+      { metric: "100%", detail: "Trading uptime maintained during internet outages" }
+    ],
+    heroImage: "/images/case-pos.jpg",
+    uiHighlights: [
+      { title: "Offline-First Till", desc: "Sales continue during outages and reconcile automatically on reconnect." },
+      { title: "Owner Mobile Report", desc: "Consolidated takings, margins and cashier performance across branches." }
+    ]
+  },
+  {
+    id: "ats-case",
+    title: "Applicant Tracking & E-Recruitment",
+    client: "Corporate HR Department",
+    industry: "HR • Talent • Automation",
+    tags: ["HR", "Automation", "Enterprise"],
+    summary: "A hiring pipeline that took 214 applications per role from an unreadable inbox to a ranked shortlist in minutes.",
+    challenge: "Applications arrived as email attachments in a shared inbox. Screening meant opening CVs one at a time, shortlists were argued rather than evidenced, and candidates were left without status updates for weeks.",
+    solution: "We built a branded career portal feeding a structured pipeline. CVs are parsed into comparable fields and scored against weighted criteria the panel agrees up front, with a blind review mode that hides identity during the first pass. Interviews, scorecards and offers all stay attached to the candidate record.",
+    architecture: [
+      "Public career portal with structured application capture",
+      "CV parsing service normalising skills and experience",
+      "Weighted scoring engine with configurable criteria",
+      "Calendar-integrated panel scheduling and scorecards"
+    ],
+    technologies: ["React", "TypeScript", "Node.js", "PostgreSQL", "Elasticsearch", "Google Calendar API"],
+    impact: [
+      { metric: "-72%", detail: "Less time spent on manual CV screening" },
+      { metric: "11 days", detail: "Average time from application to signed offer" },
+      { metric: "9,400+", detail: "Applications processed through the platform" }
+    ],
+    heroImage: "/images/case-ats.jpg",
+    uiHighlights: [
+      { title: "Ranked Shortlisting", desc: "Weighted, evidence-backed scores replace opinion-led screening." },
+      { title: "Pipeline Board", desc: "Every candidate sits in one stage with an SLA timer running." }
+    ]
+  },
+  {
+    id: "learning-platform-case",
+    title: "Educational Learning Platform",
+    client: "Professional Training Institute",
+    industry: "Education • Training • Assessment",
+    tags: ["Education", "SaaS", "Assessment"],
+    summary: "Courses, auto-marked assessments and verifiable certificates for 4,300 learners on unreliable connections.",
+    challenge: "Course material lived in WhatsApp groups and shared drives. Tutors marked every script by hand, nobody knew which learners had stalled until they failed, and certificates were Word documents that could not be verified.",
+    solution: "We built a structured learning platform with a low-bandwidth lesson player, downloadable offline packs, randomised assessments drawn from question banks, and instant auto-marking. Cohort analytics flag at-risk learners early so tutors can intervene while it still matters.",
+    architecture: [
+      "Adaptive lesson player with low-bandwidth and offline modes",
+      "Question bank with randomised, timed paper generation",
+      "Auto-marking with per-question difficulty analytics",
+      "QR-verifiable certificate issuing on completion"
+    ],
+    technologies: ["React", "TypeScript", "Node.js", "PostgreSQL", "HLS Streaming", "Cloudinary"],
+    impact: [
+      { metric: "78%", detail: "Course completion rate after early-intervention nudges" },
+      { metric: "-85%", detail: "Reduction in tutor time spent marking" },
+      { metric: "1.2s", detail: "Median lesson load time on a 3G connection" }
+    ],
+    heroImage: "/images/case-learning.jpg",
+    uiHighlights: [
+      { title: "Cohort Analytics", desc: "Shows exactly who has stalled and needs a tutor call today." },
+      { title: "Auto-Marked Assessments", desc: "Results and per-question difficulty land the moment a learner submits." }
+    ]
   }
 ];
 
@@ -1346,7 +1454,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     title: "We don't just show screenshots. We show what we solved.",
     description:
       'Explore how we analyze operational bottlenecks, architect robust software backbones, and deliver measurable outcomes for our enterprise clients.',
-    filters: ['All', 'Education', 'Mobile Money', 'Civic Tech', 'E-Commerce', 'Retail', 'Health'],
+    filters: ['All', 'Education', 'Health', 'Retail', 'HR', 'E-Commerce', 'Mobile Money', 'Civic Tech'],
     bannerTitle: 'Have a unique system operational challenge?',
     bannerDescription: 'We write clean code engineered specifically around your organizational workflows.',
     bannerCtaLabel: 'Schedule Technical Consultation',

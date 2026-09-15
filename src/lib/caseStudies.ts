@@ -1,16 +1,16 @@
-import type { CaseStudy } from '../data/contentData';
+import { CASE_STUDIES, type CaseStudy } from '../data/contentData';
 import { apiRequest } from './api';
 
 export type CaseStudyInput = Omit<CaseStudy, 'id'>;
 
 export interface ManagedCaseStudy extends CaseStudy {
-  source: 'database';
+  source: 'database' | 'bundled';
 }
 
 let caseStudyPollTimer: number | null = null;
 
-function managed(caseStudies: CaseStudy[]): ManagedCaseStudy[] {
-  return caseStudies.map((caseStudy) => ({ ...caseStudy, source: 'database' }));
+function managed(caseStudies: CaseStudy[], source: ManagedCaseStudy['source'] = 'database'): ManagedCaseStudy[] {
+  return caseStudies.map((caseStudy) => ({ ...caseStudy, source }));
 }
 
 export function subscribeCaseStudies(
@@ -22,8 +22,11 @@ export function subscribeCaseStudies(
   const load = async () => {
     try {
       const data = await apiRequest<CaseStudy[]>('/api/case-studies');
-      if (active) onData(managed(data));
+      // An empty table should still show the work we ship with.
+      if (active) onData(managed(data.length ? data : CASE_STUDIES, data.length ? 'database' : 'bundled'));
     } catch (err) {
+      // Keep the section populated if the API is unreachable.
+      if (active) onData(managed(CASE_STUDIES, 'bundled'));
       if (active && onError) onError(err instanceof Error ? err : new Error('Failed to load case studies.'));
     }
   };

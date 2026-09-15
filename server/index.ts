@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import { DEFAULT_SITE_CONTENT, type CaseStudy, type SiteContent } from '../src/data/contentData';
+import { mergeSiteContent, stampContentVersion } from '../src/data/contentMerge';
 import { query } from './db';
 import { caseStudyFromRow, initializeDatabase, normalizeCaseStudy, type CaseStudyRow } from './migrate';
 
@@ -105,7 +106,10 @@ function inquiryFromRow(row: Record<string, string>) {
 
 async function loadContent(): Promise<SiteContent> {
   const result = await query<{ value: SiteContent }>('select value from site_content where key = $1', ['default']);
-  return result.rows[0]?.value || DEFAULT_SITE_CONTENT;
+  const stored = result.rows[0]?.value;
+  // Merge over the shipped defaults so newly released sections and systems
+  // surface even when an older record is already saved.
+  return stored ? mergeSiteContent(stored) : DEFAULT_SITE_CONTENT;
 }
 
 async function saveContent(content: SiteContent): Promise<SiteContent> {
@@ -117,9 +121,9 @@ async function saveContent(content: SiteContent): Promise<SiteContent> {
       do update set value = excluded.value, updated_at = now()
       returning value
     `,
-    [JSON.stringify(content)]
+    [JSON.stringify(stampContentVersion(content))]
   );
-  return result.rows[0].value;
+  return mergeSiteContent(result.rows[0].value);
 }
 
 async function listCaseStudies(includeUnpublished = false): Promise<CaseStudy[]> {
