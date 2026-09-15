@@ -1,20 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ArrowLeft,
-  ArrowRight,
-  Building2,
-  CheckCircle2,
-  Code2,
-  Cpu,
-  Globe,
-  MessageSquare,
-  Send,
-  Smartphone,
-  Sparkles,
-  X,
-  type LucideIcon,
-} from 'lucide-react';
+import { ArrowLeft, ArrowRight, Building2, CheckCircle2, MessageSquare, Send, X } from 'lucide-react';
 import type { SiteContent } from '../data/contentData';
+import { getIcon } from '../lib/icons';
 import { submitInquiry } from '../lib/inquiries';
 
 interface ProjectPlannerModalProps {
@@ -23,15 +10,6 @@ interface ProjectPlannerModalProps {
   initialTopic?: string;
   content: SiteContent['planner'];
 }
-
-const iconMap: Record<string, LucideIcon> = {
-  Building2,
-  Code2,
-  Cpu,
-  Globe,
-  Smartphone,
-  Sparkles,
-};
 
 export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen, onClose, initialTopic = '', content }) => {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
@@ -148,7 +126,7 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
               <h3 className="text-sm font-semibold text-slate-300">{content.projectTypePrompt}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {content.projectTypeOptions.map((opt) => {
-                  const Icon = iconMap[opt.iconName] || Building2;
+                  const Icon = getIcon(opt.iconName, Building2);
                   const selected = projectType === opt.title;
                   return (
                     <button

@@ -1,17 +1,12 @@
 import React from 'react';
-import { ArrowRight, MapPin, MessageSquare, PhoneCall, ShieldCheck, Sparkles, type LucideIcon } from 'lucide-react';
+import { ArrowRight, MessageSquare, ShieldCheck, Sparkles } from 'lucide-react';
 import type { SiteContent } from '../data/contentData';
+import { getIcon } from '../lib/icons';
 
 interface CTAProps {
   content: SiteContent['cta'];
   onOpenPlanner: (topic?: string) => void;
 }
-
-const iconMap: Record<string, LucideIcon> = {
-  MapPin,
-  PhoneCall,
-  ShieldCheck,
-};
 
 export const CTA: React.FC<CTAProps> = ({ content, onOpenPlanner }) => {
   return (
@@ -59,7 +54,7 @@ export const CTA: React.FC<CTAProps> = ({ content, onOpenPlanner }) => {
 
         <div className="pt-10 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-400 max-w-3xl mx-auto">
           {content.contactCards.map((card) => {
-            const Icon = iconMap[card.iconName] || ShieldCheck;
+            const Icon = getIcon(card.iconName, ShieldCheck);
             return (
               <div
                 key={card.label}

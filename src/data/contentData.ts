@@ -9,16 +9,44 @@ export interface Service {
   idealFor: string;
 }
 
+export type ProductAccent =
+  | 'blue'
+  | 'violet'
+  | 'cyan'
+  | 'emerald'
+  | 'amber'
+  | 'rose'
+  | 'fuchsia'
+  | 'orange'
+  | 'indigo';
+
+export interface ProductModule {
+  name: string;
+  desc: string;
+  iconName: string;
+}
+
 export interface Product {
   id: string;
   name: string;
+  shortName: string;
   subtitle: string;
+  tagline: string;
   badge: string;
   description: string;
+  accent: ProductAccent;
+  iconName: string;
   keyFeatures: string[];
   metrics: { label: string; value: string }[];
   status: 'Live in Production' | 'In Beta' | 'Enterprise Ready';
   category: string;
+  modules: ProductModule[];
+  roles: string[];
+  integrations: string[];
+  outcomes: { value: string; label: string }[];
+  stack: string[];
+  platforms: string[];
+  pricingNote: string;
   demoData?: {
     totalStudents?: string;
     feesCollected?: string;
@@ -67,9 +95,9 @@ export interface InsightArticle {
 }
 
 export const TRUST_STATS = [
-  { value: "1+", label: "Live Products", sub: "Flagship School Platform live", highlight: true },
-  { value: "1,200+", label: "Users Served", sub: "Students, staff & parents daily", highlight: false },
-  { value: "5+", label: "Industries Supported", sub: "Education, Logistics, HR & Retail", highlight: false },
+  { value: "9", label: "Systems Shipped", sub: "Production platforms we own and maintain", highlight: true },
+  { value: "15,000+", label: "People Served Daily", sub: "Students, staff, patients, shoppers & clients", highlight: false },
+  { value: "8", label: "Industries Supported", sub: "Education, Health, Retail, HR, Beauty & more", highlight: false },
   { value: "Ghana", label: "Built in Africa", sub: "Accra Engineering Hub", highlight: true }
 ];
 
@@ -153,89 +181,430 @@ export const SERVICES: Service[] = [
 
 export const PRODUCTS: Product[] = [
   {
-    id: "eckintosh-school",
-    name: "Eckintosh School Management",
-    subtitle: "A modern platform helping schools manage students, academics, fees, staff and communication from one place.",
+    id: "school-management",
+    name: "Eckintosh School Management System",
+    shortName: "School Management",
+    subtitle: "One platform for admissions, academics, fees, staff and parent communication.",
+    tagline: "Run the entire school from a single screen.",
     badge: "Flagship Live Product",
     status: "Live in Production",
     category: "EdTech & Institutional",
-    description: "Built ground-up for educational institutions in Ghana and across Africa. Eliminates administrative drag by connecting school leadership, teachers, accountants, and parents through one secure system.",
+    accent: "blue",
+    iconName: "GraduationCap",
+    description:
+      "Built ground-up for basic and secondary schools in Ghana and across Africa. It removes administrative drag by connecting school leadership, teachers, accountants, students and parents through one secure, audited system that works on any device.",
     keyFeatures: [
-      "Automated Fee Tracking & Mobile Money Payment Gateway",
-      "Digital Terminal Reports & Cumulative Assessment Calculation",
-      "Parent SMS & Portal Communication Engine",
-      "Staff Attendance & Payroll Integration"
+      "Automated fee tracking with Mobile Money and card settlement",
+      "GES-compliant terminal reports and cumulative assessment engine",
+      "Parent SMS broadcast and secure parent portal",
+      "Staff attendance, appraisal and payroll integration"
     ],
     metrics: [
       { label: "Active Students", value: "1,248" },
-      { label: "Term Fees Processed", value: "₵42,500+" },
-      { label: "Fee Collection Efficiency", value: "+94%" },
-      { label: "Teacher Hours Saved/Week", value: "18 hrs" }
+      { label: "Term Fees Processed", value: "GHS 42,500+" },
+      { label: "Collection Efficiency", value: "+94%" },
+      { label: "Teacher Hours Saved", value: "18 hrs/wk" }
     ],
+    modules: [
+      { name: "Admissions & Enrolment", desc: "Online application forms, placement shortlists and digital student files.", iconName: "UserPlus" },
+      { name: "Academics & Grading", desc: "Class scoresheets, automatic aggregates and printable terminal reports.", iconName: "BookOpen" },
+      { name: "Fees & Accounts", desc: "Invoicing, arrears ageing, MoMo reconciliation and receipting.", iconName: "Wallet" },
+      { name: "Attendance", desc: "Daily class registers with absence alerts pushed to parents.", iconName: "CalendarCheck" },
+      { name: "Staff & Payroll", desc: "Contracts, clock-ins, SSNIT/PAYE deductions and payslips.", iconName: "Users" },
+      { name: "Parent Engagement", desc: "SMS, portal announcements and per-child progress timelines.", iconName: "MessageSquare" }
+    ],
+    roles: ["Head Teacher", "Administrator", "Accountant", "Class Teacher", "Parent", "Student"],
+    integrations: ["MTN MoMo", "Telecel Cash", "AT Money", "Paystack", "Hubtel SMS", "Google Workspace"],
+    outcomes: [
+      { value: "94%", label: "On-time fee collection" },
+      { value: "18 hrs", label: "Saved per teacher weekly" },
+      { value: "100%", label: "Digital audit trail" }
+    ],
+    stack: ["React", "TypeScript", "Node.js", "PostgreSQL", "Redis", "Tailwind CSS"],
+    platforms: ["Web App", "Parent Mobile Portal", "Offline-tolerant Register"],
+    pricingNote: "Per-term licence by enrolment band. Setup, data migration and staff training included.",
     demoData: {
       totalStudents: "1,248",
-      feesCollected: "₵42,500",
+      feesCollected: "GHS 42,500",
       attendanceRate: "98.4%",
       activeModules: ["Academic Portal", "Fee Management", "Parent SMS", "Staff Ledger"]
     }
   },
   {
-    id: "cleanconnect",
-    name: "CleanConnect Waste Management Platform",
-    subtitle: "Connecting households, waste collectors and administrators through a unified digital platform.",
-    badge: "Public Infrastructure Tech",
-    status: "Enterprise Ready",
-    category: "Civic & Logistics",
-    description: "A smart environmental management ecosystem that coordinates waste collection routes, citizen pickup requests, payment subscriptions, and dispatch fleet tracking.",
+    id: "ats-recruitment",
+    name: "Applicant Tracking & E-Recruitment System",
+    shortName: "Recruitment & ATS",
+    subtitle: "Publish roles, screen applicants and run the whole hiring pipeline in one place.",
+    tagline: "From job posting to signed offer letter, tracked end to end.",
+    badge: "Enterprise Hiring Suite",
+    status: "Live in Production",
+    category: "HR & Talent Technology",
+    accent: "violet",
+    iconName: "Users",
+    description:
+      "An end-to-end recruitment platform for organisations that receive far more applications than they can read. Branded career pages capture applicants, structured screening scores rank them objectively, and every interview, note and offer stays attached to the candidate record.",
     keyFeatures: [
-      "GPS Pickup Location Mapping",
-      "Automated Subscription Renewal via MoMo",
-      "Collector Route Optimization App",
-      "Municipal Oversight Admin Console"
+      "Branded career portal with structured application forms",
+      "Automatic CV parsing and weighted shortlisting scores",
+      "Drag-and-drop hiring pipeline with stage-based automation",
+      "Interview scheduling, scorecards and offer letter generation"
     ],
     metrics: [
-      { label: "Route Efficiency", value: "+38%" },
-      { label: "Payment Adherence", value: "91%" },
-      { label: "Dispatch Response Time", value: "< 15 mins" }
-    ]
-  },
-  {
-    id: "eckintosh-hr",
-    name: "Eckintosh HR & Operations System",
-    subtitle: "Streamline employee management, leave, payroll and organizational workflows.",
-    badge: "Enterprise SaaS",
-    status: "Enterprise Ready",
-    category: "Corporate Systems",
-    description: "Designed for African corporate environments to manage leave requests, tax compliance (GRA/SSNIT), performance evaluations, and internal company communications.",
-    keyFeatures: [
-      "Ghana Tax & Pension Deductions Engine",
-      "Self-Service Employee Portal",
-      "Leave & Overtime Approval Chains",
-      "Performance Review Tracking"
+      { label: "Applications Processed", value: "9,400+" },
+      { label: "Screening Time Cut", value: "-72%" },
+      { label: "Time to Hire", value: "11 days" },
+      { label: "Hiring Managers Onboard", value: "38" }
     ],
-    metrics: [
-      { label: "Payroll Processing Time", value: "Reduced by 80%" },
-      { label: "Employee Adoption", value: "99%" }
-    ]
+    modules: [
+      { name: "Career Portal", desc: "Public, branded job board with role filters and applicant accounts.", iconName: "Globe" },
+      { name: "CV Parsing", desc: "Extracts skills, education and experience into comparable fields.", iconName: "FileText" },
+      { name: "Shortlisting Engine", desc: "Weighted criteria scoring with bias-reducing blind review mode.", iconName: "Filter" },
+      { name: "Pipeline Board", desc: "Kanban stages from applied to hired with SLA timers per stage.", iconName: "LayoutDashboard" },
+      { name: "Interview Suite", desc: "Panel scheduling, calendar invites and standard scorecards.", iconName: "CalendarCheck" },
+      { name: "Offers & Onboarding", desc: "Generated offer letters, e-signature and new-hire checklists.", iconName: "ShieldCheck" }
+    ],
+    roles: ["HR Director", "Recruiter", "Hiring Manager", "Interview Panel", "Applicant"],
+    integrations: ["Google Calendar", "Microsoft 365", "Zoom", "Hubtel SMS", "DocuSign", "LinkedIn Jobs"],
+    outcomes: [
+      { value: "-72%", label: "Less manual CV screening" },
+      { value: "11 days", label: "Average time to hire" },
+      { value: "1 record", label: "Single source of truth per candidate" }
+    ],
+    stack: ["React", "TypeScript", "Node.js", "PostgreSQL", "Elasticsearch", "AWS S3"],
+    platforms: ["Recruiter Web App", "Public Career Portal", "Applicant Mobile Web"],
+    pricingNote: "Licensed per active job requisition or annually for unlimited hiring.",
+    demoData: {
+      activeModules: ["Career Portal", "Pipeline Board", "Interview Suite", "Offer Desk"]
+    }
   },
   {
-    id: "adepa-mall",
-    name: "Adepa Mall Commerce Engine",
-    subtitle: "Multi-merchant digital marketplace ecosystem integrated with Mobile Money and Paystack.",
-    badge: "E-Commerce Tech",
+    id: "ai-assistant",
+    name: "Eckintosh AI Productivity Assistant",
+    shortName: "AI Productivity",
+    subtitle: "An AI workspace that drafts, summarises, extracts and automates routine office work.",
+    tagline: "Give every team member a tireless analyst.",
+    badge: "AI & Automation",
     status: "In Beta",
-    category: "Retail & FinTech",
-    description: "Empowers local merchants to launch digital storefronts while giving buyers a unified mobile shopping checkout with automated escrow and delivery tracking.",
+    category: "Artificial Intelligence",
+    accent: "cyan",
+    iconName: "Sparkles",
+    description:
+      "A private AI assistant trained on your own documents, policies and records. Staff ask questions in plain language, generate first drafts of reports and letters, extract structured data out of invoices and forms, and trigger multi-step workflows without leaving the chat.",
     keyFeatures: [
-      "Instant MoMo & Card Checkout",
-      "Merchant Inventory Management",
-      "Automated Rider Dispatch API",
-      "Real-Time Sales Ledger"
+      "Chat grounded in your own documents with cited sources",
+      "Automated document parsing for invoices, forms and receipts",
+      "One-click drafting of reports, memos, minutes and proposals",
+      "Workflow agents that file, notify and update systems for you"
     ],
     metrics: [
-      { label: "Merchant Onboarding", value: "< 10 mins" },
-      { label: "Checkout Completion", value: "96%" }
-    ]
+      { label: "Avg. Response", value: "1.4s" },
+      { label: "Docs Indexed", value: "18,600" },
+      { label: "Hours Saved Monthly", value: "310 hrs" },
+      { label: "Extraction Accuracy", value: "97.8%" }
+    ],
+    modules: [
+      { name: "Knowledge Chat", desc: "Answers grounded in your policy library with page-level citations.", iconName: "MessageSquare" },
+      { name: "Document Intelligence", desc: "Reads scanned invoices and forms into clean structured tables.", iconName: "FileText" },
+      { name: "Draft Studio", desc: "Report, memo and proposal drafting in your house tone of voice.", iconName: "Sparkles" },
+      { name: "Meeting Notes", desc: "Transcribes, summarises and assigns action items automatically.", iconName: "CalendarCheck" },
+      { name: "Workflow Agents", desc: "Chains tasks across email, sheets and your internal systems.", iconName: "Cpu" },
+      { name: "Governance", desc: "Full prompt audit log, data residency controls and role limits.", iconName: "ShieldCheck" }
+    ],
+    roles: ["Executive", "Operations Lead", "Finance Officer", "Support Agent", "Analyst"],
+    integrations: ["Claude API", "Google Workspace", "Microsoft 365", "Slack", "WhatsApp Business", "Webhook API"],
+    outcomes: [
+      { value: "310 hrs", label: "Recovered across teams monthly" },
+      { value: "97.8%", label: "Field extraction accuracy" },
+      { value: "0", label: "Documents leaving your tenancy" }
+    ],
+    stack: ["React", "TypeScript", "Node.js", "Python", "pgvector", "Claude API"],
+    platforms: ["Web Workspace", "Browser Extension", "WhatsApp Channel", "REST API"],
+    pricingNote: "Per-seat subscription with a private deployment option for regulated organisations.",
+    demoData: {
+      activeModules: ["Knowledge Chat", "Document Intelligence", "Draft Studio", "Workflow Agents"]
+    }
+  },
+  {
+    id: "pharmacy-management",
+    name: "Pharmacy Management System",
+    shortName: "Pharmacy",
+    subtitle: "Dispensing, prescriptions, stock, expiry control and regulatory reporting.",
+    tagline: "Dispense faster. Never lose money to expiry again.",
+    badge: "Health & Compliance",
+    status: "Live in Production",
+    category: "HealthTech",
+    accent: "emerald",
+    iconName: "Pill",
+    description:
+      "Purpose-built for community pharmacies and hospital dispensaries. It handles prescription capture, batch-level stock control with expiry alerting, insurance and NHIS claim lines, and produces the records regulators ask for without a paper trail hunt.",
+    keyFeatures: [
+      "Fast dispensing counter with drug interaction warnings",
+      "Batch and expiry tracking with automatic reorder points",
+      "Prescription records linked to prescriber and patient history",
+      "NHIS / insurance claim lines and controlled-substance register"
+    ],
+    metrics: [
+      { label: "Dispense Time", value: "42s avg" },
+      { label: "Expiry Write-offs", value: "-68%" },
+      { label: "Stock Accuracy", value: "99.2%" },
+      { label: "Daily Scripts", value: "180+" }
+    ],
+    modules: [
+      { name: "Dispensing Counter", desc: "Search, dose check, label print and receipt in one flow.", iconName: "Pill" },
+      { name: "Prescriptions", desc: "Digital script capture with prescriber and refill history.", iconName: "FileText" },
+      { name: "Batch & Expiry", desc: "FEFO picking, near-expiry dashboards and supplier returns.", iconName: "Boxes" },
+      { name: "Procurement", desc: "Reorder suggestions, purchase orders and supplier price history.", iconName: "Truck" },
+      { name: "Claims & NHIS", desc: "Claim line building, rejection tracking and reimbursement ageing.", iconName: "ShieldCheck" },
+      { name: "Compliance Reports", desc: "Controlled register, audit trail and Pharmacy Council returns.", iconName: "LayoutDashboard" }
+    ],
+    roles: ["Superintendent Pharmacist", "Dispensing Technician", "Store Keeper", "Cashier", "Auditor"],
+    integrations: ["MTN MoMo", "Paystack", "NHIS Claims Export", "Barcode Scanners", "Thermal Label Printers"],
+    outcomes: [
+      { value: "-68%", label: "Reduction in expiry losses" },
+      { value: "42s", label: "Average dispense turnaround" },
+      { value: "99.2%", label: "Physical vs system stock match" }
+    ],
+    stack: ["React", "TypeScript", "Node.js", "PostgreSQL", "Offline Cache", "Tailwind CSS"],
+    platforms: ["Counter Web App", "Tablet Stock Count", "Manager Mobile Dashboard"],
+    pricingNote: "Per-branch licence including barcode hardware setup and pharmacist onboarding.",
+    demoData: {
+      activeModules: ["Dispensing", "Batch & Expiry", "Claims", "Procurement"]
+    }
+  },
+  {
+    id: "inventory-pos",
+    name: "Inventory & Point of Sale System",
+    shortName: "Inventory & POS",
+    subtitle: "Sell at the counter, track every item and see profit per product in real time.",
+    tagline: "Know exactly what you sold, what is left and what it earned.",
+    badge: "Retail Operations",
+    status: "Live in Production",
+    category: "Retail & Distribution",
+    accent: "amber",
+    iconName: "ShoppingCart",
+    description:
+      "A fast touch-first POS backed by a serious inventory engine. It works during internet outages, syncs the moment connection returns, and gives owners live visibility of sales, margins, shrinkage and staff performance across every branch.",
+    keyFeatures: [
+      "Offline-first touch POS with barcode scanning and split payments",
+      "Multi-branch stock transfers with live variance tracking",
+      "Profit-per-product, per-branch and per-cashier reporting",
+      "Automatic low-stock alerts and supplier purchase orders"
+    ],
+    metrics: [
+      { label: "Checkout Speed", value: "11s avg" },
+      { label: "Stock Shrinkage", value: "-41%" },
+      { label: "Branches Supported", value: "Unlimited" },
+      { label: "Offline Uptime", value: "100%" }
+    ],
+    modules: [
+      { name: "POS Terminal", desc: "Touch or scanner checkout, holds, returns and split tender.", iconName: "ShoppingCart" },
+      { name: "Inventory Control", desc: "Stock counts, adjustments, transfers and variance reasons.", iconName: "Boxes" },
+      { name: "Purchasing", desc: "Reorder levels, purchase orders and goods-received notes.", iconName: "Truck" },
+      { name: "Customers & Credit", desc: "Account sales, credit limits and statement reminders.", iconName: "Users" },
+      { name: "Reporting", desc: "Daily Z-report, margin analysis and dead-stock detection.", iconName: "TrendingUp" },
+      { name: "Cash & Shift Control", desc: "Cashier float, blind counts and end-of-shift reconciliation.", iconName: "Wallet" }
+    ],
+    roles: ["Business Owner", "Branch Manager", "Cashier", "Store Keeper", "Accountant"],
+    integrations: ["MTN MoMo", "Telecel Cash", "Paystack", "Barcode Scanners", "Thermal Printers", "Cash Drawers"],
+    outcomes: [
+      { value: "11s", label: "Average checkout time" },
+      { value: "-41%", label: "Reduction in unexplained shrinkage" },
+      { value: "Real time", label: "Owner visibility across branches" }
+    ],
+    stack: ["React", "TypeScript", "Node.js", "PostgreSQL", "IndexedDB Sync", "Tailwind CSS"],
+    platforms: ["Counter POS", "Android Tablet POS", "Owner Mobile Dashboard"],
+    pricingNote: "Per-terminal monthly licence, with hardware bundles available on request.",
+    demoData: {
+      activeModules: ["POS Terminal", "Inventory", "Purchasing", "Reports"]
+    }
+  },
+  {
+    id: "ecommerce-platform",
+    name: "E-Commerce & Online Store Platform",
+    shortName: "E-Commerce",
+    subtitle: "Branded online stores with Mobile Money checkout, delivery tracking and seller payouts.",
+    tagline: "A storefront your customers actually finish checking out on.",
+    badge: "Commerce Engine",
+    status: "Live in Production",
+    category: "Retail & FinTech",
+    accent: "rose",
+    iconName: "Store",
+    description:
+      "Single-merchant storefronts or full multi-vendor marketplaces, engineered around how African customers really buy: Mobile Money first, delivery fees by zone, WhatsApp order support, and payouts that merchants can reconcile to the cedi.",
+    keyFeatures: [
+      "One-tap MoMo, card and pay-on-delivery checkout",
+      "Multi-vendor storefronts with automated split payouts",
+      "Zone-based delivery pricing and live rider dispatch",
+      "Abandoned cart recovery over SMS and WhatsApp"
+    ],
+    metrics: [
+      { label: "Checkout Completion", value: "96%" },
+      { label: "Merchant Setup", value: "< 10 mins" },
+      { label: "Repeat Purchase Growth", value: "3.5x" },
+      { label: "Page Load", value: "0.9s" }
+    ],
+    modules: [
+      { name: "Storefront", desc: "Fast product catalogue, search, reviews and collections.", iconName: "Store" },
+      { name: "Checkout", desc: "MoMo, card, pay-on-delivery and guest checkout in three taps.", iconName: "Wallet" },
+      { name: "Order Management", desc: "Fulfilment board, packing slips and returns handling.", iconName: "Boxes" },
+      { name: "Delivery & Dispatch", desc: "Zone pricing, rider assignment and customer tracking links.", iconName: "Truck" },
+      { name: "Vendors & Payouts", desc: "Seller onboarding, commission rules and settlement runs.", iconName: "Users" },
+      { name: "Growth Tools", desc: "Coupons, flash sales, cart recovery and campaign analytics.", iconName: "TrendingUp" }
+    ],
+    roles: ["Store Owner", "Vendor", "Fulfilment Staff", "Dispatch Rider", "Customer"],
+    integrations: ["Paystack", "MTN MoMo", "Telecel Cash", "WhatsApp Business", "Google Maps", "Meta Pixel"],
+    outcomes: [
+      { value: "96%", label: "Mobile Money checkout completion" },
+      { value: "3.5x", label: "Repeat purchases within 60 days" },
+      { value: "0.9s", label: "Median storefront load time" }
+    ],
+    stack: ["React", "TypeScript", "Node.js", "PostgreSQL", "Redis", "Cloudinary"],
+    platforms: ["Customer Web Store", "Merchant Console", "Rider Mobile App"],
+    pricingNote: "Flat build fee plus optional managed hosting; no commission taken on your sales.",
+    demoData: {
+      activeModules: ["Storefront", "Checkout", "Orders", "Payouts"]
+    }
+  },
+  {
+    id: "beauty-management",
+    name: "Beauty & Spa Management System",
+    shortName: "Beauty & Spa",
+    subtitle: "Online bookings, client history, stylist commissions and product retail in one system.",
+    tagline: "Fill the diary, keep the clients, pay the team correctly.",
+    badge: "Service Business Suite",
+    status: "Live in Production",
+    category: "Beauty & Wellness",
+    accent: "fuchsia",
+    iconName: "Scissors",
+    description:
+      "For salons, spas and beauty studios that lose money to no-shows and forgotten client preferences. Clients book themselves online, deposits are collected up front, every service is logged against the client record, and commissions calculate themselves at month end.",
+    keyFeatures: [
+      "Self-service online booking with deposit collection",
+      "Client profiles with formulas, allergies and visit photos",
+      "Automatic stylist commission and tip splitting",
+      "Retail product sales and treatment package tracking"
+    ],
+    metrics: [
+      { label: "No-Show Rate", value: "-63%" },
+      { label: "Chair Utilisation", value: "87%" },
+      { label: "Rebooking Rate", value: "71%" },
+      { label: "Avg. Ticket Growth", value: "+24%" }
+    ],
+    modules: [
+      { name: "Booking Calendar", desc: "Per-stylist diary, colour-coded services and drag-to-move slots.", iconName: "CalendarCheck" },
+      { name: "Client Records", desc: "Service history, product formulas, allergies and before/after photos.", iconName: "Users" },
+      { name: "Deposits & Payments", desc: "MoMo deposits at booking, balance on completion, refunds.", iconName: "Wallet" },
+      { name: "Staff & Commission", desc: "Shift rosters, service targets and automated commission runs.", iconName: "TrendingUp" },
+      { name: "Retail & Stock", desc: "Product sales at checkout with back-bar usage deduction.", iconName: "Boxes" },
+      { name: "Loyalty & Reminders", desc: "Points, packages and automatic SMS appointment reminders.", iconName: "MessageSquare" }
+    ],
+    roles: ["Salon Owner", "Receptionist", "Stylist / Therapist", "Client"],
+    integrations: ["MTN MoMo", "Paystack", "Hubtel SMS", "Google Calendar", "Instagram Booking Link"],
+    outcomes: [
+      { value: "-63%", label: "Fewer no-shows with deposits" },
+      { value: "87%", label: "Chair and room utilisation" },
+      { value: "+24%", label: "Growth in average ticket value" }
+    ],
+    stack: ["React", "TypeScript", "Node.js", "PostgreSQL", "Cloudinary", "Tailwind CSS"],
+    platforms: ["Front-Desk Web App", "Client Booking Page", "Stylist Mobile View"],
+    pricingNote: "Monthly subscription by number of service providers; booking page included.",
+    demoData: {
+      activeModules: ["Bookings", "Client Records", "Commissions", "Retail"]
+    }
+  },
+  {
+    id: "barbershop-management",
+    name: "Barbershop Management System",
+    shortName: "Barbershop",
+    subtitle: "Walk-in queue, chair status, fast checkout, loyalty and barber earnings.",
+    tagline: "Built for walk-in reality, not appointment theory.",
+    badge: "Queue & Checkout",
+    status: "Live in Production",
+    category: "Service Business",
+    accent: "orange",
+    iconName: "Scissors",
+    description:
+      "Barbershops run on walk-ins, not neat bookings. This system manages a live queue with realistic wait estimates, shows which chair is busy and for how long, closes a sale in seconds, and settles each barber's cut of the day's takings automatically.",
+    keyFeatures: [
+      "Live walk-in queue with SMS 'you are next' alerts",
+      "Chair board showing barber, client and time in chair",
+      "Ten-second checkout with MoMo, cash and loyalty redemption",
+      "Automatic daily barber payout and shop-share splitting"
+    ],
+    metrics: [
+      { label: "Avg. Wait Time", value: "-38%" },
+      { label: "Daily Cuts Tracked", value: "120+" },
+      { label: "Loyalty Signups", value: "64%" },
+      { label: "Payout Disputes", value: "0" }
+    ],
+    modules: [
+      { name: "Walk-In Queue", desc: "Join by phone or at the door with live position and wait estimate.", iconName: "Users" },
+      { name: "Chair Board", desc: "Real-time view of every chair, barber and service in progress.", iconName: "LayoutDashboard" },
+      { name: "Fast Checkout", desc: "Service, extras and tip captured in a single tap flow.", iconName: "Wallet" },
+      { name: "Barber Earnings", desc: "Per-barber cut count, commission split and daily settlement.", iconName: "TrendingUp" },
+      { name: "Loyalty", desc: "Every tenth cut free, tracked by phone number, no cards.", iconName: "Sparkles" },
+      { name: "Shop Analytics", desc: "Peak hour heatmap, service mix and barber leaderboard.", iconName: "CalendarCheck" }
+    ],
+    roles: ["Shop Owner", "Front Desk", "Barber", "Walk-in Client"],
+    integrations: ["MTN MoMo", "Telecel Cash", "Hubtel SMS", "Thermal Printers", "Customer Display Screen"],
+    outcomes: [
+      { value: "-38%", label: "Shorter perceived wait time" },
+      { value: "64%", label: "Clients enrolled in loyalty" },
+      { value: "Daily", label: "Automatic barber settlement" }
+    ],
+    stack: ["React", "TypeScript", "Node.js", "PostgreSQL", "WebSockets", "Tailwind CSS"],
+    platforms: ["Front-Desk Tablet", "Waiting Room Display", "Barber Mobile View"],
+    pricingNote: "Affordable per-shop monthly plan with an in-shop queue display included.",
+    demoData: {
+      activeModules: ["Queue", "Chair Board", "Checkout", "Earnings"]
+    }
+  },
+  {
+    id: "learning-platform",
+    name: "Educational Learning Platform",
+    shortName: "Learning Platform",
+    subtitle: "Courses, lessons, assessments and certificates with progress analytics.",
+    tagline: "Teach at scale without losing sight of a single learner.",
+    badge: "Digital Learning",
+    status: "Live in Production",
+    category: "EdTech & Training",
+    accent: "indigo",
+    iconName: "BookOpen",
+    description:
+      "A full learning management platform for schools, training institutes and corporate academies. Instructors publish structured courses with video, notes and quizzes; learners study on low-bandwidth connections; administrators see exactly who is progressing and who has stalled.",
+    keyFeatures: [
+      "Structured courses with video, notes, downloads and quizzes",
+      "Auto-marked assessments with question banks and timed exams",
+      "Low-bandwidth mode and downloadable offline lessons",
+      "Verifiable certificates and cohort progress analytics"
+    ],
+    metrics: [
+      { label: "Course Completion", value: "78%" },
+      { label: "Active Learners", value: "4,300+" },
+      { label: "Lesson Load", value: "1.2s" },
+      { label: "Marking Time Saved", value: "-85%" }
+    ],
+    modules: [
+      { name: "Course Builder", desc: "Drag-ordered modules, lessons, resources and prerequisites.", iconName: "BookOpen" },
+      { name: "Lesson Player", desc: "Video, transcript, notes and inline questions in one view.", iconName: "Sparkles" },
+      { name: "Assessments", desc: "Question banks, randomised papers, timers and auto-marking.", iconName: "FileText" },
+      { name: "Learner Progress", desc: "Per-learner mastery, streaks and at-risk flags for tutors.", iconName: "TrendingUp" },
+      { name: "Certificates", desc: "Branded, QR-verifiable certificates issued on completion.", iconName: "ShieldCheck" },
+      { name: "Cohorts & Tutors", desc: "Class groups, discussion threads and tutor announcements.", iconName: "Users" }
+    ],
+    roles: ["Training Director", "Instructor", "Tutor", "Learner", "Examiner"],
+    integrations: ["Paystack", "MTN MoMo", "Zoom", "YouTube / Vimeo", "Google Drive", "Hubtel SMS"],
+    outcomes: [
+      { value: "78%", label: "Course completion rate" },
+      { value: "-85%", label: "Less time spent marking" },
+      { value: "1.2s", label: "Lesson load on 3G" }
+    ],
+    stack: ["React", "TypeScript", "Node.js", "PostgreSQL", "HLS Streaming", "Cloudinary"],
+    platforms: ["Learner Web App", "Instructor Studio", "Offline Lesson Pack"],
+    pricingNote: "Priced per active learner per month, or a one-off build for institution ownership.",
+    demoData: {
+      activeModules: ["Course Builder", "Lesson Player", "Assessments", "Certificates"]
+    }
   }
 ];
 
@@ -723,7 +1092,10 @@ export interface PlannerOption {
   iconName: string;
 }
 
+export const CONTENT_VERSION = 3;
+
 export interface SiteContent {
+  contentVersion?: number;
   brand: {
     name: string;
     suffix: string;
@@ -837,6 +1209,7 @@ export interface SiteContent {
 }
 
 export const DEFAULT_SITE_CONTENT: SiteContent = {
+  contentVersion: CONTENT_VERSION,
   brand: {
     name: 'Eckintosh',
     suffix: '.',
@@ -846,7 +1219,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
   navigation: {
     links: [
       { label: 'Home', href: '#hero' },
-      { label: 'Solutions', href: '#solutions' },
+      { label: 'Systems', href: '#systems' },
       { label: 'Services', href: '#services' },
       { label: 'Industries', href: '#industries' },
       { label: 'Our Work', href: '#work' },
@@ -872,54 +1245,63 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       { label: 'Mobile Apps', color: 'bg-indigo-400' },
       { label: 'Business Systems', color: 'bg-emerald-400' },
       { label: 'AI & Automation', color: 'bg-amber-400' },
+      { label: 'Commerce & POS', color: 'bg-rose-400' },
     ],
     dashboardWindowLabel: 'eckintosh-core-v2.6 // live production',
     dashboardStatusLabel: 'Active Systems',
     dashboardTabs: [
       {
         id: 'school',
-        label: 'School System',
+        label: 'School',
         iconName: 'GraduationCap',
-        title: 'Eckintosh School Management',
+        title: 'School Management System',
         subtitle: 'Grace Academy Portal - Live Academic Term',
         badge: '100% Operational',
         badgeTone: 'green',
-        productId: 'eckintosh-school',
+        productId: 'school-management',
         stats: [
           { iconName: 'Users', label: 'Active Enrolled', value: '1,248', suffix: 'Students' },
           { iconName: 'DollarSign', label: 'Fees Collected', value: 'GHS 42,500' },
         ],
-        note: 'GES Terminal Assessment & Parent SMS Gateway Integrated',
-        actionLabel: 'Inspect Product',
+        note: 'GES terminal assessment and parent SMS gateway integrated',
+        actionLabel: 'Open System',
       },
       {
-        id: 'business',
-        label: 'Dashboard',
-        iconName: 'TrendingUp',
-        title: 'Business Dashboard',
-        subtitle: 'Enterprise Operations & Revenue Engine',
-        badge: 'Live Analytics',
-        badgeTone: 'blue',
-        stats: [{ iconName: 'TrendingUp', label: 'Quarterly Operational Revenue', value: 'Revenue up 24.8%' }],
-        note: 'Automated reconciliation with GRA tax rules & Paystack API',
-        footerRight: 'Sync: 0.04s',
-      },
-      {
-        id: 'mobile',
-        label: 'Mobile App',
-        iconName: 'Smartphone',
-        title: 'Mobile Application',
-        subtitle: 'iOS & Android Ecosystem',
-        badge: 'iOS & Android',
+        id: 'pos',
+        label: 'Retail POS',
+        iconName: 'ShoppingCart',
+        title: 'Inventory & Point of Sale',
+        subtitle: 'Multi-branch retail operations engine',
+        badge: 'Offline Ready',
         badgeTone: 'amber',
-        stats: [{ iconName: 'Smartphone', label: 'Active Mobile Ecosystem', value: '12,480', suffix: 'Active Users' }],
-        note: 'MTN Mobile Money, Telecel Cash & AT Pay built-in',
-        footerRight: '99.9% Uptime',
+        productId: 'inventory-pos',
+        stats: [
+          { iconName: 'TrendingUp', label: 'Today Sales', value: 'GHS 18,420' },
+          { iconName: 'Boxes', label: 'Checkout Speed', value: '11s', suffix: 'avg' },
+        ],
+        note: 'Keeps selling through internet outages, then syncs automatically',
+        actionLabel: 'Open System',
+      },
+      {
+        id: 'ai',
+        label: 'AI Assistant',
+        iconName: 'Sparkles',
+        title: 'AI Productivity Assistant',
+        subtitle: 'Private workspace grounded in your documents',
+        badge: 'AI Powered',
+        badgeTone: 'blue',
+        productId: 'ai-assistant',
+        stats: [
+          { iconName: 'Sparkles', label: 'Hours Saved Monthly', value: '310 hrs' },
+          { iconName: 'FileText', label: 'Documents Indexed', value: '18,600' },
+        ],
+        note: 'Answers cite the exact policy page they came from',
+        actionLabel: 'Open System',
       },
     ],
     floatingCards: [
-      { title: 'GHS 42,500 Collected', subtitle: 'MTN MoMo Auto-Settled', iconName: 'DollarSign' },
-      { title: 'Revenue up 24.8%', subtitle: 'Verified System Analytics', iconName: 'TrendingUp' },
+      { title: 'GHS 42,500 Collected', subtitle: 'MTN MoMo auto-settled', iconName: 'DollarSign' },
+      { title: '9 Systems Live', subtitle: 'Built, shipped and maintained', iconName: 'TrendingUp' },
     ],
   },
   trustBar: {
@@ -944,12 +1326,12 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     ctaPrefix: 'Discuss',
   },
   products: {
-    eyebrow: 'Our Software Products',
-    title: 'Products built to solve real problems.',
+    eyebrow: 'Systems We Have Built',
+    title: 'Nine production systems. All ours, end to end.',
     description:
-      'We design and own repeatable software systems built ground-up for African institutions, municipalities, and enterprise businesses.',
+      'These are not concept slides. Each one is a working platform we designed, engineered, deployed and still maintain. Open any of them below and use the real interface.',
     items: PRODUCTS,
-    ctaLabel: 'Build a Custom Product',
+    ctaLabel: 'Build a Custom System',
     ctaTopic: 'Custom Product Engineering',
   },
   industries: {
@@ -964,7 +1346,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     title: "We don't just show screenshots. We show what we solved.",
     description:
       'Explore how we analyze operational bottlenecks, architect robust software backbones, and deliver measurable outcomes for our enterprise clients.',
-    filters: ['All', 'Education', 'Mobile Money', 'Civic Tech', 'E-Commerce'],
+    filters: ['All', 'Education', 'Mobile Money', 'Civic Tech', 'E-Commerce', 'Retail', 'Health'],
     bannerTitle: 'Have a unique system operational challenge?',
     bannerDescription: 'We write clean code engineered specifically around your organizational workflows.',
     bannerCtaLabel: 'Schedule Technical Consultation',
@@ -1043,10 +1425,15 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       { label: 'AI & Automation', href: '#services' },
     ],
     productLinks: [
-      { label: 'School Management', href: '#solutions' },
-      { label: 'Adepa Mall', href: '#solutions' },
-      { label: 'CleanConnect Waste', href: '#solutions' },
-      { label: 'HR & Payroll Portal', href: '#solutions' },
+      { label: 'School Management', href: '#systems' },
+      { label: 'Recruitment & ATS', href: '#systems' },
+      { label: 'AI Productivity Assistant', href: '#systems' },
+      { label: 'Pharmacy Management', href: '#systems' },
+      { label: 'Inventory & POS', href: '#systems' },
+      { label: 'E-Commerce Platform', href: '#systems' },
+      { label: 'Beauty & Spa', href: '#systems' },
+      { label: 'Barbershop', href: '#systems' },
+      { label: 'Learning Platform', href: '#systems' },
     ],
     copyright: 'Copyright 2026 Eckintosh Technologies. All rights reserved.',
     whatsappLabel: 'WhatsApp',
@@ -1060,16 +1447,20 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     title: "Let's Build Something Smarter",
     projectTypePrompt: 'Select the primary focus for your project:',
     projectTypeOptions: [
-      { title: 'Business Systems', desc: 'Custom operations, ERP, HR & Fee Ledgers', iconName: 'Building2' },
-      { title: 'School Management System', desc: 'Flagship Eckintosh School SaaS Platform', iconName: 'Sparkles' },
-      { title: 'Mobile Applications', desc: 'iOS & Android with Mobile Money payments', iconName: 'Smartphone' },
-      { title: 'Software Engineering', desc: 'Custom enterprise web portals & REST APIs', iconName: 'Code2' },
-      { title: 'AI & Automation', desc: 'Document parsing, chatbots & workflow automation', iconName: 'Cpu' },
-      { title: 'Websites & Web Apps', desc: 'High-conversion modern web presence', iconName: 'Globe' },
+      { title: 'School Management System', desc: 'Admissions, academics, fees and parent portal', iconName: 'GraduationCap' },
+      { title: 'Recruitment & ATS', desc: 'Career portal, screening and hiring pipeline', iconName: 'Users' },
+      { title: 'AI Productivity Assistant', desc: 'Document intelligence and workflow agents', iconName: 'Sparkles' },
+      { title: 'Pharmacy Management', desc: 'Dispensing, batch expiry and claims', iconName: 'Pill' },
+      { title: 'Inventory & POS', desc: 'Offline-first retail checkout and stock control', iconName: 'ShoppingCart' },
+      { title: 'E-Commerce Platform', desc: 'Online store with Mobile Money checkout', iconName: 'Store' },
+      { title: 'Beauty & Spa System', desc: 'Bookings, client records and commissions', iconName: 'Scissors' },
+      { title: 'Barbershop System', desc: 'Walk-in queue, checkout and barber earnings', iconName: 'Scissors' },
+      { title: 'Learning Platform', desc: 'Courses, assessments and certificates', iconName: 'BookOpen' },
+      { title: 'Custom Software Build', desc: 'Something none of the above covers', iconName: 'Code2' },
     ],
     timelineOptions: ['Urgent (< 1 Month)', '1 - 2 Months', '3+ Months'],
     budgetOptions: ['GHS 10,000 - GHS 25,000', 'GHS 25,000 - GHS 60,000', 'GHS 60,000+ / Enterprise'],
-    defaultProjectType: 'Business Systems',
+    defaultProjectType: 'School Management System',
     defaultTimeline: '1 - 2 Months',
     defaultBudget: 'GHS 15,000 - GHS 35,000',
     whatsappNumber: '233240000000',
