@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe, Layers, MessageSquare, Share2 } from 'lucide-react';
+import { ArrowRight, Globe, Layers, MessageSquare, Share2 } from 'lucide-react';
 import type { NavLink, SiteContent } from '../data/contentData';
 
 interface FooterProps {
@@ -22,7 +22,7 @@ export const Footer: React.FC<FooterProps> = ({ brand, content, onOpenPlanner })
   return (
     <footer className="bg-[#030712] text-slate-400 py-16 border-t border-white/10 text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10 pb-12 border-b border-white/10">
           <div className="lg:col-span-2 space-y-4">
             <a href="#hero" className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold">
@@ -40,11 +40,33 @@ export const Footer: React.FC<FooterProps> = ({ brand, content, onOpenPlanner })
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>{content.statusLine}</span>
             </div>
+
+            <button
+              onClick={() => onOpenPlanner(content.directConnectTopic)}
+              className="mt-2 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold transition-all group"
+            >
+              Tell us what you need built
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            </button>
           </div>
 
           <FooterLinkColumn title="Company" links={content.companyLinks} onNavClick={handleNavClick} />
           <FooterLinkColumn title="Solutions" links={content.solutionLinks} onNavClick={handleNavClick} />
-          <FooterLinkColumn title="Products" links={content.productLinks} onNavClick={handleNavClick} />
+          <div className="lg:col-span-2">
+            <h4 className="text-white font-bold uppercase tracking-wider text-[11px] mb-4 font-mono">Systems</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
+              {content.productLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={(event) => handleNavClick(event, link.href)}
+                  className="hover:text-white transition-colors"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 font-mono text-[11px]">
