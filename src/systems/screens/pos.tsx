@@ -35,6 +35,14 @@ const TILES = [
   ['Tin Tomatoes', 'GHS 9.50', 'bg-red-100'],
   ['Bottled Water', 'GHS 12.00', 'bg-cyan-100'],
   ['Detergent 1kg', 'GHS 31.00', 'bg-violet-100'],
+  ['Gari 2kg', 'GHS 22.00', 'bg-yellow-100'],
+  ['Evaporated Milk', 'GHS 14.50', 'bg-blue-100'],
+  ['Spaghetti 500g', 'GHS 8.00', 'bg-lime-100'],
+  ['Toilet Roll (4)', 'GHS 19.00', 'bg-teal-100'],
+  ['Tea Bags (50)', 'GHS 27.00', 'bg-fuchsia-100'],
+  ['Groundnut Paste', 'GHS 16.00', 'bg-amber-100'],
+  ['Maggi Cubes', 'GHS 6.50', 'bg-orange-100'],
+  ['Palm Oil 1L', 'GHS 34.00', 'bg-red-100'],
 ];
 
 export const posSystem: SystemDefinition = {
@@ -65,12 +73,12 @@ export const posSystem: SystemDefinition = {
           }
         >
           <div className="h-full grid grid-cols-1 lg:grid-cols-5 gap-2.5 min-h-0">
-            <div className="lg:col-span-3 grid grid-cols-4 gap-1.5 content-start min-h-0 overflow-hidden">
+            <div className="lg:col-span-3 grid grid-cols-4 auto-rows-fr gap-1.5 min-h-0 overflow-hidden">
               {TILES.map((tile, i) => (
                 <div
                   key={tile[0]}
-                  className={`rounded-xl border border-slate-200 ${tile[2]} p-2 flex flex-col justify-between h-[52px]`}
-                  style={{ animation: `rowIn 380ms ${i * 45}ms both` }}
+                  className={`rounded-xl border border-slate-200 ${tile[2]} p-2 flex flex-col justify-between min-h-[46px]`}
+                  style={{ animation: `rowIn 380ms ${i * 35}ms both` }}
                 >
                   <span className="text-[9px] font-bold text-slate-800 leading-tight">{tile[0]}</span>
                   <span className="text-[9px] font-black text-slate-700 tabular-nums">{tile[1]}</span>

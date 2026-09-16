@@ -127,7 +127,11 @@ export const SystemViewer: React.FC<SystemViewerProps> = ({ system, accent, comp
         </div>
 
         {/* Screen */}
-        <div className="relative bg-slate-100 overflow-hidden" style={{ aspectRatio: compact ? '16 / 10' : '16 / 9.4' }}>
+        <div
+          className={`relative bg-slate-100 overflow-hidden aspect-[3/4] sm:aspect-[16/10] ${
+            compact ? '' : 'lg:aspect-[16/9.4]'
+          }`}
+        >
           {scenes.map((scene, index) => (
             <div
               key={scene.id}
