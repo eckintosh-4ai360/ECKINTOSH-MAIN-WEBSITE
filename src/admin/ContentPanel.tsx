@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { RefreshCcw, Save } from 'lucide-react';
-import type { SiteContent } from '../data/contentData';
+import { RefreshCcw, RotateCcw, Save } from 'lucide-react';
+import { DEFAULT_SITE_CONTENT, type SiteContent } from '../data/contentData';
 import { loadAdminContent, saveAdminContent } from '../lib/adminContent';
 import { useSiteContent } from '../lib/siteContent';
 
@@ -79,6 +79,25 @@ export const ContentPanel: React.FC = () => {
     showSection(content, key);
   };
 
+  /**
+   * Replace the editor with what the current build ships for this section.
+   * Useful when a record saved by an older build is shadowing new defaults
+   * (contact details, new list items) that were never edited by hand.
+   */
+  const handleLoadDefaults = () => {
+    const value =
+      section === ALL
+        ? DEFAULT_SITE_CONTENT
+        : (DEFAULT_SITE_CONTENT as unknown as Record<string, unknown>)[section];
+    if (value === undefined) {
+      setError(`The current build ships no defaults for "${section}".`);
+      return;
+    }
+    setError(null);
+    setSaved(false);
+    setJsonText(JSON.stringify(value, null, 2));
+  };
+
   const handleSave = async () => {
     if (!content) return;
     setSaving(true);
@@ -106,6 +125,7 @@ export const ContentPanel: React.FC = () => {
           <h2 className="text-lg font-bold text-white">Website Content</h2>
           <p className="text-xs text-slate-400 mt-0.5">
             Edit one section at a time, or the whole payload. Saving merges your section back into the document.
+            “Shipped defaults” loads what this build ships, so you can review before saving over a stale record.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -129,6 +149,14 @@ export const ContentPanel: React.FC = () => {
             className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-semibold flex items-center gap-2 disabled:opacity-60"
           >
             <RefreshCcw className="w-3.5 h-3.5" /> Reload
+          </button>
+          <button
+            onClick={handleLoadDefaults}
+            disabled={loading || saving}
+            className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-semibold flex items-center gap-2 disabled:opacity-60"
+            title="Replace the editor with this build's shipped content for the selected section. Nothing is saved until you press Save."
+          >
+            <RotateCcw className="w-3.5 h-3.5" /> Shipped defaults
           </button>
           <button
             onClick={handleSave}
