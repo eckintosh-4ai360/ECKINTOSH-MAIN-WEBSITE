@@ -79,7 +79,6 @@ export function App() {
       <ScrollProgress />
 
       <Navbar
-        brand={content.brand}
         navigation={content.navigation}
         products={content.products.items}
         onOpenPlanner={handleOpenPlanner}

@@ -1320,9 +1320,9 @@ export interface SiteContent {
 export const DEFAULT_SITE_CONTENT: SiteContent = {
   contentVersion: CONTENT_VERSION,
   brand: {
-    name: 'Eckintosh',
-    suffix: '.',
-    tagline: 'Technologies',
+    name: 'ECKINTOSH',
+    suffix: '',
+    tagline: 'Engineering Digital Solutions',
     adminTitle: 'Eckintosh. Admin',
   },
   navigation: {

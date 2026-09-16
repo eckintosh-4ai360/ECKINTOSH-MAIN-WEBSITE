@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, ChevronDown, Command, Layers, Menu, Search, X } from 'lucide-react';
+import { ArrowRight, ChevronDown, Command, Menu, Search, X } from 'lucide-react';
 import type { Product, SiteContent } from '../data/contentData';
 import { getIcon } from '../lib/icons';
 import { accentOf } from '../systems/theme';
 
 interface NavbarProps {
-  brand: SiteContent['brand'];
   navigation: SiteContent['navigation'];
   products: Product[];
   onOpenPlanner: (topic?: string) => void;
@@ -14,7 +13,6 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  brand,
   navigation,
   products,
   onOpenPlanner,
@@ -80,16 +78,15 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         {/* Brand */}
         <a href="#hero" onClick={(event) => goTo(event, '#hero')} className="flex items-center gap-2.5 group shrink-0">
-          <span className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 grid place-items-center text-white shadow-lg shadow-blue-600/30 group-hover:scale-105 group-hover:rotate-3 transition-transform">
-            <Layers className="w-5 h-5" />
-          </span>
+          <img
+            src="/logo.png"
+            alt="Eckintosh logo"
+            className="h-6 w-auto object-contain  shadow-md shadow-black/30 group-hover:scale-105 transition-transform"
+          />
           <span className="flex flex-col leading-none">
-            <span className="text-lg font-extrabold tracking-tight text-white">
-              {brand.name}
-              <span className="text-blue-500">{brand.suffix}</span>
-            </span>
-            <span className="text-[9.5px] uppercase tracking-[0.2em] text-slate-500 mt-0.5 font-mono">
-              {brand.tagline}
+            <span className="text-lg font-extrabold tracking-tight text-white">ECKINTOSH</span>
+            <span className="text-[9px] sm:text-[9.5px] uppercase tracking-[0.14em] text-slate-500 mt-0.5 font-mono">
+              Engineering Digital Solutions
             </span>
           </span>
         </a>

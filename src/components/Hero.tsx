@@ -55,14 +55,40 @@ export const Hero: React.FC<HeroProps> = ({ content, products, onOpenPlanner, on
       onPointerLeave={spotlight.onPointerLeave}
       className="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden bg-[#08111F] text-white"
     >
-      {/* Ambient layers */}
+      {/* Ambient light layers */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 bg-grid opacity-60" />
-        <div className="absolute -top-40 -left-32 w-[520px] h-[520px] bg-blue-600/20 rounded-full blur-[150px] animate-aurora" />
+        {/* Twin counter-rotating volumetric light rays */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[220vmax] h-[220vmax] hero-rays-spin">
+          <div className="absolute inset-0 hero-rays-bg" />
+        </div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[220vmax] h-[220vmax] hero-rays-spin-reverse">
+          <div className="absolute inset-0 hero-rays-fine opacity-70" />
+        </div>
+
+        {/* Overhead light source */}
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[460px] rounded-full bg-blue-400/20 blur-[130px] animate-pulse-glow" />
+
+        {/* Lens-flare horizon line */}
+        <div className="absolute top-[9%] left-1/2 -translate-x-1/2 w-[62%] h-px bg-gradient-to-r from-transparent via-sky-300/60 to-transparent blur-[1px] animate-pulse-glow" />
+
+        {/* Drifting aurora orbs */}
+        <div className="absolute -top-40 -left-32 w-[520px] h-[520px] bg-blue-600/25 rounded-full blur-[150px] animate-aurora mix-blend-screen" />
         <div
-          className="absolute top-1/3 -right-32 w-[560px] h-[560px] rounded-full blur-[160px] opacity-25 transition-colors duration-1000"
+          className="absolute top-1/3 -right-32 w-[560px] h-[560px] rounded-full blur-[160px] opacity-30 transition-colors duration-1000 mix-blend-screen"
           style={{ backgroundColor: accent.hex }}
         />
+        <div
+          className="absolute -bottom-40 left-1/4 w-[480px] h-[480px] rounded-full blur-[150px] opacity-40 animate-aurora mix-blend-screen"
+          style={{ backgroundColor: accent.hex2, animationDelay: '-11s' }}
+        />
+
+        {/* Floating bokeh sparks */}
+        <div className="absolute top-[22%] left-[12%] w-2 h-2 rounded-full bg-sky-300/80 blur-[1px] hero-bokeh" />
+        <div className="absolute top-[14%] right-[22%] w-1.5 h-1.5 rounded-full bg-blue-200/70 blur-[1px] hero-bokeh" style={{ animationDelay: '-3s' }} />
+        <div className="absolute top-[38%] left-[24%] w-1 h-1 rounded-full bg-indigo-300/80 hero-bokeh" style={{ animationDelay: '-5s' }} />
+        <div className="absolute top-[30%] right-[8%] w-1.5 h-1.5 rounded-full bg-cyan-200/70 blur-[1px] hero-bokeh" style={{ animationDelay: '-7s' }} />
+        <div className="absolute top-[55%] left-[8%] w-1 h-1 rounded-full bg-blue-300/60 hero-bokeh" style={{ animationDelay: '-2s' }} />
+        <div className="absolute top-[48%] right-[16%] w-2 h-2 rounded-full bg-sky-200/50 blur-[2px] hero-bokeh" style={{ animationDelay: '-6s' }} />
         {/* Cursor spotlight */}
         {spotlight.pos && (
           <div
