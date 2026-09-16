@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { TrustBar } from './components/TrustBar';
+import { CapabilityMarquee } from './components/CapabilityMarquee';
+import { SystemsShowcase } from './components/SystemsShowcase';
 import { WhatWeDo } from './components/WhatWeDo';
-import { Solutions } from './components/Solutions';
+import { SystemsIndex } from './components/SystemsIndex';
 import { Industries } from './components/Industries';
 import { FeaturedWork } from './components/FeaturedWork';
 import { WhyUs } from './components/WhyUs';
@@ -14,6 +16,8 @@ import { Insights } from './components/Insights';
 import { CTA } from './components/CTA';
 import { Footer } from './components/Footer';
 import { BackToTop } from './components/BackToTop';
+import { ScrollProgress } from './components/ScrollProgress';
+import { CommandPalette } from './components/CommandPalette';
 
 // Modals
 import { ProjectPlannerModal } from './components/ProjectPlannerModal';
@@ -27,87 +31,126 @@ import { useSiteContent } from './lib/siteContent';
 
 export function App() {
   const { content } = useSiteContent();
+
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [plannerTopic, setPlannerTopic] = useState('');
-  
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [activeSystemId, setActiveSystemId] = useState<string>(content.products.items[0]?.id ?? '');
+
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<CaseStudy | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<InsightArticle | null>(null);
 
-  const handleOpenPlanner = (topic?: string) => {
+  const handleOpenPlanner = useCallback((topic?: string) => {
     setPlannerTopic(topic || '');
     setPlannerOpen(true);
-  };
+  }, []);
 
-  const handleSelectProductById = (productId: string) => {
-    const found = content.products.items.find((p) => p.id === productId) || content.products.items[0];
-    if (found) setSelectedProduct(found);
-  };
+  const handleSelectProductById = useCallback(
+    (productId: string) => {
+      const found = content.products.items.find((product) => product.id === productId) || content.products.items[0];
+      if (found) setSelectedProduct(found);
+    },
+    [content.products.items]
+  );
+
+  /** Select a system in the showcase and bring the stage into view. */
+  const handleFocusSystem = useCallback((productId: string) => {
+    setActiveSystemId(productId);
+    window.requestAnimationFrame(() => {
+      document.getElementById('systems')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, []);
+
+  // Global ⌘K / Ctrl+K shortcut.
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setPaletteOpen((open) => !open);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#08111F] text-slate-100 font-sans selection:bg-blue-600 selection:text-white antialiased">
-      {/* Top Navbar */}
-      <Navbar brand={content.brand} navigation={content.navigation} onOpenPlanner={handleOpenPlanner} />
+    <div className="min-h-screen bg-[#08111F] text-slate-100 font-sans antialiased">
+      <ScrollProgress />
 
-      {/* Main Content Layout */}
+      <Navbar
+        brand={content.brand}
+        navigation={content.navigation}
+        products={content.products.items}
+        onOpenPlanner={handleOpenPlanner}
+        onOpenPalette={() => setPaletteOpen(true)}
+        onFocusSystem={handleFocusSystem}
+      />
+
       <main>
-        {/* Section 2: HERO */}
-        <Hero 
+        <Hero
           content={content.hero}
-          onOpenPlanner={handleOpenPlanner} 
-          onSelectProduct={handleSelectProductById} 
+          products={content.products.items}
+          onOpenPlanner={handleOpenPlanner}
+          onSelectProduct={handleSelectProductById}
+          onFocusSystem={handleFocusSystem}
         />
 
-        {/* Section 3: TRUST / CREDIBILITY BAR */}
         <TrustBar content={content.trustBar} />
 
-        {/* Section 4: WHAT WE DO */}
+        <CapabilityMarquee />
+
+        {/* Flagship: interactive walkthroughs of every system we have shipped */}
+        <SystemsShowcase
+          content={content.products}
+          activeId={activeSystemId}
+          onActiveIdChange={setActiveSystemId}
+          onSelectProduct={setSelectedProduct}
+          onOpenPlanner={handleOpenPlanner}
+        />
+
         <WhatWeDo content={content.services} onOpenPlanner={handleOpenPlanner} />
 
-        {/* Section 5: SOLUTIONS / PRODUCTS */}
-        <Solutions 
+        <SystemsIndex
           content={content.products}
-          onSelectProduct={(prod) => setSelectedProduct(prod)} 
-          onOpenPlanner={handleOpenPlanner} 
+          onSelectProduct={setSelectedProduct}
+          onFocusSystem={handleFocusSystem}
+          onOpenPlanner={handleOpenPlanner}
         />
 
-        {/* Section 6: INDUSTRIES */}
         <Industries content={content.industries} onOpenPlanner={handleOpenPlanner} />
 
-        {/* Section 7: FEATURED WORK */}
-        <FeaturedWork 
+        <FeaturedWork
           content={content.caseStudies}
-          onSelectCaseStudy={(cs) => setSelectedCaseStudy(cs)} 
-          onOpenPlanner={handleOpenPlanner} 
+          onSelectCaseStudy={setSelectedCaseStudy}
+          onOpenPlanner={handleOpenPlanner}
         />
 
-        {/* Section 9: WHY US */}
         <WhyUs content={content.whyUs} />
 
-        {/* Section 10: HOW WE WORK */}
         <HowWeWork content={content.howWeWork} onOpenPlanner={handleOpenPlanner} />
 
-        {/* Section 11: TECHNOLOGY SECTION */}
         <TechStack content={content.techStack} />
 
-        {/* Section 12: TESTIMONIALS */}
         <Testimonials content={content.testimonials} />
 
-        {/* Section 13: INSIGHTS */}
-        <Insights 
-          content={content.insights}
-          onSelectArticle={(art) => setSelectedArticle(art)} 
-          onOpenPlanner={handleOpenPlanner} 
-        />
+        <Insights content={content.insights} onSelectArticle={setSelectedArticle} onOpenPlanner={handleOpenPlanner} />
 
-        {/* Section 14: CTA SECTION */}
         <CTA content={content.cta} onOpenPlanner={handleOpenPlanner} />
       </main>
 
-      {/* Section 15: FOOTER */}
       <Footer brand={content.brand} content={content.footer} onOpenPlanner={handleOpenPlanner} />
 
-      {/* Interactive Modals */}
+      {/* Interactive layers */}
+      <CommandPalette
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        content={content}
+        onSelectProduct={setSelectedProduct}
+        onFocusSystem={handleFocusSystem}
+        onOpenPlanner={handleOpenPlanner}
+      />
+
       <ProjectPlannerModal
         isOpen={plannerOpen}
         onClose={() => setPlannerOpen(false)}
@@ -133,7 +176,6 @@ export function App() {
         onOpenPlanner={handleOpenPlanner}
       />
 
-      {/* Back to Hero Button */}
       <BackToTop />
     </div>
   );

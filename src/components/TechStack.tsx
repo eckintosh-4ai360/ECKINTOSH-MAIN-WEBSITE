@@ -1,6 +1,7 @@
 import React from 'react';
 import { Cpu, Layers, Database, Cloud, CreditCard } from 'lucide-react';
 import type { SiteContent } from '../data/contentData';
+import { Reveal } from './Reveal';
 
 export const TechStack: React.FC<{ content: SiteContent['techStack'] }> = ({ content }) => {
   const getCatIcon = (cat: string) => {
@@ -19,7 +20,7 @@ export const TechStack: React.FC<{ content: SiteContent['techStack'] }> = ({ con
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="max-w-3xl mb-16">
+        <Reveal className="max-w-3xl mb-16">
           <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
             {content.eyebrow}
           </span>
@@ -29,15 +30,13 @@ export const TechStack: React.FC<{ content: SiteContent['techStack'] }> = ({ con
           <p className="text-base text-slate-600 mt-4 leading-relaxed font-normal">
             {content.description}
           </p>
-        </div>
+        </Reveal>
 
         {/* Tech Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {content.items.map((catGroup) => (
-            <div
-              key={catGroup.category}
-              className="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-4 hover:border-slate-300 transition-all"
-            >
+          {content.items.map((catGroup, index) => (
+            <Reveal key={catGroup.category} delay={index * 70} className="h-full">
+            <div className="h-full p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-4 hover:border-slate-300 lift">
               <div className="flex items-center gap-3 pb-3 border-b border-slate-200/80">
                 <div className="p-2 rounded-xl bg-white border border-slate-200 shadow-sm">
                   {getCatIcon(catGroup.category)}
@@ -63,6 +62,7 @@ export const TechStack: React.FC<{ content: SiteContent['techStack'] }> = ({ con
                 ))}
               </div>
             </div>
+            </Reveal>
           ))}
         </div>
 

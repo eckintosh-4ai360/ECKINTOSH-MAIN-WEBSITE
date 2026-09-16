@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight, ChevronDown, Filter, Sparkles } from 'lucide-react';
 import type { CaseStudy, SiteContent } from '../data/contentData';
 import { subscribeCaseStudies, type ManagedCaseStudy } from '../lib/caseStudies';
+import { Reveal } from './Reveal';
 
 interface FeaturedWorkProps {
   content: SiteContent['caseStudies'];
@@ -34,8 +35,8 @@ export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ content, onSelectCas
   return (
     <section id="work" className="bg-[#0B1528] py-20 md:py-28 text-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div className="max-w-2xl">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-6">
+          <Reveal className="max-w-2xl min-w-0">
             <span className="text-xs font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
               {content.eyebrow}
             </span>
@@ -43,10 +44,10 @@ export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ content, onSelectCas
               {content.title}
             </h2>
             <p className="text-base text-slate-300 mt-4 leading-relaxed font-normal">{content.description}</p>
-          </div>
+          </Reveal>
 
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
-            <Filter className="w-4 h-4 text-slate-400 shrink-0" />
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar min-w-0 max-w-full -mx-1 px-1">
+            <Filter className="w-4 h-4 text-slate-400 shrink-0" aria-hidden />
             {filterCategories.map((cat) => (
               <button
                 key={cat}
@@ -63,11 +64,11 @@ export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ content, onSelectCas
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {visibleStudies.map((cs) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {visibleStudies.map((cs, index) => (
+            <Reveal key={cs.id} delay={Math.min(index, 5) * 70} className="h-full">
             <div
-              key={cs.id}
-              className="rounded-2xl bg-[#0F1D33] border border-white/10 overflow-hidden flex flex-col justify-between group hover:border-blue-500/40 hover:shadow-2xl transition-all duration-300"
+              className="h-full rounded-2xl bg-[#0F1D33] border border-white/10 overflow-hidden flex flex-col justify-between group hover:border-blue-500/40 lift hover:shadow-2xl"
             >
               <div className="p-6 md:p-7 space-y-5">
                 <div>
@@ -86,8 +87,8 @@ export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ content, onSelectCas
                   <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold font-mono">
                     Measurable Impact
                   </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-black text-blue-400 font-mono">{cs.impact[0]?.metric}</span>
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <span className="text-2xl font-black text-blue-400 font-mono whitespace-nowrap">{cs.impact[0]?.metric}</span>
                     <span className="text-xs text-slate-300">{cs.impact[0]?.detail}</span>
                   </div>
                 </div>
@@ -114,6 +115,7 @@ export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ content, onSelectCas
                 </button>
               </div>
             </div>
+            </Reveal>
           ))}
         </div>
 

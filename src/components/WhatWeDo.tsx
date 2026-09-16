@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Code2, Smartphone, LayoutDashboard, Cpu, Globe, ArrowRight, Check, Sparkles, ChevronRight } from 'lucide-react';
+import { ArrowRight, Check, Code2, Sparkles, ChevronRight } from 'lucide-react';
 import type { Service, SiteContent } from '../data/contentData';
+import { getIcon as lookupIcon } from '../lib/icons';
 
 interface WhatWeDoProps {
   content: SiteContent['services'];
@@ -18,20 +19,8 @@ export const WhatWeDo: React.FC<WhatWeDoProps> = ({ content, onOpenPlanner }) =>
   }, [content.items]);
 
   const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'Code2':
-        return <Code2 className="w-6 h-6 text-blue-600" />;
-      case 'Smartphone':
-        return <Smartphone className="w-6 h-6 text-indigo-600" />;
-      case 'LayoutDashboard':
-        return <LayoutDashboard className="w-6 h-6 text-emerald-600" />;
-      case 'Cpu':
-        return <Cpu className="w-6 h-6 text-amber-600" />;
-      case 'Globe':
-        return <Globe className="w-6 h-6 text-blue-500" />;
-      default:
-        return <Code2 className="w-6 h-6 text-blue-600" />;
-    }
+    const Icon = lookupIcon(iconName, Code2);
+    return <Icon className="w-6 h-6 text-blue-600" />;
   };
 
   if (!selectedService) return null;

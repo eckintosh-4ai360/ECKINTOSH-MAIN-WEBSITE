@@ -1,6 +1,23 @@
-import React, { useState } from 'react';
-import { X, CheckCircle, ArrowRight, Sparkles, Users, DollarSign, BookOpen, Send } from 'lucide-react';
-import { Product } from '../data/contentData';
+import React, { useEffect, useState } from 'react';
+import {
+  ArrowRight,
+  CheckCircle2,
+  Cpu,
+  Layers,
+  Lock,
+  MonitorPlay,
+  Plug,
+  ServerCog,
+  ShieldCheck,
+  Users,
+  X,
+} from 'lucide-react';
+import type { Product } from '../data/contentData';
+import { getIcon } from '../lib/icons';
+import { accentOf } from '../systems/theme';
+import { systemFor } from '../systems/registry';
+import { SystemViewer } from '../systems/SystemViewer';
+import { useBodyScrollLock, useEscape } from '../hooks';
 
 interface ProductModalProps {
   product: Product | null;
@@ -8,276 +25,319 @@ interface ProductModalProps {
   onOpenPlanner: (productName?: string) => void;
 }
 
-export const ProductModal: React.FC<ProductModalProps> = ({
-  product,
-  onClose,
-  onOpenPlanner,
-}) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'interactive-demo' | 'specs'>('overview');
-  const [demoTab, setDemoTab] = useState<'academics' | 'fees' | 'sms' | 'staff'>('fees');
+type Tab = 'overview' | 'interface' | 'modules' | 'engineering';
+
+const TABS: { id: Tab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  { id: 'overview', label: 'Overview', icon: Layers },
+  { id: 'interface', label: 'Live interface', icon: MonitorPlay },
+  { id: 'modules', label: 'Modules & roles', icon: Users },
+  { id: 'engineering', label: 'Engineering', icon: ServerCog },
+];
+
+/** Full specification sheet for a single system, including its live walkthrough. */
+export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onOpenPlanner }) => {
+  const [tab, setTab] = useState<Tab>('overview');
+
+  useBodyScrollLock(Boolean(product));
+  useEscape(Boolean(product), onClose);
+
+  useEffect(() => {
+    if (product) setTab('overview');
+  }, [product]);
 
   if (!product) return null;
 
+  const accent = accentOf(product.accent);
+  const Icon = getIcon(product.iconName);
+  const definition = systemFor(product.id);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div 
-        className="relative w-full max-w-4xl bg-[#0F1D33] border border-white/10 rounded-2xl shadow-2xl overflow-hidden text-white my-auto max-h-[90vh] flex flex-col"
-        onClick={(e) => e.stopPropagation()}
+    <div
+      className="fixed inset-0 z-[70] flex items-start justify-center p-3 sm:p-6 md:p-10 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={product.name}
+    >
+      <div
+        className="relative w-full max-w-5xl bg-[#0F1D33] border border-white/10 rounded-2xl shadow-2xl overflow-hidden text-white my-auto animate-scale-in"
+        onClick={(event) => event.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 z-20 flex items-center justify-between p-5 md:p-6 bg-[#08111F]/90 backdrop-blur-md border-b border-white/10">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                {product.status}
+        <div className="relative overflow-hidden border-b border-white/10">
+          <div
+            className="absolute inset-0 opacity-90"
+            style={{ background: `linear-gradient(120deg, ${accent.hex}22, transparent 60%)` }}
+          />
+          <div className="relative flex items-start justify-between gap-4 p-5 md:p-6">
+            <div className="flex items-start gap-3.5 min-w-0">
+              <span
+                className="w-12 h-12 rounded-2xl grid place-items-center shrink-0"
+                style={{ backgroundColor: `${accent.hex}26`, color: accent.hex2 }}
+              >
+                <Icon className="w-6 h-6" />
               </span>
-              <span className="text-xs text-slate-400">{product.category}</span>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span
+                    className="px-2 py-0.5 rounded-md text-[10px] font-bold border"
+                    style={{ color: accent.hex2, borderColor: `${accent.hex}55`, backgroundColor: `${accent.hex}14` }}
+                  >
+                    {product.badge}
+                  </span>
+                  <span className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    {product.status}
+                  </span>
+                  <span className="text-[11px] text-slate-500">· {product.category}</span>
+                </div>
+                <h2 className="text-lg md:text-2xl font-black mt-1 leading-tight">{product.name}</h2>
+                <p className="text-sm text-slate-400 mt-0.5">{product.tagline}</p>
+              </div>
             </div>
-            <h2 className="text-xl md:text-2xl font-bold mt-1 text-white">{product.name}</h2>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/10 transition-colors shrink-0"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10"
-            aria-label="Close dialog"
-          >
-            <X className="w-5 h-5" />
-          </button>
+
+          {/* Tabs */}
+          <div className="relative flex gap-1 px-4 md:px-6 overflow-x-auto no-scrollbar">
+            {TABS.map((item) => {
+              const TabIcon = item.icon;
+              const selected = tab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setTab(item.id)}
+                  className={`flex items-center gap-1.5 px-3 py-2.5 text-xs font-semibold border-b-2 whitespace-nowrap transition-colors ${
+                    selected ? 'text-white' : 'border-transparent text-slate-400 hover:text-white'
+                  }`}
+                  style={selected ? { borderColor: accent.hex, color: accent.hex2 } : undefined}
+                >
+                  <TabIcon className="w-3.5 h-3.5" />
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Modal Navigation Bar */}
-        <div className="flex border-b border-white/10 bg-[#08111F]/50 px-6 pt-2">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`px-4 py-3 text-xs md:text-sm font-medium border-b-2 transition-all ${
-              activeTab === 'overview'
-                ? 'border-blue-500 text-blue-400 font-semibold'
-                : 'border-transparent text-slate-400 hover:text-white'
-            }`}
-          >
-            Product Overview
-          </button>
-          <button
-            onClick={() => setActiveTab('interactive-demo')}
-            className={`px-4 py-3 text-xs md:text-sm font-medium border-b-2 transition-all flex items-center gap-1.5 ${
-              activeTab === 'interactive-demo'
-                ? 'border-blue-500 text-blue-400 font-semibold'
-                : 'border-transparent text-slate-400 hover:text-white'
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" /> Live System Preview
-          </button>
-          <button
-            onClick={() => setActiveTab('specs')}
-            className={`px-4 py-3 text-xs md:text-sm font-medium border-b-2 transition-all ${
-              activeTab === 'specs'
-                ? 'border-blue-500 text-blue-400 font-semibold'
-                : 'border-transparent text-slate-400 hover:text-white'
-            }`}
-          >
-            Features & Capabilities
-          </button>
-        </div>
+        {/* Body */}
+        <div className="p-5 md:p-6 space-y-5 max-h-[68vh] overflow-y-auto custom-scrollbar">
+          {tab === 'overview' && (
+            <div className="space-y-5 animate-fade-up">
+              <p className="text-[15px] text-slate-300 leading-relaxed">{product.description}</p>
 
-        {/* Content Body */}
-        <div className="p-6 md:p-8 space-y-6 overflow-y-auto custom-scrollbar">
-          {activeTab === 'overview' && (
-            <div className="space-y-6">
-              <p className="text-base text-slate-200 leading-relaxed font-normal">{product.description}</p>
-
-              {/* Key Highlights */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {product.metrics.map((m, idx) => (
-                  <div key={idx} className="p-4 rounded-xl bg-slate-900/80 border border-white/10 text-center">
-                    <div className="text-2xl font-bold text-blue-400">{m.value}</div>
-                    <div className="text-xs text-slate-400 mt-1">{m.label}</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+                {product.metrics.map((metric) => (
+                  <div key={metric.label} className="rounded-xl bg-white/[0.03] border border-white/10 p-3">
+                    <div className="text-xl font-black tabular-nums" style={{ color: accent.hex2 }}>
+                      {metric.value}
+                    </div>
+                    <div className="text-[10.5px] text-slate-400 mt-0.5 leading-tight">{metric.label}</div>
                   </div>
                 ))}
               </div>
 
-              {/* Key Features List */}
-              <div className="p-5 rounded-xl bg-slate-900/50 border border-white/10">
-                <h3 className="text-sm uppercase tracking-wider text-slate-400 font-bold mb-3">Core Modules & Architecture</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {product.keyFeatures.map((feat, i) => (
-                    <div key={i} className="flex items-start gap-2.5 text-xs text-slate-200">
-                      <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                      <span>{feat}</span>
-                    </div>
-                  ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="rounded-xl bg-white/[0.02] border border-white/10 p-4">
+                  <h3 className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-3">
+                    What it does
+                  </h3>
+                  <ul className="space-y-2">
+                    {product.keyFeatures.map((feature) => (
+                      <li key={feature} className="flex items-start gap-2 text-[13px] text-slate-300">
+                        <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" style={{ color: accent.hex2 }} />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="rounded-xl bg-white/[0.02] border border-white/10 p-4">
+                  <h3 className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-3">
+                    Measured outcomes
+                  </h3>
+                  <div className="space-y-3">
+                    {product.outcomes.map((outcome) => (
+                      <div key={outcome.label} className="flex items-baseline gap-3">
+                        <span className="text-xl font-black tabular-nums shrink-0" style={{ color: accent.hex2 }}>
+                          {outcome.value}
+                        </span>
+                        <span className="text-[13px] text-slate-400">{outcome.label}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
           )}
 
-          {activeTab === 'interactive-demo' && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-400">Interactive System Sandbox (Live Data Model)</span>
-                <span className="text-xs font-mono text-emerald-400 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Connected
+          {tab === 'interface' && (
+            <div className="space-y-3 animate-fade-up">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[13px] text-slate-400">
+                  This is the actual interface, rendered live. Use the timeline to move between screens.
+                </p>
+                <span className="hidden sm:flex items-center gap-1.5 text-[11px] font-mono text-emerald-400 shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> live render
                 </span>
               </div>
+              {definition ? (
+                <SystemViewer system={definition} accent={accent} />
+              ) : (
+                <p className="text-slate-400 text-sm">Walkthrough coming shortly.</p>
+              )}
+            </div>
+          )}
 
-              {/* Sub-tab selection */}
-              <div className="flex flex-wrap gap-2 p-1.5 bg-slate-900 rounded-xl border border-white/10">
-                <button
-                  onClick={() => setDemoTab('fees')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    demoTab === 'fees' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <DollarSign className="w-3.5 h-3.5" /> Fees & MoMo
-                </button>
-                <button
-                  onClick={() => setDemoTab('academics')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    demoTab === 'academics' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <BookOpen className="w-3.5 h-3.5" /> Academics & Grades
-                </button>
-                <button
-                  onClick={() => setDemoTab('sms')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    demoTab === 'sms' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Send className="w-3.5 h-3.5" /> Parent SMS Hub
-                </button>
-                <button
-                  onClick={() => setDemoTab('staff')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    demoTab === 'staff' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Users className="w-3.5 h-3.5" /> Staff Ledger
-                </button>
+          {tab === 'modules' && (
+            <div className="space-y-5 animate-fade-up">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                {product.modules.map((module) => {
+                  const ModuleIcon = getIcon(module.iconName, Layers);
+                  return (
+                    <div
+                      key={module.name}
+                      className="rounded-xl bg-white/[0.02] border border-white/10 p-3.5 flex items-start gap-3 transition-colors hover:border-white/20"
+                    >
+                      <span
+                        className="w-8 h-8 rounded-lg grid place-items-center shrink-0"
+                        style={{ backgroundColor: `${accent.hex}1f`, color: accent.hex2 }}
+                      >
+                        <ModuleIcon className="w-4 h-4" />
+                      </span>
+                      <div className="min-w-0">
+                        <div className="text-[13px] font-bold text-white">{module.name}</div>
+                        <p className="text-[12px] text-slate-400 leading-snug mt-0.5">{module.desc}</p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
 
-              {/* Sandbox Card Content */}
-              <div className="p-5 rounded-xl bg-[#08111F] border border-white/10 font-mono text-xs text-slate-300">
-                {demoTab === 'fees' && (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                      <div>
-                        <div className="text-white font-bold text-sm">Tuition & Fee Settlement</div>
-                        <div className="text-slate-400 text-xs font-sans">Grace Academy - Academic Year 2025/2026 Term 1</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-emerald-400 font-bold text-sm">₵42,500 Collected</div>
-                        <div className="text-slate-400 text-xs font-sans">94.2% Collection Rate</div>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="p-3 bg-white/[0.03] rounded-lg border border-white/5 flex items-center justify-between font-sans">
-                        <div>
-                          <div className="text-white font-semibold">Student: Kwame Mensah (Class JHS 2)</div>
-                          <div className="text-slate-400 text-xs">Parent: 0244 *** 892 • Paid via MTN Mobile Money</div>
-                        </div>
-                        <span className="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full border border-emerald-500/30">
-                          Verified ₵1,200
-                        </span>
-                      </div>
-                      <div className="p-3 bg-white/[0.03] rounded-lg border border-white/5 flex items-center justify-between font-sans">
-                        <div>
-                          <div className="text-white font-semibold">Student: Akosua Appiah (Class Class 4)</div>
-                          <div className="text-slate-400 text-xs">Parent: 0501 *** 114 • Paid via Telecel Cash</div>
-                        </div>
-                        <span className="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full border border-emerald-500/30">
-                          Verified ₵950
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {demoTab === 'academics' && (
-                  <div className="space-y-3 font-sans">
-                    <div className="text-white font-bold text-sm mb-2">GES Continuous Assessment & Report Generator</div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-center text-xs">
-                      <div className="p-3 bg-white/5 rounded-lg border border-white/10">
-                        <div className="text-slate-400">Class Target</div>
-                        <div className="text-white font-bold text-base mt-1">Class JHS 3</div>
-                      </div>
-                      <div className="p-3 bg-white/5 rounded-lg border border-white/10">
-                        <div className="text-slate-400">Enrolled</div>
-                        <div className="text-white font-bold text-base mt-1">48 Students</div>
-                      </div>
-                      <div className="p-3 bg-white/5 rounded-lg border border-white/10">
-                        <div className="text-slate-400">Average Grade</div>
-                        <div className="text-blue-400 font-bold text-base mt-1">Grade 1 (84.6%)</div>
-                      </div>
-                      <div className="p-3 bg-white/5 rounded-lg border border-white/10">
-                        <div className="text-slate-400">Reports Issued</div>
-                        <div className="text-emerald-400 font-bold text-base mt-1">48 / 48 (100%)</div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {demoTab === 'sms' && (
-                  <div className="space-y-3 font-sans">
-                    <div className="text-white font-bold text-sm">Automated Parent Dispatch Queue</div>
-                    <div className="p-3 bg-blue-950/40 rounded-lg border border-blue-500/30 text-xs space-y-1">
-                      <div className="text-blue-300 font-semibold">[SMS Sent] To: 1,248 Parent Phone Contacts</div>
-                      <div className="text-slate-300 font-mono italic">
-                        "Dear Parent, Terminal Report for Term 1 is now available on parent portal: portal.graceacademy.edu.gh/report. Fees outstanding: ₵0.00. Thank you."
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {demoTab === 'staff' && (
-                  <div className="space-y-2 font-sans text-xs">
-                    <div className="text-white font-bold text-sm mb-2">Staff Attendance & Payroll Ledger</div>
-                    <div className="flex justify-between items-center p-2.5 bg-white/5 rounded-lg">
-                      <span>32 Teaching & Administrative Staff</span>
-                      <span className="text-emerald-400 font-mono">100% Verified Present Today</span>
-                    </div>
-                  </div>
-                )}
+              <div className="rounded-xl bg-white/[0.02] border border-white/10 p-4">
+                <h3 className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-3 flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5" /> Built-in roles
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {product.roles.map((role) => (
+                    <span
+                      key={role}
+                      className="px-2.5 py-1 rounded-lg text-[12px] font-medium bg-white/5 border border-white/10 text-slate-300"
+                    >
+                      {role}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-[12px] text-slate-500 mt-3 leading-relaxed">
+                  Each role sees only what it should. Permissions are configurable per organisation, and every action is
+                  written to an audit log.
+                </p>
               </div>
             </div>
           )}
 
-          {activeTab === 'specs' && (
-            <div className="space-y-4 text-xs text-slate-300">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">Technical Specifications</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-slate-900 border border-white/10 space-y-2">
-                  <div className="text-blue-400 font-semibold">Security & Access</div>
-                  <ul className="list-disc list-inside space-y-1 text-slate-300">
-                    <li>256-bit SSL encryption on all API routes</li>
-                    <li>Granular role-based user permissions</li>
-                    <li>Daily automated cloud database snapshots</li>
-                  </ul>
+          {tab === 'engineering' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-up">
+              <div className="rounded-xl bg-white/[0.02] border border-white/10 p-4">
+                <h3 className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-3 flex items-center gap-1.5">
+                  <Cpu className="w-3.5 h-3.5" /> Built with
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {product.stack.map((item) => (
+                    <span
+                      key={item}
+                      className="px-2.5 py-1 rounded-lg text-[12px] font-mono bg-white/5 border border-white/10 text-slate-300"
+                    >
+                      {item}
+                    </span>
+                  ))}
                 </div>
-                <div className="p-4 rounded-xl bg-slate-900 border border-white/10 space-y-2">
-                  <div className="text-blue-400 font-semibold">Integrations</div>
-                  <ul className="list-disc list-inside space-y-1 text-slate-300">
-                    <li>MTN MoMo, Telecel Cash & AT Money APIs</li>
-                    <li>Paystack Card Gateway</li>
-                    <li>Hubtel Bulk SMS Network</li>
+
+                <h3 className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 mt-4 mb-2.5 flex items-center gap-1.5">
+                  <MonitorPlay className="w-3.5 h-3.5" /> Ships as
+                </h3>
+                <ul className="space-y-1.5">
+                  {product.platforms.map((platform) => (
+                    <li key={platform} className="flex items-center gap-2 text-[13px] text-slate-300">
+                      <CheckCircle2 className="w-3.5 h-3.5 shrink-0" style={{ color: accent.hex2 }} />
+                      {platform}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-xl bg-white/[0.02] border border-white/10 p-4">
+                  <h3 className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-3 flex items-center gap-1.5">
+                    <Plug className="w-3.5 h-3.5" /> Integrations
+                  </h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {product.integrations.map((integration) => (
+                      <span
+                        key={integration}
+                        className="px-2.5 py-1 rounded-lg text-[12px] font-medium bg-white/5 border border-white/10 text-slate-300"
+                      >
+                        {integration}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-white/[0.02] border border-white/10 p-4">
+                  <h3 className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-3 flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5" /> Security & operations
+                  </h3>
+                  <ul className="space-y-1.5 text-[12.5px] text-slate-400">
+                    <li className="flex items-start gap-2">
+                      <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5 text-emerald-400" />
+                      TLS on every route, hashed credentials, signed sessions
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5 text-emerald-400" />
+                      Role-based permissions with a full action audit trail
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5 text-emerald-400" />
+                      Automated daily backups with point-in-time restore
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5 text-emerald-400" />
+                      You own the source code and the data, on your cloud or ours
+                    </li>
                   </ul>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Action Footer */}
-          <div className="p-6 rounded-xl bg-gradient-to-r from-blue-950 via-slate-900 to-slate-900 border border-blue-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
-            <div>
-              <h4 className="text-lg font-bold text-white">Deploy {product.name} for your institution</h4>
-              <p className="text-xs text-slate-300 mt-1">Get custom setup, staff onboarding, and local payment integration within 5 business days.</p>
+          {/* Footer CTA */}
+          <div
+            className="rounded-xl border p-4 md:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+            style={{ borderColor: `${accent.hex}44`, background: `linear-gradient(110deg, ${accent.hex}1a, transparent)` }}
+          >
+            <div className="min-w-0">
+              <h4 className="text-base font-bold text-white">Deploy {product.shortName} for your organisation</h4>
+              <p className="text-[12.5px] text-slate-400 mt-1">{product.pricingNote}</p>
             </div>
             <button
+              type="button"
               onClick={() => {
                 onClose();
-                onOpenPlanner(`Deployment inquiry for ${product.name}`);
+                onOpenPlanner(`Deployment enquiry: ${product.name}`);
               }}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-600/30 whitespace-nowrap"
+              className="w-full sm:w-auto px-5 py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110 shrink-0"
+              style={{ backgroundColor: accent.hex, boxShadow: `0 12px 30px -12px ${accent.hex}` }}
             >
-              Request Live Demo & Quote <ArrowRight className="w-4 h-4" />
+              Request a demo & quote <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import type { SiteContent } from '../data/contentData';
+import { Reveal } from './Reveal';
 
 interface HowWeWorkProps {
   content: SiteContent['howWeWork'];
@@ -13,7 +14,7 @@ export const HowWeWork: React.FC<HowWeWorkProps> = ({ content, onOpenPlanner }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="max-w-3xl mb-16">
+        <Reveal className="max-w-3xl mb-16">
           <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-100/80 px-3 py-1 rounded-full border border-blue-200">
             {content.eyebrow}
           </span>
@@ -23,7 +24,7 @@ export const HowWeWork: React.FC<HowWeWorkProps> = ({ content, onOpenPlanner }) 
           <p className="text-base text-slate-600 mt-4 leading-relaxed font-normal">
             {content.description}
           </p>
-        </div>
+        </Reveal>
 
         {/* Premium Timeline Grid */}
         <div className="relative">
@@ -32,9 +33,9 @@ export const HowWeWork: React.FC<HowWeWorkProps> = ({ content, onOpenPlanner }) 
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 relative z-10">
             {content.items.map((stepItem, idx) => (
+              <Reveal key={stepItem.step} delay={idx * 80} className="h-full">
               <div
-                key={stepItem.step}
-                className="p-6 rounded-2xl bg-white border border-slate-200 shadow-md hover:shadow-xl hover:border-blue-500/40 transition-all duration-300 flex flex-col justify-between group"
+                className="h-full p-6 rounded-2xl bg-white border border-slate-200 shadow-md hover:shadow-xl hover:border-blue-500/40 lift flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -61,6 +62,7 @@ export const HowWeWork: React.FC<HowWeWorkProps> = ({ content, onOpenPlanner }) 
                   Stage 0{idx + 1} Execution
                 </div>
               </div>
+              </Reveal>
             ))}
           </div>
         </div>
