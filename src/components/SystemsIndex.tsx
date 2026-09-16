@@ -49,7 +49,7 @@ export const SystemsIndex: React.FC<SystemsIndexProps> = ({
           <button
             type="button"
             onClick={() => onOpenPlanner(content.ctaTopic)}
-            className="self-start px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs flex items-center gap-2 whitespace-nowrap transition-all shadow-md hover:shadow-lg"
+            className="self-start md:self-end shrink-0 px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs flex items-center gap-2 whitespace-nowrap transition-all shadow-md hover:shadow-lg"
           >
             {content.ctaLabel} <ArrowRight className="w-4 h-4" />
           </button>

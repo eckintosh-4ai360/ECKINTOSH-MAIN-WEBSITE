@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { GraduationCap, Activity, ShoppingBag, Truck, Landmark, Building2, Rocket, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2, GraduationCap, Sparkles } from 'lucide-react';
 import type { Industry, SiteContent } from '../data/contentData';
+import { getIcon } from '../lib/icons';
+import { Reveal } from './Reveal';
 
 interface IndustriesProps {
   content: SiteContent['industries'];
@@ -18,16 +20,8 @@ export const Industries: React.FC<IndustriesProps> = ({ content, onOpenPlanner }
   }, [content.items]);
 
   const getIndustryIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'GraduationCap': return <GraduationCap className="w-5 h-5" />;
-      case 'Activity': return <Activity className="w-5 h-5" />;
-      case 'ShoppingBag': return <ShoppingBag className="w-5 h-5" />;
-      case 'Truck': return <Truck className="w-5 h-5" />;
-      case 'Landmark': return <Landmark className="w-5 h-5" />;
-      case 'Building2': return <Building2 className="w-5 h-5" />;
-      case 'Rocket': return <Rocket className="w-5 h-5" />;
-      default: return <GraduationCap className="w-5 h-5" />;
-    }
+    const Icon = getIcon(iconName, GraduationCap);
+    return <Icon className="w-5 h-5" />;
   };
 
   if (!selectedIndustry) return null;
@@ -37,7 +31,7 @@ export const Industries: React.FC<IndustriesProps> = ({ content, onOpenPlanner }
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="max-w-3xl mb-12">
+        <Reveal className="max-w-3xl mb-12">
           <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-100/80 px-3 py-1 rounded-full border border-blue-200">
             {content.eyebrow}
           </span>
@@ -47,7 +41,7 @@ export const Industries: React.FC<IndustriesProps> = ({ content, onOpenPlanner }
           <p className="text-base text-slate-600 mt-4 leading-relaxed font-normal">
             {content.description}
           </p>
-        </div>
+        </Reveal>
 
         {/* Horizontal Scroll / Grid Industry Selector Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-4 custom-scrollbar mb-8 no-scrollbar">

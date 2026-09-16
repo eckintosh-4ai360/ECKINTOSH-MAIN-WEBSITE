@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight, Clock } from 'lucide-react';
 import type { InsightArticle, SiteContent } from '../data/contentData';
+import { Reveal } from './Reveal';
 
 interface InsightsProps {
   content: SiteContent['insights'];
@@ -12,8 +13,8 @@ export const Insights: React.FC<InsightsProps> = ({ content, onSelectArticle, on
   return (
     <section id="insights" className="bg-white py-20 md:py-28 text-slate-900 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-          <div className="max-w-2xl">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
+          <Reveal className="max-w-2xl min-w-0">
             <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
               {content.eyebrow}
             </span>
@@ -21,9 +22,9 @@ export const Insights: React.FC<InsightsProps> = ({ content, onSelectArticle, on
               {content.title}
             </h2>
             <p className="text-base text-slate-600 mt-4 leading-relaxed font-normal">{content.description}</p>
-          </div>
+          </Reveal>
 
-          <div>
+          <div className="shrink-0">
             <button
               onClick={() => onOpenPlanner(content.ctaTopic)}
               className="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-all shadow-md flex items-center gap-2 whitespace-nowrap"
@@ -35,11 +36,19 @@ export const Insights: React.FC<InsightsProps> = ({ content, onSelectArticle, on
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {content.items.map((art) => (
-            <div
-              key={art.id}
-              className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:bg-white hover:border-blue-500/40 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group cursor-pointer"
+          {content.items.map((art, index) => (
+            <Reveal key={art.id} delay={index * 70} className="h-full">
+            <article
+              className="h-full p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:bg-white hover:border-blue-500/40 hover:shadow-xl lift flex flex-col justify-between group cursor-pointer"
               onClick={() => onSelectArticle(art)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onSelectArticle(art);
+                }
+              }}
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between text-[11px] text-slate-500">
@@ -62,7 +71,8 @@ export const Insights: React.FC<InsightsProps> = ({ content, onSelectArticle, on
                 <span>Read Full Article</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
-            </div>
+            </article>
+            </Reveal>
           ))}
         </div>
       </div>
