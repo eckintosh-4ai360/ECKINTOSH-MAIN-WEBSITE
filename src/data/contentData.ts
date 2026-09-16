@@ -13,6 +13,7 @@ export type ProductAccent =
   | 'blue'
   | 'violet'
   | 'cyan'
+  | 'teal'
   | 'emerald'
   | 'amber'
   | 'rose'
@@ -279,49 +280,49 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "ai-assistant",
-    name: "Eckintosh AI Productivity Assistant",
+    name: "EckinDev AI Productivity Platform",
     shortName: "AI Productivity",
-    subtitle: "An AI workspace that drafts, summarises, extracts and automates routine office work.",
-    tagline: "Give every team member a tireless analyst.",
+    subtitle: "A workspace where projects, sprints, code and standups run together, with AI deciding what matters next.",
+    tagline: "Your team's operations hub, with an assistant that has read the backlog.",
     badge: "AI & Automation",
-    status: "In Beta",
+    status: "Live in Production",
     category: "Artificial Intelligence",
-    accent: "cyan",
+    accent: "teal",
     iconName: "Sparkles",
     description:
-      "A private AI assistant trained on your own documents, policies and records. Staff ask questions in plain language, generate first drafts of reports and letters, extract structured data out of invoices and forms, and trigger multi-step workflows without leaving the chat.",
+      "EckinDev pulls a delivery team's whole operation into one workspace \u2014 projects, sprints, tasks, notes, whiteboards, standups and the GitHub repository itself. On top of it sits an assistant that scores every open item for urgency and risk, builds the day's plan, and prepares actions for approval instead of waiting to be asked.",
     keyFeatures: [
-      "Chat grounded in your own documents with cited sources",
-      "Automated document parsing for invoices, forms and receipts",
-      "One-click drafting of reports, memos, minutes and proposals",
-      "Workflow agents that file, notify and update systems for you"
+      "AI focus ranking that scores every task for urgency and delay risk",
+      "Code Ops: browse repositories, edit files and open pull requests in-workspace",
+      "Sprints, tasks, standups, notes and whiteboards in one place",
+      "Workspace analytics on completion, status mix and overdue pressure"
     ],
     metrics: [
-      { label: "Avg. Response", value: "1.4s" },
-      { label: "Docs Indexed", value: "18,600" },
-      { label: "Hours Saved Monthly", value: "310 hrs" },
-      { label: "Extraction Accuracy", value: "97.8%" }
+      { label: "Focus Score Accuracy", value: "94%" },
+      { label: "Overdue Items Surfaced", value: "Daily" },
+      { label: "Commits Tracked", value: "Live" },
+      { label: "Actions Need Approval", value: "100%" }
     ],
     modules: [
-      { name: "Knowledge Chat", desc: "Answers grounded in your policy library with page-level citations.", iconName: "MessageSquare" },
-      { name: "Document Intelligence", desc: "Reads scanned invoices and forms into clean structured tables.", iconName: "FileText" },
-      { name: "Draft Studio", desc: "Report, memo and proposal drafting in your house tone of voice.", iconName: "Sparkles" },
-      { name: "Meeting Notes", desc: "Transcribes, summarises and assigns action items automatically.", iconName: "CalendarCheck" },
-      { name: "Workflow Agents", desc: "Chains tasks across email, sheets and your internal systems.", iconName: "Cpu" },
-      { name: "Governance", desc: "Full prompt audit log, data residency controls and role limits.", iconName: "ShieldCheck" }
+      { name: "Command Center", desc: "Projects, sprints, deploys and commits with AI focus ranking on top.", iconName: "LayoutDashboard" },
+      { name: "AI Assistant", desc: "Prioritises, plans the day, summarises notes and prepares actions.", iconName: "Sparkles" },
+      { name: "Code Ops", desc: "Connected repositories, branch snapshots, in-app editing and pull requests.", iconName: "Cpu" },
+      { name: "Sprints & Tasks", desc: "Boards, sprint cycles, priorities and status flow across every project.", iconName: "CalendarCheck" },
+      { name: "Team & Standups", desc: "Daily standups, blockers, messages and shared team calendar.", iconName: "Users" },
+      { name: "Analytics", desc: "Completion trend, status breakdown, priority load and workspace summary.", iconName: "TrendingUp" }
     ],
-    roles: ["Executive", "Operations Lead", "Finance Officer", "Support Agent", "Analyst"],
-    integrations: ["Claude API", "Google Workspace", "Microsoft 365", "Slack", "WhatsApp Business", "Webhook API"],
+    roles: ["Workspace Owner", "Engineering Lead", "Developer", "Product Manager", "Reviewer"],
+    integrations: ["GitHub", "Claude API", "Groq", "Google Calendar", "Slack", "Webhook API"],
     outcomes: [
-      { value: "310 hrs", label: "Recovered across teams monthly" },
-      { value: "97.8%", label: "Field extraction accuracy" },
-      { value: "0", label: "Documents leaving your tenancy" }
+      { value: "1 hub", label: "Replaces the board, the repo tab and the standup doc" },
+      { value: "Every day", label: "A ranked plan waiting before work starts" },
+      { value: "0", label: "Assistant actions saved without confirmation" }
     ],
-    stack: ["React", "TypeScript", "Node.js", "Python", "pgvector", "Claude API"],
-    platforms: ["Web Workspace", "Browser Extension", "WhatsApp Channel", "REST API"],
-    pricingNote: "Per-seat subscription with a private deployment option for regulated organisations.",
+    stack: ["Next.js", "React", "TypeScript", "PostgreSQL", "Groq", "GitHub API"],
+    platforms: ["Web Workspace", "Multi-workspace Tenancy", "GitHub Integration"],
+    pricingNote: "Per-seat subscription by workspace, with a private deployment option for regulated teams.",
     demoData: {
-      activeModules: ["Knowledge Chat", "Document Intelligence", "Draft Studio", "Workflow Agents"]
+      activeModules: ["Command Center", "AI Assistant", "Code Ops", "Analytics"]
     }
   },
   {
@@ -1392,18 +1393,18 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       },
       {
         id: 'ai',
-        label: 'AI Assistant',
+        label: 'AI Productivity',
         iconName: 'Sparkles',
-        title: 'AI Productivity Assistant',
-        subtitle: 'Private workspace grounded in your documents',
+        title: 'EckinDev AI Productivity Platform',
+        subtitle: 'Projects, sprints, code and standups in one workspace',
         badge: 'AI Powered',
         badgeTone: 'blue',
         productId: 'ai-assistant',
         stats: [
-          { iconName: 'Sparkles', label: 'Hours Saved Monthly', value: '310 hrs' },
-          { iconName: 'FileText', label: 'Documents Indexed', value: '18,600' },
+          { iconName: 'Sparkles', label: 'Tasks Ranked by AI', value: 'Every day' },
+          { iconName: 'Cpu', label: 'Repositories Connected', value: 'Live' },
         ],
-        note: 'Answers cite the exact policy page they came from',
+        note: 'The assistant prepares actions, but nothing saves without approval',
         actionLabel: 'Open System',
       },
     ],
@@ -1557,7 +1558,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     projectTypeOptions: [
       { title: 'School Management System', desc: 'Admissions, academics, fees and parent portal', iconName: 'GraduationCap' },
       { title: 'Recruitment & ATS', desc: 'Career portal, screening and hiring pipeline', iconName: 'Users' },
-      { title: 'AI Productivity Assistant', desc: 'Document intelligence and workflow agents', iconName: 'Sparkles' },
+      { title: 'AI Productivity Platform', desc: 'Team workspace with AI task ranking and Code Ops', iconName: 'Sparkles' },
       { title: 'Pharmacy Management', desc: 'Dispensing, batch expiry and claims', iconName: 'Pill' },
       { title: 'Inventory & POS', desc: 'Offline-first retail checkout and stock control', iconName: 'ShoppingCart' },
       { title: 'E-Commerce Platform', desc: 'Online store with Mobile Money checkout', iconName: 'Store' },
