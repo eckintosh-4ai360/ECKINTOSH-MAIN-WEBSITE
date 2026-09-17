@@ -97,9 +97,9 @@ export interface InsightArticle {
 
 export const TRUST_STATS = [
   { value: "9", label: "Systems Shipped", sub: "Production platforms we own and maintain", highlight: true },
-  { value: "15,000+", label: "People Served Daily", sub: "Students, staff, patients, shoppers & clients", highlight: false },
+  { value: "1,000+", label: "People Served Daily", sub: "Students, staff, patients, shoppers & clients", highlight: false },
   { value: "8", label: "Industries Supported", sub: "Education, Health, Retail, HR, Beauty & more", highlight: false },
-  { value: "Ghana", label: "Built in Africa", sub: "Accra Engineering Hub", highlight: true }
+  { value: "Ghana", label: "Built in Africa", sub: "Accra", highlight: true }
 ];
 
 export const SERVICES: Service[] = [
