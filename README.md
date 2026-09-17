@@ -71,7 +71,7 @@ instead of a `render`:
   caption: 'Every branch, every till, one number.',
   duration: 6,
   image: {
-    src: '/systems/pos/dashboard.png',
+    src: '/systems/pos/dashboard.webp',
     alt: 'MultiPOS dashboard',
     // Where the cursor rests, in order, as percentages of the screenshot.
     hotspots: [[22, 30], [55, 28], [78, 55], [30, 70]],
@@ -79,12 +79,18 @@ instead of a `render`:
 },
 ```
 
-Capture at desktop width (1440–1600px wide, 16:9-ish) and use PNG. Wide screens
-show the whole capture; on phones the frame magnifies and pans so that each
-hotspot lands under the cursor, which is what keeps desktop-width text legible
-there. Hotspots therefore do double duty — pick points that are both worth
-pointing at and worth zooming into. If a file is missing the frame says so
-in place rather than breaking the reel.
+Capture at desktop width, then normalise to **1600 x 940** (the frame's own
+16:9.4 ratio) and save as WebP — at that ratio the player can use plain `cover`
+and lose nothing off the sides, where sidebars and side panels live. A capture
+that comes out shorter is best padded by continuing its bottom row rather than
+letterboxed; one that comes out taller is cropped at the bottom, which reads
+as a page that scrolls.
+
+Wide screens show the whole capture; on phones the frame magnifies and pans so
+that each hotspot lands under the cursor, which is what keeps desktop-width text
+legible there. Hotspots therefore do double duty — pick points that are both
+worth pointing at and worth zooming into. If a file is missing, the frame says
+so in place rather than breaking the reel.
 
 ### Editable content
 
