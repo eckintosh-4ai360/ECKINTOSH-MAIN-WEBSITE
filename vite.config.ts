@@ -12,6 +12,7 @@ const __dirname = path.dirname(__filename);
 export default defineConfig({
   plugins: [react(), tailwindcss(), viteSingleFile()],
   server: {
+    host: true,
     proxy: {
       '/api': 'http://localhost:3000',
     },

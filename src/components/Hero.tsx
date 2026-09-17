@@ -53,7 +53,7 @@ export const Hero: React.FC<HeroProps> = ({ content, products, onOpenPlanner, on
       ref={spotlight.ref}
       onPointerMove={spotlight.onPointerMove}
       onPointerLeave={spotlight.onPointerLeave}
-      className="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden bg-[#08111F] text-white"
+      className="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden bg-[#040914] text-white"
     >
       {/* Ambient light layers */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -100,7 +100,7 @@ export const Hero: React.FC<HeroProps> = ({ content, products, onOpenPlanner, on
             }}
           />
         )}
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#08111F] to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#040914] to-transparent" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -144,8 +144,8 @@ export const Hero: React.FC<HeroProps> = ({ content, products, onOpenPlanner, on
 
             {/* Live counters */}
             <div ref={statsRef} className="grid grid-cols-3 gap-4 pt-5 border-t border-white/10">
-              <HeroStat value="9" label="Production systems" active={statsInView} />
-              <HeroStat value="15,000+" label="People served daily" active={statsInView} />
+              <HeroStat value="15+" label="Production systems" active={statsInView} />
+              <HeroStat value="1,000+" label="People served daily" active={statsInView} />
               <HeroStat value="8" label="Industries covered" active={statsInView} />
             </div>
 

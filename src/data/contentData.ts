@@ -1341,8 +1341,8 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
   },
   hero: {
     eyebrow: 'Intelligent Digital Engineering',
-    title: 'Technology that turns complex problems into',
-    highlight: 'simple experiences.',
+    title: 'Technology that makes',
+    highlight: 'complexity simple.',
     description:
       'We design and build intelligent software, digital platforms and management systems that help organizations operate smarter, serve customers better and grow with confidence.',
     primaryCtaLabel: 'Start a Project',

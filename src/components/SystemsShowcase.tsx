@@ -68,7 +68,6 @@ export const SystemsShowcase: React.FC<SystemsShowcaseProps> = ({
     <section id="systems" className="relative py-20 md:py-28 bg-[#08111F] text-white overflow-hidden">
       {/* Ambient backdrop that picks up the active system's colour */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-grid opacity-[0.55]" />
         <div
           className="absolute top-0 left-1/4 w-[620px] h-[620px] rounded-full blur-[150px] opacity-25 animate-aurora transition-colors duration-1000"
           style={{ backgroundColor: accent.hex }}

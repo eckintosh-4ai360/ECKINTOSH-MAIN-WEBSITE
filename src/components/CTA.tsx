@@ -28,7 +28,6 @@ export const CTA: React.FC<CTAProps> = ({ content, onOpenPlanner }) => {
       className="relative bg-[#08111F] py-24 md:py-32 text-white overflow-hidden border-b border-white/10"
     >
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-grid opacity-50" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] bg-blue-600/20 rounded-full blur-[170px] animate-aurora" />
         <div className="absolute bottom-0 left-0 w-[360px] h-[360px] bg-cyan-500/10 rounded-full blur-[130px]" />
         {spotlight.pos && (
