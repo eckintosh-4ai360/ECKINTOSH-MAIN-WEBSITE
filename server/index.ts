@@ -39,6 +39,16 @@ type AdminToken = {
   email: string;
 };
 
+type AdminSearchScope = 'content' | 'projects' | 'inquiries' | 'media';
+
+type AdminSearchResult = {
+  id: string;
+  scope: AdminSearchScope;
+  title: string;
+  subtitle: string;
+  match: string;
+};
+
 function sendError(res: express.Response, status: number, message: string) {
   res.status(status).json({ error: message });
 }
@@ -124,6 +134,62 @@ async function saveContent(content: SiteContent): Promise<SiteContent> {
     [JSON.stringify(stampContentVersion(content))]
   );
   return mergeSiteContent(result.rows[0].value);
+}
+
+function labelContentPath(path: string[]) {
+  return path
+    .filter((segment) => !/^\d+$/.test(segment))
+    .map((segment) => segment.replace(/([a-z])([A-Z])/g, '$1 $2'))
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(' · ');
+}
+
+function findContentMatches(value: unknown, term: string, path: string[] = [], results: AdminSearchResult[] = []): AdminSearchResult[] {
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    const text = String(value);
+    const matchIndex = text.toLowerCase().indexOf(term);
+    if (matchIndex !== -1) {
+      const start = Math.max(0, matchIndex - 52);
+      const end = Math.min(text.length, matchIndex + term.length + 88);
+      results.push({
+        id: `content-${path.join('-')}-${results.length}`,
+        scope: 'content',
+        title: labelContentPath(path.slice(0, -1)) || 'Website content',
+        subtitle: labelContentPath(path.slice(-1)) || 'Content value',
+        match: `${start > 0 ? '…' : ''}${text.slice(start, end)}${end < text.length ? '…' : ''}`,
+      });
+    }
+    return results;
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => findContentMatches(item, term, [...path, String(index)], results));
+  } else if (value && typeof value === 'object') {
+    Object.entries(value).forEach(([key, item]) => findContentMatches(item, term, [...path, key], results));
+  }
+
+  return results;
+}
+
+function textForSearch(value: unknown) {
+  if (typeof value === 'string') return value;
+  try {
+    return JSON.stringify(value) || '';
+  } catch {
+    return String(value || '');
+  }
+}
+
+function matchesSearch(row: Record<string, unknown>, term: string) {
+  return Object.values(row).some((value) => textForSearch(value).toLowerCase().includes(term));
+}
+
+function searchSnippet(values: unknown[], term: string) {
+  const text = values.map(textForSearch).find((value) => value.toLowerCase().includes(term)) || '';
+  const index = text.toLowerCase().indexOf(term);
+  const start = Math.max(0, index - 48);
+  const end = Math.min(text.length, index + term.length + 92);
+  return `${start > 0 ? '…' : ''}${text.slice(start, end)}${end < text.length ? '…' : ''}`;
 }
 
 async function listCaseStudies(includeUnpublished = false): Promise<CaseStudy[]> {
@@ -274,6 +340,67 @@ app.post('/api/inquiries', async (req, res) => {
 
 app.get('/api/admin/session', requireAdmin, (_req, res) => {
   res.json({ user: res.locals.admin });
+});
+
+/** Search every admin-managed text source without exposing any data publicly. */
+app.get('/api/admin/search', requireAdmin, async (req, res) => {
+  try {
+    const term = String(req.query.q || '').trim().toLowerCase();
+    if (term.length < 2) {
+      res.json([] satisfies AdminSearchResult[]);
+      return;
+    }
+
+    const [content, projectsResult, inquiriesResult, mediaResult] = await Promise.all([
+      loadContent(),
+      query<Record<string, unknown>>(
+        'select id, title, client, industry, tags, summary, challenge, solution, architecture, technologies, impact, hero_image, ui_highlights from case_studies order by updated_at desc'
+      ),
+      query<Record<string, unknown>>(
+        'select id, project_type, timeline, budget, full_name, organization, phone, email, notes, status, created_at from inquiries order by created_at desc'
+      ),
+      query<Record<string, unknown>>(
+        'select id, public_id, url, secure_url, resource_type, folder, original_filename, created_at from media_assets order by created_at desc'
+      ),
+    ]);
+
+    const contentMatches = findContentMatches(content, term).slice(0, 12);
+    const projectMatches = projectsResult.rows
+      .filter((row) => matchesSearch(row, term))
+      .slice(0, 8)
+      .map((row) => ({
+        id: `project-${String(row.id)}`,
+        scope: 'projects' as const,
+        title: String(row.title || 'Untitled project'),
+        subtitle: [row.client, row.industry].filter(Boolean).join(' · ') || 'Case study',
+        match: searchSnippet([row.id, row.title, row.client, row.industry, row.summary, row.challenge, row.solution, row.tags, row.architecture, row.technologies, row.impact, row.ui_highlights, row.hero_image], term),
+      }));
+    const inquiryMatches = inquiriesResult.rows
+      .filter((row) => matchesSearch(row, term))
+      .slice(0, 8)
+      .map((row) => ({
+        id: `inquiry-${String(row.id)}`,
+        scope: 'inquiries' as const,
+        title: String(row.full_name || row.organization || 'Website inquiry'),
+        subtitle: [row.project_type, row.email].filter(Boolean).join(' · ') || 'Contact message',
+        match: searchSnippet([row.id, row.full_name, row.organization, row.email, row.phone, row.project_type, row.notes, row.budget, row.timeline, row.status], term),
+      }));
+    const mediaMatches = mediaResult.rows
+      .filter((row) => matchesSearch(row, term))
+      .slice(0, 8)
+      .map((row) => ({
+        id: `media-${String(row.id)}`,
+        scope: 'media' as const,
+        title: String(row.original_filename || row.public_id || 'Media asset'),
+        subtitle: [row.folder, row.resource_type].filter(Boolean).join(' · ') || 'Uploaded asset',
+        match: searchSnippet([row.id, row.original_filename, row.public_id, row.url, row.secure_url, row.folder, row.resource_type], term),
+      }));
+
+    res.json([...contentMatches, ...projectMatches, ...inquiryMatches, ...mediaMatches].slice(0, 30));
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Failed to search admin content.');
+  }
 });
 
 app.post('/api/admin/login', async (req, res) => {
