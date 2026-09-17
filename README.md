@@ -34,12 +34,18 @@ server/                Express API, migrations and the content store
 
 ### The system walkthroughs
 
-Each of the nine systems renders its interface as **live DOM**, not screenshots
-or video files. A `SystemViewer` plays the screens in sequence inside browser
-chrome with a scene timeline, scripted cursor and captions, so it reads as a
-product film while staying crisp at any size, weighing nothing extra in the
-bundle, and remaining fully editable in code. The player pauses when scrolled
-out of view and respects `prefers-reduced-motion`.
+Each of the nine systems plays as a short product film: a `SystemViewer` walks
+its screens in sequence inside browser chrome, with a scene timeline, a scripted
+cursor and voice-over style captions. The player pauses when scrolled out of
+view and respects `prefers-reduced-motion`.
+
+A scene is one of two things:
+
+- **Live DOM** (`render`) — the screen rebuilt from the primitives in
+  `src/systems/kit.tsx`. Stays crisp at any size and is editable in code.
+- **A real screenshot** (`image`) — a capture of the shipped product. Vite copies
+  `public/` through untouched, so a screenshot is served as its own file and
+  costs the single-file HTML bundle nothing.
 
 To add a system:
 
@@ -52,6 +58,33 @@ To add a system:
 
 The showcase, index grid, navbar menu, command palette and spec modal all pick
 it up automatically.
+
+#### Using real screenshots for a scene
+
+Drop the captures in `public/systems/<system>/`, then give the scene an `image`
+instead of a `render`:
+
+```tsx
+{
+  id: 'dashboard',
+  label: 'Dashboard',
+  caption: 'Every branch, every till, one number.',
+  duration: 6,
+  image: {
+    src: '/systems/pos/dashboard.png',
+    alt: 'MultiPOS dashboard',
+    // Where the cursor rests, in order, as percentages of the screenshot.
+    hotspots: [[22, 30], [55, 28], [78, 55], [30, 70]],
+  },
+},
+```
+
+Capture at desktop width (1440–1600px wide, 16:9-ish) and use PNG. Wide screens
+show the whole capture; on phones the frame magnifies and pans so that each
+hotspot lands under the cursor, which is what keeps desktop-width text legible
+there. Hotspots therefore do double duty — pick points that are both worth
+pointing at and worth zooming into. If a file is missing the frame says so
+in place rather than breaking the reel.
 
 ### Editable content
 

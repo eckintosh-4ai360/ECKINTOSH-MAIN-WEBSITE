@@ -22,6 +22,13 @@ const CURSOR_PATH: [number, number][] = [
   [68, 78],
 ];
 
+/**
+ * How far a screenshot frame magnifies on a phone, as a multiple of the frame
+ * width. Enough that a desktop capture's text survives the shrink, not so much
+ * that a hotspot loses its surroundings.
+ */
+const NARROW_ZOOM = 2.6;
+
 function formatTime(seconds: number): string {
   const s = Math.max(0, Math.floor(seconds));
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -40,6 +47,20 @@ export const SystemViewer: React.FC<SystemViewerProps> = ({ system, accent, comp
   const [elapsed, setElapsed] = useState(0);
   const [cursorStep, setCursorStep] = useState(0);
   const [clicking, setClicking] = useState(false);
+  const [narrow, setNarrow] = useState(false);
+  const [failedFrames, setFailedFrames] = useState<Record<string, boolean>>({});
+
+  // Screenshot frames are captured at desktop width, so on a phone the frame
+  // zooms to whichever hotspot the cursor is on rather than shrinking the
+  // whole screenshot into illegibility.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(max-width: 639px)');
+    const apply = () => setNarrow(mq.matches);
+    apply();
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, []);
 
   const scenes = system.scenes;
   const total = useMemo(() => scenes.reduce((sum, scene) => sum + scene.duration, 0), [scenes]);
@@ -82,13 +103,18 @@ export const SystemViewer: React.FC<SystemViewerProps> = ({ system, accent, comp
   useEffect(() => {
     if (!running) return;
     const move = window.setInterval(() => {
-      setCursorStep((step) => (step + 1) % CURSOR_PATH.length);
+      setCursorStep((step) => step + 1);
       setClicking(false);
       window.setTimeout(() => setClicking(true), 820);
       window.setTimeout(() => setClicking(false), 1280);
     }, 2200);
     return () => window.clearInterval(move);
   }, [running]);
+
+  useEffect(() => {
+    setCursorStep(0);
+    setClicking(false);
+  }, [activeIndex]);
 
   const jumpTo = useCallback(
     (index: number) => {
@@ -99,7 +125,58 @@ export const SystemViewer: React.FC<SystemViewerProps> = ({ system, accent, comp
   );
 
   const sceneProgress = active ? Math.min(1, (elapsed - sceneStart) / active.duration) : 0;
-  const cursor = CURSOR_PATH[cursorStep];
+  const cursorPath = active?.image?.hotspots?.length ? active.image.hotspots : CURSOR_PATH;
+  const cursor = cursorPath[cursorStep % cursorPath.length];
+
+  /**
+   * A captured screenshot frame.
+   *
+   * The frame is painted as a background rather than an `<img>` so that
+   * `background-position` can do the aiming: a position of `x% y%` lines the
+   * image's own `x% y%` point up with the same point of the frame, which is
+   * exactly "put the hotspot under the cursor", and it clamps at the edges
+   * instead of exposing blank space. Wide screens show the whole capture;
+   * narrow ones zoom in and pan between hotspots so a desktop-width
+   * screenshot stays legible on a phone.
+   */
+  const renderImageFrame = (scene: (typeof scenes)[number], isActive: boolean) => {
+    const frame = scene.image;
+    if (!frame) return null;
+
+    if (failedFrames[frame.src]) {
+      return (
+        <div className="h-full w-full grid place-items-center bg-slate-100 px-6 text-center">
+          <div>
+            <p className="text-[13px] font-bold text-slate-700">Screenshot not found</p>
+            <p className="mt-1 text-[11px] text-slate-500">
+              Drop the capture at <code className="font-mono text-slate-700">public{frame.src}</code>
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    const zoomed = narrow && isActive;
+    const focus = zoomed ? cursor : null;
+
+    return (
+      <div
+        className="h-full w-full bg-slate-900"
+        role="img"
+        aria-label={frame.alt ?? scene.label}
+        style={{
+          backgroundImage: `url(${frame.src})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: zoomed ? `${NARROW_ZOOM * 100}% auto` : 'cover',
+          backgroundPosition: focus ? `${focus[0]}% ${focus[1]}%` : 'center top',
+          transition: 'background-position 900ms cubic-bezier(.2,.8,.2,1), background-size 900ms cubic-bezier(.2,.8,.2,1)',
+        }}
+      >
+        {/* Loads the same (cached) URL purely so a missing file can be caught. */}
+        <img src={frame.src} alt="" aria-hidden className="hidden" onError={() => setFailedFrames((prev) => ({ ...prev, [frame.src]: true }))} />
+      </div>
+    );
+  };
 
   return (
     <div ref={viewRef} className={className}>
@@ -144,7 +221,10 @@ export const SystemViewer: React.FC<SystemViewerProps> = ({ system, accent, comp
               }}
               aria-hidden={index !== activeIndex}
             >
-              {index === activeIndex && scene.render({ accent })}
+              {index === activeIndex &&
+                (scene.image
+                  ? renderImageFrame(scene, index === activeIndex)
+                  : scene.render?.({ accent }))}
             </div>
           ))}
 
