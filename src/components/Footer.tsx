@@ -73,7 +73,31 @@ export const Footer: React.FC<FooterProps> = ({ brand, content, onOpenPlanner })
         </div>
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 font-mono text-[11px]">
-          <div>{content.copyright}</div>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
+            <span>{content.copyright}</span>
+            <a
+              href="#/privacy"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.hash = '/privacy';
+                window.location.reload();
+              }}
+              className="hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="#/terms"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.hash = '/terms';
+                window.location.reload();
+              }}
+              className="hover:text-white transition-colors"
+            >
+              Terms of Service
+            </a>
+          </div>
 
           <div className="flex items-center gap-4">
             <a
