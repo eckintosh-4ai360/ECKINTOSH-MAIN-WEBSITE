@@ -28,6 +28,7 @@ import { InsightArticleModal } from './components/InsightArticleModal';
 // Data types
 import type { CaseStudy, Product, InsightArticle } from './data/contentData';
 import { useSiteContent } from './lib/siteContent';
+import { trackPageview } from './lib/analytics';
 
 export function App() {
   const { content } = useSiteContent();
@@ -72,6 +73,11 @@ export function App() {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
+
+  // One first-party, cookie-free pageview beacon per load.
+  useEffect(() => {
+    trackPageview();
   }, []);
 
   return (

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowUpRight,
+  BarChart3,
   FileJson,
   FolderKanban,
   Image,
@@ -17,14 +18,16 @@ import { InquiriesPanel } from './InquiriesPanel';
 import { ProjectsPanel } from './ProjectsPanel';
 import { ContentPanel } from './ContentPanel';
 import { MediaPanel } from './MediaPanel';
+import { AnalyticsPanel } from './AnalyticsPanel';
 
-type Tab = 'content' | 'projects' | 'inquiries' | 'media';
+type Tab = 'content' | 'projects' | 'inquiries' | 'media' | 'analytics';
 
 const navigation: { id: Tab; label: string; description: string; icon: typeof FileJson }[] = [
   { id: 'content', label: 'Website content', description: 'Copy, navigation & sections', icon: FileJson },
   { id: 'projects', label: 'Projects', description: 'Case studies & featured work', icon: FolderKanban },
   { id: 'inquiries', label: 'Inbox', description: 'Requests & contact messages', icon: Inbox },
   { id: 'media', label: 'Media library', description: 'Images and video uploads', icon: Image },
+  { id: 'analytics', label: 'Traffic', description: 'First-party pageview analytics', icon: BarChart3 },
 ];
 
 const pageCopy: Record<Tab, { eyebrow: string; title: string; description: string }> = {
@@ -47,6 +50,11 @@ const pageCopy: Record<Tab, { eyebrow: string; title: string; description: strin
     eyebrow: 'Asset management',
     title: 'Upload once, use anywhere.',
     description: 'Store image and video assets, then paste the secure URL into your content.',
+  },
+  analytics: {
+    eyebrow: 'Traffic',
+    title: 'See what visitors are looking at.',
+    description: 'Cookie-free pageview counts collected straight from this site — no third-party script.',
   },
 };
 
@@ -282,6 +290,7 @@ export const AdminDashboard: React.FC = () => {
           {tab === 'projects' && <ProjectsPanel targetId={searchTarget?.scope === 'projects' ? searchTarget.target : undefined} />}
           {tab === 'inquiries' && <InquiriesPanel targetId={searchTarget?.scope === 'inquiries' ? searchTarget.target : undefined} />}
           {tab === 'media' && <MediaPanel targetId={searchTarget?.scope === 'media' ? searchTarget.target : undefined} />}
+          {tab === 'analytics' && <AnalyticsPanel />}
         </main>
       </div>
     </div>

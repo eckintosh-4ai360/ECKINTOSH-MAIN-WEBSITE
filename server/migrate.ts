@@ -149,6 +149,19 @@ export async function initializeDatabase(): Promise<void> {
     )
   `);
 
+  // First-party, cookie-free pageview counter: just a path and a referrer
+  // domain, never an IP or user agent.
+  await query(`
+    create table if not exists page_views (
+      id uuid primary key default gen_random_uuid(),
+      path text not null,
+      referrer text not null default '',
+      created_at timestamptz not null default now()
+    )
+  `);
+  await query(`create index if not exists page_views_created_at_idx on page_views (created_at desc)`);
+  await query(`create index if not exists page_views_path_idx on page_views (path)`);
+
   await query(
     `
       insert into site_content (key, value)

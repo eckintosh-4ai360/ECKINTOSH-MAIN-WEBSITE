@@ -340,6 +340,33 @@ app.post('/api/inquiries', async (req, res) => {
   }
 });
 
+/**
+ * First-party pageview beacon. No cookies, no IP or user-agent storage —
+ * just a path and the referrer's origin, so the admin dashboard can see
+ * what's getting traffic without any third-party analytics script.
+ */
+app.post('/api/analytics/event', async (req, res) => {
+  try {
+    const path = String(req.body?.path || '').slice(0, 300) || '/';
+    let referrer = '';
+    const rawReferrer = String(req.body?.referrer || '');
+    if (rawReferrer) {
+      try {
+        referrer = new URL(rawReferrer).origin;
+      } catch {
+        referrer = '';
+      }
+    }
+
+    await query('insert into page_views (path, referrer) values ($1, $2)', [path, referrer]);
+    res.status(204).end();
+  } catch (error) {
+    console.error(error);
+    // Never let analytics failures surface to visitors.
+    res.status(204).end();
+  }
+});
+
 app.get('/api/admin/session', requireAdmin, (_req, res) => {
   res.json({ user: res.locals.admin });
 });
@@ -532,6 +559,38 @@ app.delete('/api/admin/inquiries/:id', requireAdmin, async (req, res) => {
   } catch (error) {
     console.error(error);
     sendError(res, 500, 'Failed to delete inquiry.');
+  }
+});
+
+app.get('/api/admin/analytics/summary', requireAdmin, async (_req, res) => {
+  try {
+    const [totalResult, todayResult, weekResult, topPathsResult, dailyResult] = await Promise.all([
+      query<{ count: string }>('select count(*)::text as count from page_views'),
+      query<{ count: string }>("select count(*)::text as count from page_views where created_at >= now() - interval '1 day'"),
+      query<{ count: string }>("select count(*)::text as count from page_views where created_at >= now() - interval '7 days'"),
+      query<{ path: string; count: string }>(
+        `select path, count(*)::text as count from page_views
+         where created_at >= now() - interval '30 days'
+         group by path order by count(*) desc limit 8`
+      ),
+      query<{ day: string; count: string }>(
+        `select to_char(date_trunc('day', created_at), 'YYYY-MM-DD') as day, count(*)::text as count
+         from page_views
+         where created_at >= now() - interval '14 days'
+         group by 1 order by 1 asc`
+      ),
+    ]);
+
+    res.json({
+      total: Number(totalResult.rows[0]?.count || 0),
+      last24h: Number(todayResult.rows[0]?.count || 0),
+      last7d: Number(weekResult.rows[0]?.count || 0),
+      topPaths: topPathsResult.rows.map((row) => ({ path: row.path, count: Number(row.count) })),
+      daily: dailyResult.rows.map((row) => ({ day: row.day, count: Number(row.count) })),
+    });
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Failed to load analytics summary.');
   }
 });
 
