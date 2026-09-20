@@ -15,7 +15,7 @@ const statusStyles: Record<InquiryStatus, string> = {
   archived: 'border-amber-100 bg-amber-50 text-amber-700',
 };
 
-export const InquiriesPanel: React.FC = () => {
+export const InquiriesPanel: React.FC<{ targetId?: string }> = ({ targetId }) => {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [statusFilter, setStatusFilter] = useState<InquiryStatus | 'all'>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -31,6 +31,15 @@ export const InquiriesPanel: React.FC = () => {
     );
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    if (!targetId || !inquiries.some((inquiry) => inquiry.id === targetId)) return;
+    setStatusFilter('all');
+    setExpandedId(targetId);
+    window.requestAnimationFrame(() => {
+      document.getElementById(`admin-inquiry-${targetId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }, [inquiries, targetId]);
 
   const filtered = useMemo(
     () => (statusFilter === 'all' ? inquiries : inquiries.filter((i) => i.status === statusFilter)),
@@ -94,7 +103,13 @@ export const InquiriesPanel: React.FC = () => {
         {filtered.map((inq) => {
           const expanded = expandedId === inq.id;
           return (
-            <div key={inq.id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+            <div
+              key={inq.id}
+              id={`admin-inquiry-${inq.id}`}
+              className={`overflow-hidden rounded-2xl border bg-white shadow-sm transition-all hover:shadow-md ${
+                targetId === inq.id ? 'border-blue-400 ring-4 ring-blue-100' : 'border-slate-200'
+              }`}
+            >
               <button
                 onClick={() => toggleExpand(inq)}
                 className="w-full flex items-center justify-between gap-4 p-4 md:p-5 text-left"

@@ -44,6 +44,7 @@ type AdminSearchScope = 'content' | 'projects' | 'inquiries' | 'media';
 type AdminSearchResult = {
   id: string;
   scope: AdminSearchScope;
+  target: string;
   title: string;
   subtitle: string;
   match: string;
@@ -154,6 +155,7 @@ function findContentMatches(value: unknown, term: string, path: string[] = [], r
       results.push({
         id: `content-${path.join('-')}-${results.length}`,
         scope: 'content',
+        target: path[0] || 'contentVersion',
         title: labelContentPath(path.slice(0, -1)) || 'Website content',
         subtitle: labelContentPath(path.slice(-1)) || 'Content value',
         match: `${start > 0 ? '…' : ''}${text.slice(start, end)}${end < text.length ? '…' : ''}`,
@@ -371,6 +373,7 @@ app.get('/api/admin/search', requireAdmin, async (req, res) => {
       .map((row) => ({
         id: `project-${String(row.id)}`,
         scope: 'projects' as const,
+        target: String(row.id),
         title: String(row.title || 'Untitled project'),
         subtitle: [row.client, row.industry].filter(Boolean).join(' · ') || 'Case study',
         match: searchSnippet([row.id, row.title, row.client, row.industry, row.summary, row.challenge, row.solution, row.tags, row.architecture, row.technologies, row.impact, row.ui_highlights, row.hero_image], term),
@@ -381,6 +384,7 @@ app.get('/api/admin/search', requireAdmin, async (req, res) => {
       .map((row) => ({
         id: `inquiry-${String(row.id)}`,
         scope: 'inquiries' as const,
+        target: String(row.id),
         title: String(row.full_name || row.organization || 'Website inquiry'),
         subtitle: [row.project_type, row.email].filter(Boolean).join(' · ') || 'Contact message',
         match: searchSnippet([row.id, row.full_name, row.organization, row.email, row.phone, row.project_type, row.notes, row.budget, row.timeline, row.status], term),
@@ -391,6 +395,7 @@ app.get('/api/admin/search', requireAdmin, async (req, res) => {
       .map((row) => ({
         id: `media-${String(row.id)}`,
         scope: 'media' as const,
+        target: String(row.id),
         title: String(row.original_filename || row.public_id || 'Media asset'),
         subtitle: [row.folder, row.resource_type].filter(Boolean).join(' · ') || 'Uploaded asset',
         match: searchSnippet([row.id, row.original_filename, row.public_id, row.url, row.secure_url, row.folder, row.resource_type], term),
@@ -527,6 +532,18 @@ app.delete('/api/admin/inquiries/:id', requireAdmin, async (req, res) => {
   } catch (error) {
     console.error(error);
     sendError(res, 500, 'Failed to delete inquiry.');
+  }
+});
+
+app.get('/api/admin/media', requireAdmin, async (_req, res) => {
+  try {
+    const result = await query(
+      'select * from media_assets order by created_at desc'
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Failed to load media assets.');
   }
 });
 

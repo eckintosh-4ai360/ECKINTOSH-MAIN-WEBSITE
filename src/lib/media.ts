@@ -14,6 +14,10 @@ export interface MediaAsset {
   created_at: string;
 }
 
+export function listMedia(): Promise<MediaAsset[]> {
+  return apiRequest<MediaAsset[]>('/api/admin/media');
+}
+
 export async function uploadMedia(file: File, folder = 'media'): Promise<MediaAsset> {
   const formData = new FormData();
   formData.append('file', file);

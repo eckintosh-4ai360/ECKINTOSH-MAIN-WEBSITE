@@ -5,6 +5,7 @@ export type AdminSearchScope = 'content' | 'projects' | 'inquiries' | 'media';
 export interface AdminSearchResult {
   id: string;
   scope: AdminSearchScope;
+  target: string;
   title: string;
   subtitle: string;
   match: string;

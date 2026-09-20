@@ -29,7 +29,7 @@ const SECTION_LABELS: Record<string, string> = {
  * Raw content editor. The payload is large, so it can be edited one section
  * at a time; saving a section merges it back into the full document.
  */
-export const ContentPanel: React.FC = () => {
+export const ContentPanel: React.FC<{ targetSection?: string }> = ({ targetSection }) => {
   const { refresh } = useSiteContent();
   const [content, setContent] = useState<SiteContent | null>(null);
   const [section, setSection] = useState<string>('products');
@@ -70,6 +70,18 @@ export const ContentPanel: React.FC = () => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!content || !targetSection) return;
+    const key = Object.prototype.hasOwnProperty.call(content, targetSection) ? targetSection : ALL;
+    setSection(key);
+    setSaved(false);
+    setError(null);
+    showSection(content, key);
+    window.requestAnimationFrame(() => {
+      document.getElementById('admin-content-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [content, targetSection]);
 
   const handleSectionChange = (key: string) => {
     if (!content) return;
@@ -173,6 +185,7 @@ export const ContentPanel: React.FC = () => {
       {loading && <p className="text-xs text-slate-400">Loading content…</p>}
 
       <textarea
+        id="admin-content-editor"
         value={jsonText}
         onChange={(event) => setJsonText(event.target.value)}
         spellCheck={false}

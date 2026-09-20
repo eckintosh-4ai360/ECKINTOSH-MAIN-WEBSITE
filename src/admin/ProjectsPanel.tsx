@@ -3,7 +3,7 @@ import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { subscribeAdminCaseStudies, addCaseStudy, updateCaseStudy, deleteCaseStudy, type ManagedCaseStudy, type CaseStudyInput } from '../lib/caseStudies';
 import { ProjectForm } from './ProjectForm';
 
-export const ProjectsPanel: React.FC = () => {
+export const ProjectsPanel: React.FC<{ targetId?: string }> = ({ targetId }) => {
   const [caseStudies, setCaseStudies] = useState<ManagedCaseStudy[]>([]);
   const [loading, setLoading] = useState(true);
   const [formOpen, setFormOpen] = useState(false);
@@ -20,6 +20,13 @@ export const ProjectsPanel: React.FC = () => {
     );
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    if (!targetId || !caseStudies.some((caseStudy) => caseStudy.id === targetId)) return;
+    window.requestAnimationFrame(() => {
+      document.getElementById(`admin-project-${targetId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }, [caseStudies, targetId]);
 
   const openAdd = () => {
     setEditing(null);
@@ -70,7 +77,13 @@ export const ProjectsPanel: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {caseStudies.map((cs) => (
-          <div key={cs.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+          <div
+            key={cs.id}
+            id={`admin-project-${cs.id}`}
+            className={`rounded-2xl border bg-white p-5 shadow-sm transition-all hover:shadow-md ${
+              targetId === cs.id ? 'border-blue-400 ring-4 ring-blue-100' : 'border-slate-200'
+            }`}
+          >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-[11px] font-mono text-blue-600 uppercase tracking-wider">{cs.industry}</div>

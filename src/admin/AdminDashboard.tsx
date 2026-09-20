@@ -57,6 +57,7 @@ export const AdminDashboard: React.FC = () => {
   const [searchResults, setSearchResults] = useState<AdminSearchResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [searchTarget, setSearchTarget] = useState<{ scope: Tab; target: string } | null>(null);
   const searchInput = useRef<HTMLInputElement>(null);
   const activePage = pageCopy[tab];
 
@@ -106,10 +107,12 @@ export const AdminDashboard: React.FC = () => {
   const selectTab = (nextTab: Tab) => {
     setTab(nextTab);
     setSidebarOpen(false);
+    setSearchTarget(null);
   };
 
   const openSearchResult = (result: AdminSearchResult) => {
     selectTab(result.scope);
+    setSearchTarget({ scope: result.scope, target: result.target });
     setSearchQuery('');
     setSearchResults([]);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -275,10 +278,10 @@ export const AdminDashboard: React.FC = () => {
             <p className="mt-2 text-sm leading-6 text-slate-500">{activePage.description}</p>
           </div>
 
-          {tab === 'content' && <ContentPanel />}
-          {tab === 'projects' && <ProjectsPanel />}
-          {tab === 'inquiries' && <InquiriesPanel />}
-          {tab === 'media' && <MediaPanel />}
+          {tab === 'content' && <ContentPanel targetSection={searchTarget?.scope === 'content' ? searchTarget.target : undefined} />}
+          {tab === 'projects' && <ProjectsPanel targetId={searchTarget?.scope === 'projects' ? searchTarget.target : undefined} />}
+          {tab === 'inquiries' && <InquiriesPanel targetId={searchTarget?.scope === 'inquiries' ? searchTarget.target : undefined} />}
+          {tab === 'media' && <MediaPanel targetId={searchTarget?.scope === 'media' ? searchTarget.target : undefined} />}
         </main>
       </div>
     </div>
