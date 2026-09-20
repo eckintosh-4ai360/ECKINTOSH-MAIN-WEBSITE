@@ -65,7 +65,7 @@ export const SystemsShowcase: React.FC<SystemsShowcaseProps> = ({
   const definition = systemFor(active.id);
 
   return (
-    <section id="systems" className="relative py-20 md:py-28 bg-[#08111F] text-white overflow-hidden">
+    <section id="systems" aria-labelledby="systems-heading" className="relative py-20 md:py-28 bg-[#08111F] text-white overflow-hidden">
       {/* Ambient backdrop that picks up the active system's colour */}
       <div className="absolute inset-0 pointer-events-none">
         <div
@@ -87,7 +87,7 @@ export const SystemsShowcase: React.FC<SystemsShowcaseProps> = ({
             <Sparkles className="w-3.5 h-3.5" />
             {content.eyebrow}
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-4 leading-[1.1]">
+          <h2 id="systems-heading" className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-4 leading-[1.1]">
             {content.title}
           </h2>
           <p className="text-base text-slate-400 mt-4 leading-relaxed">{content.description}</p>

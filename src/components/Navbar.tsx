@@ -92,7 +92,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </a>
 
         {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-1" aria-label="Primary">
           {navigation.links.map((link) => {
             const isSystems = link.href === '#systems';
             const active = activeSection === link.href;
@@ -108,6 +108,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <a
                     href={link.href}
                     onClick={(event) => goTo(event, link.href)}
+                    aria-haspopup="true"
+                    aria-expanded={systemsOpen}
                     className={`flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
                       active ? 'text-white bg-white/[0.07]' : 'text-slate-400 hover:text-white'
                     }`}

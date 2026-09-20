@@ -27,7 +27,7 @@ export const Industries: React.FC<IndustriesProps> = ({ content, onOpenPlanner }
   if (!selectedIndustry) return null;
 
   return (
-    <section id="industries" className="bg-[#F7F9FC] py-20 md:py-28 text-slate-900 border-b border-slate-200">
+    <section id="industries" aria-labelledby="industries-heading" className="bg-[#F7F9FC] py-20 md:py-28 text-slate-900 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
@@ -35,7 +35,7 @@ export const Industries: React.FC<IndustriesProps> = ({ content, onOpenPlanner }
           <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-100/80 px-3 py-1 rounded-full border border-blue-200">
             {content.eyebrow}
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mt-3 font-heading leading-tight">
+          <h2 id="industries-heading" className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mt-3 font-heading leading-tight">
             {content.title}
           </h2>
           <p className="text-base text-slate-600 mt-4 leading-relaxed font-normal">

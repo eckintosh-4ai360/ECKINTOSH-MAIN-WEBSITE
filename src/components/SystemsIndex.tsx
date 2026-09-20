@@ -30,14 +30,14 @@ export const SystemsIndex: React.FC<SystemsIndexProps> = ({
   const visible = filter === 'All' ? content.items : content.items.filter((item) => item.category === filter);
 
   return (
-    <section id="solutions" className="bg-white py-20 md:py-28 text-slate-900 border-y border-slate-200">
+    <section id="solutions" aria-labelledby="solutions-heading" className="bg-white py-20 md:py-28 text-slate-900 border-y border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div className="max-w-2xl">
             <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
               The full catalogue
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-4 leading-tight">
+            <h2 id="solutions-heading" className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-4 leading-tight">
               Every system, at a glance.
             </h2>
             <p className="text-base text-slate-600 mt-4 leading-relaxed">

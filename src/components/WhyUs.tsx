@@ -14,13 +14,13 @@ const ICON_TONES = [
 ];
 
 export const WhyUs: React.FC<{ content: SiteContent['whyUs'] }> = ({ content }) => (
-  <section id="why-us" className="bg-white py-20 md:py-28 text-slate-900 border-b border-slate-200">
+  <section id="why-us" aria-labelledby="why-us-heading" className="bg-white py-20 md:py-28 text-slate-900 border-b border-slate-200">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <Reveal className="max-w-3xl mb-14">
         <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
           {content.eyebrow}
         </span>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-4 leading-tight">
+        <h2 id="why-us-heading" className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-4 leading-tight">
           {content.title}
         </h2>
         <p className="text-base text-slate-600 mt-4 leading-relaxed">{content.description}</p>

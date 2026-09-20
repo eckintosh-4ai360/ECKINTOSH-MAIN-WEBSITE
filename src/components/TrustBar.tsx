@@ -40,14 +40,14 @@ const StatCard: React.FC<{
 };
 
 export const TrustBar: React.FC<{ content: SiteContent['trustBar'] }> = ({ content }) => (
-  <section className="bg-white border-y border-slate-200 py-12 text-slate-900 relative z-20 shadow-sm">
+  <section id="trust" aria-labelledby="trust-heading" className="bg-white border-y border-slate-200 py-12 text-slate-900 relative z-20 shadow-sm">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <Reveal className="text-center max-w-xl mx-auto mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-100 mb-2">
           <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
           {content.eyebrow}
         </div>
-        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">{content.title}</h2>
+        <h2 id="trust-heading" className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">{content.title}</h2>
         <p className="text-xs text-slate-500 mt-1">{content.description}</p>
       </Reveal>
 

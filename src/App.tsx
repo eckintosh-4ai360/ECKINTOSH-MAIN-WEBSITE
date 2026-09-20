@@ -76,6 +76,13 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#08111F] text-slate-100 font-sans antialiased">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2.5 focus:rounded-xl focus:bg-blue-600 focus:text-white focus:text-sm focus:font-semibold focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
+
       <ScrollProgress />
 
       <Navbar
@@ -86,7 +93,7 @@ export function App() {
         onFocusSystem={handleFocusSystem}
       />
 
-      <main>
+      <main id="main-content">
         <Hero
           content={content.hero}
           products={content.products.items}

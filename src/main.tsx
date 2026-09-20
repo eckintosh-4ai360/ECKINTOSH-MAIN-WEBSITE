@@ -4,11 +4,14 @@ import "./index.css";
 import App from "./App";
 import AdminApp from "./admin/AdminApp";
 import { SiteContentProvider } from "./lib/siteContent";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 const isAdminRoute = window.location.hash.startsWith("#/admin");
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <SiteContentProvider>{isAdminRoute ? <AdminApp /> : <App />}</SiteContentProvider>
+    <ErrorBoundary>
+      <SiteContentProvider>{isAdminRoute ? <AdminApp /> : <App />}</SiteContentProvider>
+    </ErrorBoundary>
   </StrictMode>
 );

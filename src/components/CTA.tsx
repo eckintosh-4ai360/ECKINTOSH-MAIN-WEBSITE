@@ -22,6 +22,7 @@ export const CTA: React.FC<CTAProps> = ({ content, onOpenPlanner }) => {
   return (
     <section
       id="contact"
+      aria-labelledby="contact-heading"
       ref={spotlight.ref}
       onPointerMove={spotlight.onPointerMove}
       onPointerLeave={spotlight.onPointerLeave}
@@ -50,7 +51,7 @@ export const CTA: React.FC<CTAProps> = ({ content, onOpenPlanner }) => {
               {content.eyebrow}
             </div>
 
-            <h2 className="text-3xl sm:text-4xl md:text-[3.2rem] font-extrabold tracking-tight leading-[1.1] mt-4">
+            <h2 id="contact-heading" className="text-3xl sm:text-4xl md:text-[3.2rem] font-extrabold tracking-tight leading-[1.1] mt-4">
               {content.title}{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-white">
                 {content.highlight}
