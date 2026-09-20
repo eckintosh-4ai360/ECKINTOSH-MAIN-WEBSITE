@@ -125,7 +125,11 @@ export const SystemViewer: React.FC<SystemViewerProps> = ({ system, accent, comp
   );
 
   const sceneProgress = active ? Math.min(1, (elapsed - sceneStart) / active.duration) : 0;
-  const cursorPath = active?.image?.hotspots?.length ? active.image.hotspots : CURSOR_PATH;
+  const cursorPath = active?.image?.hotspots?.length
+    ? active.image.hotspots
+    : active?.hotspots?.length
+      ? active.hotspots
+      : CURSOR_PATH;
   const cursor = cursorPath[cursorStep % cursorPath.length];
 
   /**

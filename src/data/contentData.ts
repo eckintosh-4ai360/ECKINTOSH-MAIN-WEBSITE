@@ -428,7 +428,7 @@ export const PRODUCTS: Product[] = [
     badge: "Commerce Engine",
     status: "Live in Production",
     category: "Retail & FinTech",
-    accent: "rose",
+    accent: "indigo",
     iconName: "Store",
     description:
       "Single-merchant storefronts or full multi-vendor marketplaces, engineered around how African customers really buy: Mobile Money first, delivery fees by zone, WhatsApp order support, and payouts that merchants can reconcile to the cedi.",
