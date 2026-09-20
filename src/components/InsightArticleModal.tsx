@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Clock, Calendar, Share2, Check, ArrowRight, BookOpen } from 'lucide-react';
 import { InsightArticle } from '../data/contentData';
+import { useBodyScrollLock, useEscape, useFocusTrap } from '../hooks';
 
 interface InsightArticleModalProps {
   article: InsightArticle | null;
@@ -15,6 +16,10 @@ export const InsightArticleModal: React.FC<InsightArticleModalProps> = ({
 }) => {
   const [copied, setCopied] = React.useState(false);
 
+  useBodyScrollLock(Boolean(article));
+  useEscape(Boolean(article), onClose);
+  const trapRef = useFocusTrap<HTMLDivElement>(Boolean(article));
+
   if (!article) return null;
 
   const handleShare = () => {
@@ -24,8 +29,16 @@ export const InsightArticleModal: React.FC<InsightArticleModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div 
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={article.title}
+    >
+      <div
+        ref={trapRef}
+        tabIndex={-1}
         className="relative w-full max-w-3xl bg-[#0F1D33] border border-white/10 rounded-2xl shadow-2xl overflow-hidden text-white my-auto max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >

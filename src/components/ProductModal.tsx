@@ -17,7 +17,7 @@ import { getIcon } from '../lib/icons';
 import { accentOf } from '../systems/theme';
 import { systemFor } from '../systems/registry';
 import { SystemViewer } from '../systems/SystemViewer';
-import { useBodyScrollLock, useEscape } from '../hooks';
+import { useBodyScrollLock, useEscape, useFocusTrap } from '../hooks';
 
 interface ProductModalProps {
   product: Product | null;
@@ -40,6 +40,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
   useBodyScrollLock(Boolean(product));
   useEscape(Boolean(product), onClose);
+  const trapRef = useFocusTrap<HTMLDivElement>(Boolean(product));
 
   useEffect(() => {
     if (product) setTab('overview');
@@ -60,6 +61,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
       aria-label={product.name}
     >
       <div
+        ref={trapRef}
+        tabIndex={-1}
         className="relative w-full max-w-5xl bg-[#0F1D33] border border-white/10 rounded-2xl shadow-2xl overflow-hidden text-white my-auto animate-scale-in"
         onClick={(event) => event.stopPropagation()}
       >

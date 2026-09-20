@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Building2, CheckCircle2, MessageSquare, Send, X 
 import type { SiteContent } from '../data/contentData';
 import { getIcon } from '../lib/icons';
 import { submitInquiry } from '../lib/inquiries';
+import { useBodyScrollLock, useEscape, useFocusTrap } from '../hooks';
 
 interface ProjectPlannerModalProps {
   isOpen: boolean;
@@ -37,6 +38,17 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
     setBudget((current) => current || content.defaultBudget);
   }, [content.defaultBudget, content.defaultProjectType, content.defaultTimeline]);
 
+  const resetForm = () => {
+    setStep(1);
+    setSubmitted(false);
+    setError(null);
+    onClose();
+  };
+
+  useBodyScrollLock(isOpen);
+  useEscape(isOpen, resetForm);
+  const trapRef = useFocusTrap<HTMLDivElement>(isOpen);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,16 +82,17 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
     window.open(`https://wa.me/${content.whatsappNumber}?text=${text}`, '_blank');
   };
 
-  const resetForm = () => {
-    setStep(1);
-    setSubmitted(false);
-    setError(null);
-    onClose();
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn"
+      onClick={resetForm}
+      role="dialog"
+      aria-modal="true"
+      aria-label={content.title}
+    >
       <div
+        ref={trapRef}
+        tabIndex={-1}
         className="relative w-full max-w-2xl bg-[#0F1D33] border border-white/10 rounded-2xl shadow-2xl overflow-hidden text-white my-auto max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
