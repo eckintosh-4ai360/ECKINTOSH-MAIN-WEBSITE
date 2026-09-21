@@ -897,28 +897,46 @@ export const aiSystem: SystemDefinition = {
       label: 'Command Center',
       caption: 'Projects, sprints, deploys and commits in one hub — with AI ranking what to work on next.',
       duration: 7,
-      render: () => <CommandCentreScene />,
+      image: {
+        // Cloudinary negotiates AVIF/WebP and quality per visitor, while the
+        // versioned URL gives the walkthrough a long-lived cache key.
+        src: 'https://res.cloudinary.com/fdwfdt1e/image/upload/dpr_auto,f_auto,q_auto/v1790001469/eckintosh/systems/eckindev/command-center.png',
+        alt: 'EckinDev Command Center dashboard',
+        hotspots: [[17, 22], [44, 25], [42, 54], [75, 51], [66, 81]],
+      },
     },
     {
       id: 'assistant',
       label: 'AI Assistant',
       caption: 'Ask it to prioritise, plan the day or build a board — every action confirmed before it saves.',
       duration: 6,
-      render: () => <AssistantScene />,
+      image: {
+        src: 'https://res.cloudinary.com/fdwfdt1e/image/upload/dpr_auto,f_auto,q_auto/v1790001471/eckintosh/systems/eckindev/ai-assistant.png',
+        alt: 'EckinDev AI Assistant workspace',
+        hotspots: [[50, 38], [47, 51], [66, 51], [48, 69], [73, 89]],
+      },
     },
     {
       id: 'code-ops',
       label: 'Code Ops',
       caption: 'Browse repositories, edit files and open pull requests without leaving the workspace.',
       duration: 7,
-      render: () => <CodeOpsScene />,
+      image: {
+        src: 'https://res.cloudinary.com/fdwfdt1e/image/upload/dpr_auto,f_auto,q_auto/v1790001472/eckintosh/systems/eckindev/code-ops.png',
+        alt: 'EckinDev Code Ops workspace',
+        hotspots: [[20, 25], [70, 28], [62, 50], [47, 76], [74, 80]],
+      },
     },
     {
       id: 'analytics',
       label: 'Analytics',
       caption: 'Completion trend, status mix, priority load and overdue pressure across the whole workspace.',
       duration: 6,
-      render: () => <AnalyticsScene />,
+      image: {
+        src: 'https://res.cloudinary.com/fdwfdt1e/image/upload/dpr_auto,f_auto,q_auto/v1790001473/eckintosh/systems/eckindev/analytics.png',
+        alt: 'EckinDev Analytics Hub dashboard',
+        hotspots: [[23, 17], [53, 18], [38, 49], [76, 50], [69, 77]],
+      },
     },
   ],
 };
