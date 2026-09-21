@@ -176,7 +176,7 @@ async function deliver(
 ) {
   const transport = buildTransport(settings);
   try {
-    await transport.sendMail({
+    const info = await transport.sendMail({
       from: `"${settings.fromName}" <${settings.gmailUser}>`,
       to: resolveRecipients(settings).join(', '),
       subject,
@@ -184,6 +184,9 @@ async function deliver(
       html: body.html,
       ...(replyTo ? { replyTo } : {}),
     });
+    // Logged so a silent non-delivery can be told apart from a send that never
+    // happened; Gmail's own accept/reject list is the useful part.
+    console.log(`[mail] Sent "${subject}" -> accepted: ${info.accepted.join(', ') || 'none'}`);
   } finally {
     transport.close();
   }
@@ -209,8 +212,14 @@ export async function notifyNewInquiry(inquiry: InquiryNotification): Promise<vo
   }
 }
 
-/** Test send from the Settings panel. Throws, so the admin sees why it failed. */
-export async function sendTestNotification(): Promise<string[]> {
+/**
+ * Test send from the Settings panel. Throws, so the admin sees why it failed.
+ *
+ * Deliberately ignores `enabled` — proving the credentials work is useful while
+ * notifications are still switched off — so it reports the flag back and the
+ * panel can say plainly that real inquiries are not being emailed yet.
+ */
+export async function sendTestNotification(): Promise<{ recipients: string[]; enabled: boolean }> {
   const settings = await loadNotificationSettings();
   const gap = describeConfigurationGap(settings);
   if (gap) throw new Error(gap);
@@ -226,5 +235,5 @@ export async function sendTestNotification(): Promise<string[]> {
       </div>`,
   });
 
-  return resolveRecipients(settings);
+  return { recipients: resolveRecipients(settings), enabled: settings.enabled };
 }

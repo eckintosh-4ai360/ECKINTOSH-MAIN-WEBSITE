@@ -34,10 +34,16 @@ export async function saveNotificationSettings(input: NotificationSettingsInput)
   });
 }
 
-export async function sendTestNotification(): Promise<string[]> {
-  const result = await apiRequest<{ ok: boolean; recipients: string[] }>(
+export interface TestResult {
+  recipients: string[];
+  /** False when credentials work but the master switch is still off. */
+  enabled: boolean;
+}
+
+export async function sendTestNotification(): Promise<TestResult> {
+  const result = await apiRequest<{ ok: boolean } & TestResult>(
     '/api/admin/settings/notifications/test',
     { method: 'POST' }
   );
-  return result.recipients;
+  return { recipients: result.recipients, enabled: result.enabled };
 }

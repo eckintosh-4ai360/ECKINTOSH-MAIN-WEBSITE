@@ -325,7 +325,7 @@ app.put('/api/admin/settings/notifications', requireAdmin, async (req, res) => {
 
 app.post('/api/admin/settings/notifications/test', requireAdmin, async (_req, res) => {
   try {
-    res.json({ ok: true, recipients: await sendTestNotification() });
+    res.json({ ok: true, ...(await sendTestNotification()) });
   } catch (error) {
     console.error(error);
     // Gmail's own rejection text is the most useful thing the admin can see.

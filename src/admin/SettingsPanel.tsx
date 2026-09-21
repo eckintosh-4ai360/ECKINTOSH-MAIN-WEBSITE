@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, KeyRound, Mail, Save, Send } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, KeyRound, Mail, Save, Send } from 'lucide-react';
 import {
   loadNotificationSettings,
   saveNotificationSettings,
@@ -19,6 +19,7 @@ export const SettingsPanel: React.FC = () => {
   const [fromName, setFromName] = useState('');
   const [recipients, setRecipients] = useState('');
   const [replyToSender, setReplyToSender] = useState(true);
+  const [saved, setSaved] = useState<NotificationSettings | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -27,6 +28,7 @@ export const SettingsPanel: React.FC = () => {
   const [notice, setNotice] = useState<string | null>(null);
 
   const apply = (settings: NotificationSettings) => {
+    setSaved(settings);
     setEnabled(settings.enabled);
     setGmailUser(settings.gmailUser);
     setFromName(settings.fromName);
@@ -84,8 +86,17 @@ export const SettingsPanel: React.FC = () => {
     setError(null);
     setNotice(null);
     try {
-      const sentTo = await sendTestNotification();
-      setNotice(`Test email sent to ${sentTo.join(', ')}. Check the inbox.`);
+      const { recipients: sentTo, enabled: liveNow } = await sendTestNotification();
+      const where = `Test email sent to ${sentTo.join(', ')}.`;
+      if (liveNow) {
+        setNotice(`${where} Check the inbox.`);
+      } else {
+        // Credentials are fine, but real inquiries still go unsent.
+        setError(
+          `${where} The credentials work — but "Send email notifications" is off, ` +
+            'so real inquiry submissions are not being emailed. Tick it above and save.'
+        );
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send the test email.');
     } finally {
@@ -105,6 +116,25 @@ export const SettingsPanel: React.FC = () => {
           Get an email the moment someone submits the project planner form, alongside the inbox entry.
         </p>
       </div>
+
+      {saved && !saved.enabled && (
+        <p className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>
+            Notifications are <strong>off</strong>. Inquiries are still saved to the inbox, but no email is sent —
+            including when the test below succeeds.
+          </span>
+        </p>
+      )}
+      {saved?.enabled && (
+        <p className="flex items-start gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-xs text-emerald-700">
+          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>
+            Active — new inquiries are emailed to{' '}
+            <strong>{(saved.recipients.length ? saved.recipients : [saved.gmailUser]).join(', ')}</strong>.
+          </span>
+        </p>
+      )}
 
       {error && <p className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-xs text-red-600">{error}</p>}
       {notice && (
