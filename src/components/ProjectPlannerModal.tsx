@@ -75,12 +75,12 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
     }
   };
 
-  const handleWhatsAppDirect = () => {
-    const text = encodeURIComponent(
+  // A plain anchor rather than window.open: popup blockers on mobile Safari
+  // and in-app browsers silently swallow scripted opens, leaving the button dead.
+  const whatsappDirectUrl =
+    `https://wa.me/${content.whatsappNumber}?text=${encodeURIComponent(
       `Hello Eckintosh Technologies,\n\nI want to start a project:\n- Service: ${projectType}\n- Timeline: ${timeline}\n- Name: ${fullName}\n- Organization: ${organization}\n- Phone: ${phone}\n- Notes: ${notes || 'N/A'}`
-    );
-    window.open(`https://wa.me/${content.whatsappNumber}?text=${text}`, '_blank');
-  };
+    )}`;
 
   return (
     <div
@@ -342,12 +342,14 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
               </div>
 
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <button
-                  onClick={handleWhatsAppDirect}
+                <a
+                  href={whatsappDirectUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20"
                 >
                   <MessageSquare className="w-4 h-4" /> Connect Directly on WhatsApp
-                </button>
+                </a>
                 <button
                   onClick={resetForm}
                   className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold"
