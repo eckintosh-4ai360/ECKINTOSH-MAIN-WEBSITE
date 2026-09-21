@@ -22,66 +22,66 @@ export const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#08111F] text-slate-100 flex items-center justify-center p-6">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-slate-900">
       <div className="w-full max-w-sm">
         <div className="flex items-center gap-2.5 justify-center mb-8">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-blue-400 flex items-center justify-center text-white shadow-lg shadow-blue-600/30">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-600/20">
             <Layers className="w-5 h-5" />
           </div>
-          <span className="text-lg font-extrabold tracking-tight text-white font-heading">
+          <span className="text-lg font-extrabold tracking-tight text-slate-950 font-heading">
             Eckintosh<span className="text-blue-500">.</span> Admin
           </span>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[#0F1D33] border border-white/10 shadow-2xl">
-          <h1 className="text-sm font-bold text-white mb-1">Admin Portal Access</h1>
-          <p className="text-xs text-slate-400 mb-5">Enter the admin credentials to continue.</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5">
+          <h1 className="mb-1 text-sm font-bold text-slate-950">Welcome back</h1>
+          <p className="mb-5 text-xs text-slate-500">Sign in to manage your website.</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Email</label>
+              <label className="mb-1.5 block text-xs font-semibold text-slate-700">Email</label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50"
                   placeholder="admin@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Password</label>
+              <label className="mb-1.5 block text-xs font-semibold text-slate-700">Password</label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
                   type="password"
                   required
                   autoFocus
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50"
                   placeholder="••••••••"
                 />
               </div>
             </div>
 
-            {error && <p className="text-xs text-red-400">{error}</p>}
+            {error && <p className="rounded-xl border border-red-100 bg-red-50 px-3 py-2 text-xs text-red-600">{error}</p>}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-2.5 text-xs font-semibold text-white shadow-sm shadow-blue-600/20 transition-all hover:bg-blue-700 disabled:opacity-60"
             >
               {loading ? 'Signing in...' : 'Sign In'} <ArrowRight className="w-4 h-4" />
             </button>
           </form>
         </div>
 
-        <p className="text-center text-[11px] text-slate-500 mt-4">
+        <p className="mt-4 text-center text-[11px] text-slate-400">
           <a
             href="#hero"
             onClick={(e) => {
@@ -89,7 +89,7 @@ export const AdminLogin: React.FC = () => {
               window.location.hash = 'hero';
               window.location.reload();
             }}
-            className="hover:text-slate-300"
+            className="hover:text-slate-700"
           >
             ← Back to site
           </a>

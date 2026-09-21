@@ -52,25 +52,52 @@ export const Footer: React.FC<FooterProps> = ({ brand, content, onOpenPlanner })
 
           <FooterLinkColumn title="Company" links={content.companyLinks} onNavClick={handleNavClick} />
           <FooterLinkColumn title="Solutions" links={content.solutionLinks} onNavClick={handleNavClick} />
-          <div className="lg:col-span-2">
-            <h4 className="text-white font-bold uppercase tracking-wider text-[11px] mb-4 font-mono">Systems</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
+          <nav aria-labelledby="footer-systems-heading" className="lg:col-span-2">
+            <h4 id="footer-systems-heading" className="text-white font-bold uppercase tracking-wider text-[11px] mb-4 font-mono">
+              Systems
+            </h4>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
               {content.productLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={(event) => handleNavClick(event, link.href)}
-                  className="hover:text-white transition-colors"
-                >
-                  {link.label}
-                </a>
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    onClick={(event) => handleNavClick(event, link.href)}
+                    className="hover:text-white transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                </li>
               ))}
-            </div>
-          </div>
+            </ul>
+          </nav>
         </div>
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 font-mono text-[11px]">
-          <div>{content.copyright}</div>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
+            <span>{content.copyright}</span>
+            <a
+              href="#/privacy"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.hash = '/privacy';
+                window.location.reload();
+              }}
+              className="hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="#/terms"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.hash = '/terms';
+                window.location.reload();
+              }}
+              className="hover:text-white transition-colors"
+            >
+              Terms of Service
+            </a>
+          </div>
 
           <div className="flex items-center gap-4">
             <a
@@ -113,9 +140,12 @@ const FooterLinkColumn: React.FC<{
   links: NavLink[];
   onNavClick: (e: React.MouseEvent<HTMLAnchorElement>, href: string) => void;
 }> = ({ title, links, onNavClick }) => {
+  const headingId = `footer-${title.toLowerCase()}-heading`;
   return (
-    <div className="space-y-3">
-      <h3 className="text-xs font-bold uppercase tracking-wider text-white font-mono">{title}</h3>
+    <nav aria-labelledby={headingId} className="space-y-3">
+      <h3 id={headingId} className="text-xs font-bold uppercase tracking-wider text-white font-mono">
+        {title}
+      </h3>
       <ul className="space-y-2">
         {links.map((link) => (
           <li key={`${title}-${link.label}`}>
@@ -125,6 +155,6 @@ const FooterLinkColumn: React.FC<{
           </li>
         ))}
       </ul>
-    </div>
+    </nav>
   );
 };

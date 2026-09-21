@@ -16,19 +16,22 @@ const PROMISES = [
   'Source code and data ownership handed over on delivery',
 ];
 
+// wa.me requires Ghana's country code and omits the local leading zero.
+const WHATSAPP_CHAT_URL = 'https://wa.me/233531152121';
+
 export const CTA: React.FC<CTAProps> = ({ content, onOpenPlanner }) => {
   const spotlight = usePointerSpotlight<HTMLElement>();
 
   return (
     <section
       id="contact"
+      aria-labelledby="contact-heading"
       ref={spotlight.ref}
       onPointerMove={spotlight.onPointerMove}
       onPointerLeave={spotlight.onPointerLeave}
       className="relative bg-[#08111F] py-24 md:py-32 text-white overflow-hidden border-b border-white/10"
     >
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-grid opacity-50" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] bg-blue-600/20 rounded-full blur-[170px] animate-aurora" />
         <div className="absolute bottom-0 left-0 w-[360px] h-[360px] bg-cyan-500/10 rounded-full blur-[130px]" />
         {spotlight.pos && (
@@ -47,11 +50,11 @@ export const CTA: React.FC<CTAProps> = ({ content, onOpenPlanner }) => {
           {/* Pitch */}
           <Reveal className="lg:col-span-3">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[11px] font-semibold">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              {/* <Sparkles className="w-3.5 h-3.5 text-amber-400" /> */}
               {content.eyebrow}
             </div>
 
-            <h2 className="text-3xl sm:text-4xl md:text-[3.2rem] font-extrabold tracking-tight leading-[1.1] mt-4">
+            <h2 id="contact-heading" className="text-3xl sm:text-4xl md:text-[3.2rem] font-extrabold tracking-tight leading-[1.1] mt-4">
               {content.title}{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-white">
                 {content.highlight}
@@ -71,7 +74,7 @@ export const CTA: React.FC<CTAProps> = ({ content, onOpenPlanner }) => {
               </button>
 
               <a
-                href={content.whatsappUrl}
+                href={WHATSAPP_CHAT_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-7 py-3.5 rounded-xl bg-emerald-600/15 hover:bg-emerald-600/25 text-emerald-400 font-semibold text-sm border border-emerald-500/30 transition-all flex items-center justify-center gap-2"

@@ -16,7 +16,7 @@ export const AdminApp: React.FC = () => {
   }, []);
 
   if (checking) {
-    return <div className="min-h-screen bg-[#08111F]" />;
+    return <div className="min-h-screen bg-slate-50" />;
   }
 
   return loggedIn ? <AdminDashboard /> : <AdminLogin />;

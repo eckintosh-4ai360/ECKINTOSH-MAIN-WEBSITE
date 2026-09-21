@@ -11,14 +11,14 @@ interface InsightsProps {
 
 export const Insights: React.FC<InsightsProps> = ({ content, onSelectArticle, onOpenPlanner }) => {
   return (
-    <section id="insights" className="bg-white py-20 md:py-28 text-slate-900 border-b border-slate-200">
+    <section id="insights" aria-labelledby="insights-heading" className="bg-white py-20 md:py-28 text-slate-900 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
           <Reveal className="max-w-2xl min-w-0">
             <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
               {content.eyebrow}
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mt-3 font-heading leading-tight">
+            <h2 id="insights-heading" className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mt-3 font-heading leading-tight">
               {content.title}
             </h2>
             <p className="text-base text-slate-600 mt-4 leading-relaxed font-normal">{content.description}</p>

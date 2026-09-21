@@ -86,15 +86,18 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ initial, onCancel, onS
   };
 
   const inputClass =
-    'w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-xs focus:outline-none focus:border-blue-500';
-  const labelClass = 'block text-xs font-semibold text-slate-300 mb-1';
+    'w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-800 outline-none transition-shadow placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-50';
+  const labelClass = 'mb-1 block text-xs font-semibold text-slate-700';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto bg-black/80 backdrop-blur-md">
-      <div className="relative w-full max-w-3xl bg-[#0F1D33] border border-white/10 rounded-2xl shadow-2xl overflow-hidden text-white my-auto max-h-[90vh] flex flex-col">
-        <div className="sticky top-0 z-20 flex items-center justify-between p-5 md:p-6 bg-[#08111F]/90 backdrop-blur-md border-b border-white/10">
-          <h2 className="text-lg font-bold text-white">{initial ? 'Edit Project' : 'Add New Project'}</h2>
-          <button onClick={onCancel} className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/10">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/35 p-4 backdrop-blur-sm sm:p-6 md:p-10">
+      <div className="relative my-auto flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-2xl shadow-slate-900/20">
+        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white/95 p-5 backdrop-blur-md md:p-6">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-blue-600">Portfolio management</p>
+            <h2 className="mt-1 text-lg font-bold text-slate-950">{initial ? 'Edit project' : 'Add new project'}</h2>
+          </div>
+          <button aria-label="Close project form" onClick={onCancel} className="rounded-xl border border-slate-200 p-2 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -153,13 +156,13 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ initial, onCancel, onS
             <label className={labelClass}>Hero Image URL</label>
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
               <input className={inputClass} value={heroImage} onChange={(e) => setHeroImage(e.target.value)} placeholder="https://res.cloudinary.com/..." />
-              <label className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer">
+              <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50">
                 <UploadCloud className="w-3.5 h-3.5" /> {uploading ? 'Uploading...' : 'Upload'}
                 <input type="file" accept="image/*,video/*" onChange={handleMediaUpload} disabled={uploading} className="hidden" />
               </label>
             </div>
             {heroImage && (
-              <div className="mt-2 rounded-xl bg-slate-950 border border-white/10 overflow-hidden">
+              <div className="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
                 {heroImage.match(/\.(mp4|webm|mov)(\?|$)/i) ? (
                   <video src={heroImage} controls className="w-full max-h-56 bg-black" />
                 ) : (
@@ -213,11 +216,11 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ initial, onCancel, onS
 
           {error && <p className="text-xs text-red-400">{error}</p>}
 
-          <div className="pt-2 flex items-center justify-end gap-3 border-t border-white/10">
-            <button type="button" onClick={onCancel} className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-semibold">
+          <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-5">
+            <button type="button" onClick={onCancel} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50">
               Cancel
             </button>
-            <button type="submit" disabled={saving} className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white text-xs font-semibold flex items-center gap-2">
+            <button type="submit" disabled={saving} className="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-xs font-semibold text-white shadow-sm shadow-blue-600/20 hover:bg-blue-700 disabled:opacity-60">
               <Save className="w-3.5 h-3.5" /> {saving ? 'Saving...' : 'Save Project'}
             </button>
           </div>

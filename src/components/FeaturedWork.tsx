@@ -33,14 +33,14 @@ export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ content, onSelectCas
   const hasMore = filteredStudies.length > visibleStudies.length;
 
   return (
-    <section id="work" className="bg-[#0B1528] py-20 md:py-28 text-white relative">
+    <section id="work" aria-labelledby="work-heading" className="bg-[#0B1528] py-20 md:py-28 text-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-6">
           <Reveal className="max-w-2xl min-w-0">
             <span className="text-xs font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
               {content.eyebrow}
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mt-3 font-heading leading-tight">
+            <h2 id="work-heading" className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mt-3 font-heading leading-tight">
               {content.title}
             </h2>
             <p className="text-base text-slate-300 mt-4 leading-relaxed font-normal">{content.description}</p>

@@ -102,13 +102,17 @@ export const SystemViewer: React.FC<SystemViewerProps> = ({ system, accent, comp
   // Scripted cursor: drift to the next rest point, then land a click.
   useEffect(() => {
     if (!running) return;
+    const timeouts: number[] = [];
     const move = window.setInterval(() => {
       setCursorStep((step) => step + 1);
       setClicking(false);
-      window.setTimeout(() => setClicking(true), 820);
-      window.setTimeout(() => setClicking(false), 1280);
+      timeouts.push(window.setTimeout(() => setClicking(true), 820));
+      timeouts.push(window.setTimeout(() => setClicking(false), 1280));
     }, 2200);
-    return () => window.clearInterval(move);
+    return () => {
+      window.clearInterval(move);
+      timeouts.forEach((timeout) => window.clearTimeout(timeout));
+    };
   }, [running]);
 
   useEffect(() => {
@@ -125,7 +129,11 @@ export const SystemViewer: React.FC<SystemViewerProps> = ({ system, accent, comp
   );
 
   const sceneProgress = active ? Math.min(1, (elapsed - sceneStart) / active.duration) : 0;
-  const cursorPath = active?.image?.hotspots?.length ? active.image.hotspots : CURSOR_PATH;
+  const cursorPath = active?.image?.hotspots?.length
+    ? active.image.hotspots
+    : active?.hotspots?.length
+      ? active.hotspots
+      : CURSOR_PATH;
   const cursor = cursorPath[cursorStep % cursorPath.length];
 
   /**
@@ -231,9 +239,13 @@ export const SystemViewer: React.FC<SystemViewerProps> = ({ system, accent, comp
           {/* Scripted pointer */}
           {running && (
             <div
-              className="absolute pointer-events-none z-30 transition-all duration-[900ms] ease-out"
-              style={{ left: `${cursor[0]}%`, top: `${cursor[1]}%` }}
+              className="absolute pointer-events-none z-30 transition-[left,top,transform] duration-[900ms] ease-out"
+              style={{ left: `${cursor[0]}%`, top: `${cursor[1]}%`, transform: 'translate(-2px, -2px)' }}
             >
+              <span
+                className="absolute left-1 top-1 w-2 h-2 rounded-full opacity-45 transition-transform duration-300"
+                style={{ backgroundColor: accent.hex, transform: clicking ? 'scale(1.8)' : 'scale(1)' }}
+              />
               {clicking && (
                 <span
                   className="absolute -left-3 -top-3 w-7 h-7 rounded-full animate-ping"

@@ -133,6 +133,17 @@ export async function initializeDatabase(): Promise<void> {
     )
   `);
 
+  // Operational settings (Gmail notification credentials, etc.) kept out of
+  // site_content so editing website copy can never clobber them.
+  await query(`
+    create table if not exists app_settings (
+      key text primary key,
+      value jsonb not null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )
+  `);
+
   await query(`
     create table if not exists media_assets (
       id uuid primary key default gen_random_uuid(),
@@ -148,6 +159,19 @@ export async function initializeDatabase(): Promise<void> {
       created_at timestamptz not null default now()
     )
   `);
+
+  // First-party, cookie-free pageview counter: just a path and a referrer
+  // domain, never an IP or user agent.
+  await query(`
+    create table if not exists page_views (
+      id uuid primary key default gen_random_uuid(),
+      path text not null,
+      referrer text not null default '',
+      created_at timestamptz not null default now()
+    )
+  `);
+  await query(`create index if not exists page_views_created_at_idx on page_views (created_at desc)`);
+  await query(`create index if not exists page_views_path_idx on page_views (path)`);
 
   await query(
     `

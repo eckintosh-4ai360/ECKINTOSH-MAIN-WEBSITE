@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { TrustBar } from './components/TrustBar';
@@ -7,12 +7,9 @@ import { SystemsShowcase } from './components/SystemsShowcase';
 import { WhatWeDo } from './components/WhatWeDo';
 import { SystemsIndex } from './components/SystemsIndex';
 import { Industries } from './components/Industries';
-import { FeaturedWork } from './components/FeaturedWork';
 import { WhyUs } from './components/WhyUs';
 import { HowWeWork } from './components/HowWeWork';
-import { TechStack } from './components/TechStack';
 import { Testimonials } from './components/Testimonials';
-import { Insights } from './components/Insights';
 import { CTA } from './components/CTA';
 import { Footer } from './components/Footer';
 import { BackToTop } from './components/BackToTop';
@@ -21,13 +18,12 @@ import { CommandPalette } from './components/CommandPalette';
 
 // Modals
 import { ProjectPlannerModal } from './components/ProjectPlannerModal';
-import { CaseStudyModal } from './components/CaseStudyModal';
 import { ProductModal } from './components/ProductModal';
-import { InsightArticleModal } from './components/InsightArticleModal';
 
 // Data types
-import type { CaseStudy, Product, InsightArticle } from './data/contentData';
+import type { Product } from './data/contentData';
 import { useSiteContent } from './lib/siteContent';
+import { trackPageview } from './lib/analytics';
 
 export function App() {
   const { content } = useSiteContent();
@@ -37,9 +33,7 @@ export function App() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [activeSystemId, setActiveSystemId] = useState<string>(content.products.items[0]?.id ?? '');
 
-  const [selectedCaseStudy, setSelectedCaseStudy] = useState<CaseStudy | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedArticle, setSelectedArticle] = useState<InsightArticle | null>(null);
 
   const handleOpenPlanner = useCallback((topic?: string) => {
     setPlannerTopic(topic || '');
@@ -52,6 +46,27 @@ export function App() {
       if (found) setSelectedProduct(found);
     },
     [content.products.items]
+  );
+
+  // These sections remain editable in admin, but are intentionally not part of
+  // the public site. Filter saved navigation so older content cannot render
+  // links to the removed anchors.
+  const publicNavigation = useMemo(
+    () => ({
+      ...content.navigation,
+      links: content.navigation.links.filter((link) => !['#work', '#insights'].includes(link.href)),
+    }),
+    [content.navigation]
+  );
+
+  const publicFooter = useMemo(
+    () => ({
+      ...content.footer,
+      companyLinks: content.footer.companyLinks.filter((link) => link.href !== '#work'),
+      solutionLinks: content.footer.solutionLinks.filter((link) => link.href !== '#work'),
+      productLinks: content.footer.productLinks.filter((link) => link.href !== '#work'),
+    }),
+    [content.footer]
   );
 
   /** Select a system in the showcase and bring the stage into view. */
@@ -74,19 +89,31 @@ export function App() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
+  // One first-party, cookie-free pageview beacon per load.
+  useEffect(() => {
+    trackPageview();
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#08111F] text-slate-100 font-sans antialiased">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2.5 focus:rounded-xl focus:bg-blue-600 focus:text-white focus:text-sm focus:font-semibold focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
+
       <ScrollProgress />
 
       <Navbar
-        navigation={content.navigation}
+        navigation={publicNavigation}
         products={content.products.items}
         onOpenPlanner={handleOpenPlanner}
         onOpenPalette={() => setPaletteOpen(true)}
         onFocusSystem={handleFocusSystem}
       />
 
-      <main>
+      <main id="main-content">
         <Hero
           content={content.hero}
           products={content.products.items}
@@ -119,32 +146,22 @@ export function App() {
 
         <Industries content={content.industries} onOpenPlanner={handleOpenPlanner} />
 
-        <FeaturedWork
-          content={content.caseStudies}
-          onSelectCaseStudy={setSelectedCaseStudy}
-          onOpenPlanner={handleOpenPlanner}
-        />
-
         <WhyUs content={content.whyUs} />
 
         <HowWeWork content={content.howWeWork} onOpenPlanner={handleOpenPlanner} />
 
-        <TechStack content={content.techStack} />
-
         <Testimonials content={content.testimonials} />
-
-        <Insights content={content.insights} onSelectArticle={setSelectedArticle} onOpenPlanner={handleOpenPlanner} />
 
         <CTA content={content.cta} onOpenPlanner={handleOpenPlanner} />
       </main>
 
-      <Footer brand={content.brand} content={content.footer} onOpenPlanner={handleOpenPlanner} />
+      <Footer brand={content.brand} content={publicFooter} onOpenPlanner={handleOpenPlanner} />
 
       {/* Interactive layers */}
       <CommandPalette
         open={paletteOpen}
         onClose={() => setPaletteOpen(false)}
-        content={content}
+        content={{ ...content, navigation: publicNavigation }}
         onSelectProduct={setSelectedProduct}
         onFocusSystem={handleFocusSystem}
         onOpenPlanner={handleOpenPlanner}
@@ -157,21 +174,9 @@ export function App() {
         content={content.planner}
       />
 
-      <CaseStudyModal
-        caseStudy={selectedCaseStudy}
-        onClose={() => setSelectedCaseStudy(null)}
-        onOpenPlanner={handleOpenPlanner}
-      />
-
       <ProductModal
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
-        onOpenPlanner={handleOpenPlanner}
-      />
-
-      <InsightArticleModal
-        article={selectedArticle}
-        onClose={() => setSelectedArticle(null)}
         onOpenPlanner={handleOpenPlanner}
       />
 

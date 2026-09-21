@@ -33,6 +33,11 @@ export interface Scene {
   caption: string;
   /** Seconds this scene holds when the reel plays. */
   duration: number;
+  /**
+   * Cursor rest points for a live-DOM scene, expressed as percentages of the
+   * frame. Screenshot scenes keep these points inside `image.hotspots`.
+   */
+  hotspots?: [number, number][];
   /** A scene is either drawn in code... */
   render?: (ctx: SceneContext) => ReactNode;
   /** ...or a captured screenshot of the real product. */

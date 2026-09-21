@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Building2, CheckCircle2, MessageSquare, Send, X 
 import type { SiteContent } from '../data/contentData';
 import { getIcon } from '../lib/icons';
 import { submitInquiry } from '../lib/inquiries';
+import { useBodyScrollLock, useEscape, useFocusTrap } from '../hooks';
 
 interface ProjectPlannerModalProps {
   isOpen: boolean;
@@ -15,7 +16,7 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [projectType, setProjectType] = useState<string>(content.defaultProjectType);
   const [timeline, setTimeline] = useState<string>(content.defaultTimeline);
-  const [budget, setBudget] = useState<string>(content.defaultBudget);
+  const [budget, setBudget] = useState<string>('');
   const [fullName, setFullName] = useState<string>('');
   const [organization, setOrganization] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
@@ -34,8 +35,18 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
   useEffect(() => {
     setProjectType((current) => current || content.defaultProjectType);
     setTimeline((current) => current || content.defaultTimeline);
-    setBudget((current) => current || content.defaultBudget);
-  }, [content.defaultBudget, content.defaultProjectType, content.defaultTimeline]);
+  }, [content.defaultProjectType, content.defaultTimeline]);
+
+  const resetForm = () => {
+    setStep(1);
+    setSubmitted(false);
+    setError(null);
+    onClose();
+  };
+
+  useBodyScrollLock(isOpen);
+  useEscape(isOpen, resetForm);
+  const trapRef = useFocusTrap<HTMLDivElement>(isOpen);
 
   if (!isOpen) return null;
 
@@ -63,23 +74,24 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
     }
   };
 
-  const handleWhatsAppDirect = () => {
-    const text = encodeURIComponent(
+  // A plain anchor rather than window.open: popup blockers on mobile Safari
+  // and in-app browsers silently swallow scripted opens, leaving the button dead.
+  const whatsappDirectUrl =
+    `https://wa.me/${content.whatsappNumber}?text=${encodeURIComponent(
       `Hello Eckintosh Technologies,\n\nI want to start a project:\n- Service: ${projectType}\n- Timeline: ${timeline}\n- Name: ${fullName}\n- Organization: ${organization}\n- Phone: ${phone}\n- Notes: ${notes || 'N/A'}`
-    );
-    window.open(`https://wa.me/${content.whatsappNumber}?text=${text}`, '_blank');
-  };
-
-  const resetForm = () => {
-    setStep(1);
-    setSubmitted(false);
-    setError(null);
-    onClose();
-  };
+    )}`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn"
+      onClick={resetForm}
+      role="dialog"
+      aria-modal="true"
+      aria-label={content.title}
+    >
       <div
+        ref={trapRef}
+        tabIndex={-1}
         className="relative w-full max-w-2xl bg-[#0F1D33] border border-white/10 rounded-2xl shadow-2xl overflow-hidden text-white my-auto max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
@@ -187,23 +199,23 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-2">Estimated Investment Range</label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  {content.budgetOptions.map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => setBudget(option)}
-                      className={`p-3 rounded-xl border text-xs font-medium transition-all ${
-                        budget === option
-                          ? 'bg-blue-600 text-white border-blue-400'
-                          : 'bg-slate-900 text-slate-300 border-white/10 hover:border-white/20'
-                      }`}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
+                <label
+                  htmlFor="planner-budget"
+                  className="block text-xs font-semibold text-slate-300 mb-2"
+                >
+                  Estimated Investment
+                </label>
+                <input
+                  id="planner-budget"
+                  type="text"
+                  value={budget}
+                  onChange={(e) => setBudget(e.target.value)}
+                  placeholder={content.budgetPlaceholder}
+                  className="w-full p-3 rounded-xl bg-slate-900 border border-white/10 text-white text-xs placeholder:text-slate-500 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all"
+                />
+                <p className="mt-2 text-[11px] text-slate-500">
+                  Optional. A rough figure or range is enough to scope the build.
+                </p>
               </div>
 
               <div className="pt-4 flex items-center justify-between border-t border-white/10">
@@ -329,12 +341,14 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
               </div>
 
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <button
-                  onClick={handleWhatsAppDirect}
+                <a
+                  href={whatsappDirectUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20"
                 >
                   <MessageSquare className="w-4 h-4" /> Connect Directly on WhatsApp
-                </button>
+                </a>
                 <button
                   onClick={resetForm}
                   className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold"

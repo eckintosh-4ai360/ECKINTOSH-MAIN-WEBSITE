@@ -125,6 +125,59 @@ export function useEscape(active: boolean, handler: () => void) {
   }, [active]);
 }
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Traps Tab/Shift+Tab focus inside the returned ref's element while `active`,
+ * moving focus into it on open and restoring the previously focused element
+ * on close (used by modals and the command palette).
+ */
+export function useFocusTrap<T extends HTMLElement = HTMLDivElement>(active: boolean) {
+  const ref = useRef<T | null>(null);
+
+  useEffect(() => {
+    if (!active) return;
+    const container = ref.current;
+    if (!container) return;
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+
+    const focusFirst = () => {
+      const focusable = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+      (focusable[0] ?? container).focus();
+    };
+    const raf = window.requestAnimationFrame(focusFirst);
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+        (el) => el.offsetParent !== null
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    container.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      container.removeEventListener('keydown', onKeyDown);
+      previouslyFocused?.focus?.();
+    };
+  }, [active]);
+
+  return ref;
+}
+
 /** Normalised pointer position (0-1) within the referenced element. */
 export function usePointerSpotlight<T extends HTMLElement = HTMLDivElement>() {
   const ref = useRef<T | null>(null);

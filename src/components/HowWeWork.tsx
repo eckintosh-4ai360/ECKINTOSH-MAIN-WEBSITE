@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Code2, PencilRuler, Rocket, Search, TrendingUp } from 'lucide-react';
 import type { SiteContent } from '../data/contentData';
 import { Reveal } from './Reveal';
 
@@ -8,76 +8,63 @@ interface HowWeWorkProps {
   onOpenPlanner: (topic?: string) => void;
 }
 
+const STAGE_ICONS = [Search, PencilRuler, Code2, Rocket, TrendingUp];
+
+/** A compact, sequential delivery process rather than five independent cards. */
 export const HowWeWork: React.FC<HowWeWorkProps> = ({ content, onOpenPlanner }) => {
   return (
-    <section className="bg-[#F7F9FC] py-20 md:py-28 text-slate-900 border-b border-slate-200">
+    <section id="how-we-work" aria-labelledby="how-we-work-heading" className="bg-[#F7F9FC] py-16 md:py-24 text-slate-900 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Header */}
-        <Reveal className="max-w-3xl mb-16">
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-100/80 px-3 py-1 rounded-full border border-blue-200">
-            {content.eyebrow}
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mt-3 font-heading leading-tight">
-            {content.title}
-          </h2>
-          <p className="text-base text-slate-600 mt-4 leading-relaxed font-normal">
-            {content.description}
-          </p>
-        </Reveal>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          <Reveal className="lg:col-span-5 lg:sticky lg:top-28">
+            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-600 bg-blue-100/80 px-2.5 py-1 rounded-full border border-blue-200">
+              {content.eyebrow}
+            </span>
+            <h2 id="how-we-work-heading" className="text-3xl sm:text-4xl md:text-[2.75rem] font-extrabold text-slate-900 tracking-tight mt-4 leading-[1.08]">
+              {content.title}
+            </h2>
+            <p className="max-w-lg text-sm text-slate-600 mt-4 leading-relaxed">{content.description}</p>
 
-        {/* Premium Timeline Grid */}
-        <div className="relative">
-          {/* Subtle Connecting Line for Desktop */}
-          <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-slate-200 -translate-y-12 z-0" />
+            <button
+              type="button"
+              onClick={() => onOpenPlanner(content.ctaTopic)}
+              className="mt-6 px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-all shadow-lg inline-flex items-center gap-2"
+            >
+              {content.ctaLabel}
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 relative z-10">
-            {content.items.map((stepItem, idx) => (
-              <Reveal key={stepItem.step} delay={idx * 80} className="h-full">
-              <div
-                className="h-full p-6 rounded-2xl bg-white border border-slate-200 shadow-md hover:shadow-xl hover:border-blue-500/40 lift flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-3xl font-black text-blue-600 font-mono tracking-tight group-hover:scale-105 transition-transform">
+          <ol className="lg:col-span-7 rounded-3xl border border-slate-200 bg-white shadow-[0_24px_60px_-38px_rgba(15,23,42,0.35)] overflow-hidden divide-y divide-slate-100">
+            {content.items.map((stepItem, index) => {
+              const Icon = STAGE_ICONS[index % STAGE_ICONS.length];
+              return (
+                <Reveal key={stepItem.step} delay={index * 65} as="li">
+                  <article className="group grid grid-cols-[auto_1fr_auto] gap-3 sm:gap-4 items-center p-4 sm:p-5 transition-colors hover:bg-blue-50/45">
+                    <span className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl grid place-items-center bg-blue-50 border border-blue-100 text-blue-600 shrink-0 transition-transform duration-300 group-hover:scale-105">
+                      <Icon className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+                    </span>
+
+                    <span className="min-w-0">
+                      <span className="block text-[9px] font-bold uppercase tracking-[0.16em] text-blue-600">
+                        Phase {stepItem.step}
+                      </span>
+                      <span className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mt-0.5">
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900">{stepItem.title}</h3>
+                        <span className="text-[11px] font-medium text-slate-500">{stepItem.summary}</span>
+                      </span>
+                      <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed mt-1 line-clamp-2">{stepItem.details}</p>
+                    </span>
+
+                    <span className="text-xl sm:text-2xl font-black text-slate-200 tabular-nums leading-none select-none group-hover:text-blue-200 transition-colors">
                       {stepItem.step}
                     </span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-slate-300 group-hover:bg-blue-600 transition-colors" />
-                  </div>
-
-                  <h3 className="text-lg font-bold text-slate-900 font-heading mb-1">
-                    {stepItem.title}
-                  </h3>
-
-                  <div className="text-xs font-semibold text-blue-600 mb-3">
-                    {stepItem.summary}
-                  </div>
-
-                  <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                    {stepItem.details}
-                  </p>
-                </div>
-
-                <div className="pt-4 mt-4 border-t border-slate-100 text-[10px] uppercase font-mono text-slate-400">
-                  Stage 0{idx + 1} Execution
-                </div>
-              </div>
-              </Reveal>
-            ))}
-          </div>
+                  </article>
+                </Reveal>
+              );
+            })}
+          </ol>
         </div>
-
-        {/* Bottom Callout */}
-        <div className="mt-12 text-center">
-          <button
-            onClick={() => onOpenPlanner(content.ctaTopic)}
-            className="px-8 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-all shadow-lg inline-flex items-center gap-2"
-          >
-            <span>{content.ctaLabel}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
-
       </div>
     </section>
   );

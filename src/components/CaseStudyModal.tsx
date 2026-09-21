@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
 import { CaseStudy } from '../data/contentData';
+import { useBodyScrollLock, useEscape, useFocusTrap } from '../hooks';
 
 interface CaseStudyModalProps {
   caseStudy: CaseStudy | null;
@@ -13,11 +14,23 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
   onClose,
   onOpenPlanner,
 }) => {
+  useBodyScrollLock(Boolean(caseStudy));
+  useEscape(Boolean(caseStudy), onClose);
+  const trapRef = useFocusTrap<HTMLDivElement>(Boolean(caseStudy));
+
   if (!caseStudy) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div 
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={caseStudy.title}
+    >
+      <div
+        ref={trapRef}
+        tabIndex={-1}
         className="relative w-full max-w-4xl bg-[#0F1D33] border border-white/10 rounded-2xl shadow-2xl overflow-hidden text-white my-auto max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
