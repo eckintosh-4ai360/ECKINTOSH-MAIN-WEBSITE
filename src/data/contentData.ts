@@ -1506,10 +1506,10 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       "Tell us what you're trying to build. We'll help you figure out the next step, from technical architecture to rapid deployment.",
     primaryLabel: 'Start a Conversation',
     primaryTopic: 'CTA Section Inquiry',
-    whatsappLabel: 'Chat via WhatsApp',
+    whatsappLabel: 'Chat via WhatsApp · 053 115 2121',
     whatsappUrl: 'https://wa.me/233531152121',
     contactCards: [
-      { iconName: 'PhoneCall', label: 'Direct Call: +233 53 115 2121' },
+      { iconName: 'PhoneCall', label: 'Direct Call: 053 115 2121' },
       { iconName: 'MapPin', label: 'Engineering Hub: Accra, Ghana' },
       { iconName: 'ShieldCheck', label: 'Response Time: < 2 Hours' },
     ],

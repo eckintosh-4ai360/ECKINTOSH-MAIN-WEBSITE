@@ -57,7 +57,7 @@ export const PrivacyPolicy: React.FC = () => (
       You can ask us what information we hold about you, ask us to correct it, or ask us to delete it.
       Reach us via WhatsApp at{' '}
       <a href="https://wa.me/233531152121" target="_blank" rel="noopener noreferrer">
-        +233 53 115 2121
+        053 115 2121
       </a>{' '}
       or through the project planner form, and we'll action the request.
     </p>

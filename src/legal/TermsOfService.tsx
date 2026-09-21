@@ -57,7 +57,7 @@ export const TermsOfService: React.FC = () => (
     <p>
       Questions about these terms can be sent via WhatsApp at{' '}
       <a href="https://wa.me/233531152121" target="_blank" rel="noopener noreferrer">
-        +233 53 115 2121
+        053 115 2121
       </a>{' '}
       or through the project planner form.
     </p>
