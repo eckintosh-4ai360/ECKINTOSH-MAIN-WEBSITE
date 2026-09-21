@@ -16,7 +16,7 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [projectType, setProjectType] = useState<string>(content.defaultProjectType);
   const [timeline, setTimeline] = useState<string>(content.defaultTimeline);
-  const [budget, setBudget] = useState<string>(content.defaultBudget);
+  const [budget, setBudget] = useState<string>('');
   const [fullName, setFullName] = useState<string>('');
   const [organization, setOrganization] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
@@ -35,8 +35,7 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
   useEffect(() => {
     setProjectType((current) => current || content.defaultProjectType);
     setTimeline((current) => current || content.defaultTimeline);
-    setBudget((current) => current || content.defaultBudget);
-  }, [content.defaultBudget, content.defaultProjectType, content.defaultTimeline]);
+  }, [content.defaultProjectType, content.defaultTimeline]);
 
   const resetForm = () => {
     setStep(1);
@@ -200,23 +199,23 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-2">Estimated Investment Range</label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  {content.budgetOptions.map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => setBudget(option)}
-                      className={`p-3 rounded-xl border text-xs font-medium transition-all ${
-                        budget === option
-                          ? 'bg-blue-600 text-white border-blue-400'
-                          : 'bg-slate-900 text-slate-300 border-white/10 hover:border-white/20'
-                      }`}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
+                <label
+                  htmlFor="planner-budget"
+                  className="block text-xs font-semibold text-slate-300 mb-2"
+                >
+                  Estimated Investment
+                </label>
+                <input
+                  id="planner-budget"
+                  type="text"
+                  value={budget}
+                  onChange={(e) => setBudget(e.target.value)}
+                  placeholder={content.budgetPlaceholder}
+                  className="w-full p-3 rounded-xl bg-slate-900 border border-white/10 text-white text-xs placeholder:text-slate-500 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all"
+                />
+                <p className="mt-2 text-[11px] text-slate-500">
+                  Optional. A rough figure or range is enough to scope the build.
+                </p>
               </div>
 
               <div className="pt-4 flex items-center justify-between border-t border-white/10">

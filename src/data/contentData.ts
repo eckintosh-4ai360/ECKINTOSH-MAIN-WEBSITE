@@ -1307,10 +1307,9 @@ export interface SiteContent {
     projectTypePrompt: string;
     projectTypeOptions: PlannerOption[];
     timelineOptions: string[];
-    budgetOptions: string[];
     defaultProjectType: string;
     defaultTimeline: string;
-    defaultBudget: string;
+    budgetPlaceholder: string;
     whatsappNumber: string;
     successTitle: string;
     successDescription: string;
@@ -1565,10 +1564,9 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       { title: 'Custom Software Build', desc: 'Something none of the above covers', iconName: 'Code2' },
     ],
     timelineOptions: ['Urgent (< 1 Month)', '1 - 2 Months', '3+ Months'],
-    budgetOptions: ['GHS 10,000 - GHS 25,000', 'GHS 25,000 - GHS 60,000', 'GHS 60,000+ / Enterprise'],
     defaultProjectType: 'School Management System',
     defaultTimeline: '1 - 2 Months',
-    defaultBudget: 'GHS 15,000 - GHS 35,000',
+    budgetPlaceholder: 'e.g. GHS 40,000 or a range you have in mind',
     whatsappNumber: '233531152121',
     successTitle: 'Inquiry Received!',
     successDescription:
