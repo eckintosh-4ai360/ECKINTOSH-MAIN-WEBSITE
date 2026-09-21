@@ -688,19 +688,32 @@ app.post('/api/admin/media', requireAdmin, upload.single('file'), async (req, re
   }
 });
 
-const distPath = path.resolve(__dirname, '..', 'dist');
-app.use(express.static(distPath));
-app.get(/.*/, (_req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'));
-});
-
-initializeDatabase()
-  .then(() => {
-    app.listen(port, () => {
-      console.log(`Eckintosh API running on http://localhost:${port}`);
-    });
-  })
-  .catch((error) => {
-    console.error('Failed to initialize database:', error);
-    process.exit(1);
+/**
+ * On Vercel this module is imported as a serverless function and only /api/*
+ * is routed to it — the platform serves dist/ itself. Anywhere else (local dev,
+ * a plain Node host) this process also serves the built SPA and listens.
+ */
+if (process.env.VERCEL) {
+  // Unknown API paths must answer JSON. Falling through to an HTML 404 is what
+  // makes a missing route surface in the browser as "Unexpected token '<'".
+  app.use('/api', (_req, res) => sendError(res, 404, 'Unknown API route.'));
+} else {
+  const distPath = path.resolve(__dirname, '..', 'dist');
+  app.use(express.static(distPath));
+  app.get(/.*/, (_req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
   });
+
+  initializeDatabase()
+    .then(() => {
+      app.listen(port, () => {
+        console.log(`Eckintosh API running on http://localhost:${port}`);
+      });
+    })
+    .catch((error) => {
+      console.error('Failed to initialize database:', error);
+      process.exit(1);
+    });
+}
+
+export default app;
