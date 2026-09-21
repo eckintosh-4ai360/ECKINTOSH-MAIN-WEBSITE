@@ -16,6 +16,9 @@ const PROMISES = [
   'Source code and data ownership handed over on delivery',
 ];
 
+// wa.me requires Ghana's country code and omits the local leading zero.
+const WHATSAPP_CHAT_URL = 'https://wa.me/233531152121';
+
 export const CTA: React.FC<CTAProps> = ({ content, onOpenPlanner }) => {
   const spotlight = usePointerSpotlight<HTMLElement>();
 
@@ -71,7 +74,7 @@ export const CTA: React.FC<CTAProps> = ({ content, onOpenPlanner }) => {
               </button>
 
               <a
-                href={content.whatsappUrl}
+                href={WHATSAPP_CHAT_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-7 py-3.5 rounded-xl bg-emerald-600/15 hover:bg-emerald-600/25 text-emerald-400 font-semibold text-sm border border-emerald-500/30 transition-all flex items-center justify-center gap-2"
