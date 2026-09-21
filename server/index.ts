@@ -688,19 +688,53 @@ app.post('/api/admin/media', requireAdmin, upload.single('file'), async (req, re
   }
 });
 
-const distPath = path.resolve(__dirname, '..', 'dist');
-app.use(express.static(distPath));
-app.get(/.*/, (_req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'));
-});
-
-initializeDatabase()
-  .then(() => {
-    app.listen(port, () => {
-      console.log(`Eckintosh API running on http://localhost:${port}`);
-    });
-  })
-  .catch((error) => {
-    console.error('Failed to initialize database:', error);
-    process.exit(1);
+/**
+ * On Vercel this module is imported as a serverless function and only /api/*
+ * is routed to it — the platform serves dist/ itself. Anywhere else (local dev,
+ * a plain Node host) this process also serves the built SPA and listens.
+ */
+if (process.env.VERCEL) {
+  // Unknown API paths must answer JSON. Falling through to an HTML 404 is what
+  // makes a missing route surface in the browser as "Unexpected token '<'".
+  app.use('/api', (_req, res) => sendError(res, 404, 'Unknown API route.'));
+} else {
+  const distPath = path.resolve(__dirname, '..', 'dist');
+  app.use(express.static(distPath));
+  app.get(/.*/, (_req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
   });
+
+  initializeDatabase()
+    .then(() => {
+      const server = app.listen(port, () => {
+        // Deferred to the macrotask queue: on Windows the socket can bind one
+        // address family and fail the other, and EADDRINUSE arrives via
+        // nextTick. Without this the process claims to be running a line
+        // before it exits.
+        setImmediate(() => console.log(`Eckintosh API running on http://localhost:${port}`));
+      });
+
+      // Without this, a leftover API process makes the new one die on an
+      // unhandled EADDRINUSE. The watcher just reports "Completed running" and
+      // the only visible symptom is ECONNREFUSED in the Vite proxy log.
+      server.on('error', (error: NodeJS.ErrnoException) => {
+        if (error.code === 'EADDRINUSE') {
+          console.error(
+            `Port ${port} is already in use — another API process is still running.
+` +
+              'Stop it first (Windows: netstat -ano | findstr :' +
+              `${port}` +
+              ', then taskkill /PID <pid> /F).'
+          );
+          process.exit(1);
+        }
+        throw error;
+      });
+    })
+    .catch((error) => {
+      console.error('Failed to initialize database:', error);
+      process.exit(1);
+    });
+}
+
+export default app;
