@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { TrustBar } from './components/TrustBar';
@@ -7,10 +7,8 @@ import { SystemsShowcase } from './components/SystemsShowcase';
 import { WhatWeDo } from './components/WhatWeDo';
 import { SystemsIndex } from './components/SystemsIndex';
 import { Industries } from './components/Industries';
-import { FeaturedWork } from './components/FeaturedWork';
 import { WhyUs } from './components/WhyUs';
 import { HowWeWork } from './components/HowWeWork';
-import { TechStack } from './components/TechStack';
 import { Testimonials } from './components/Testimonials';
 import { Insights } from './components/Insights';
 import { CTA } from './components/CTA';
@@ -21,12 +19,11 @@ import { CommandPalette } from './components/CommandPalette';
 
 // Modals
 import { ProjectPlannerModal } from './components/ProjectPlannerModal';
-import { CaseStudyModal } from './components/CaseStudyModal';
 import { ProductModal } from './components/ProductModal';
 import { InsightArticleModal } from './components/InsightArticleModal';
 
 // Data types
-import type { CaseStudy, Product, InsightArticle } from './data/contentData';
+import type { Product, InsightArticle } from './data/contentData';
 import { useSiteContent } from './lib/siteContent';
 import { trackPageview } from './lib/analytics';
 
@@ -38,7 +35,6 @@ export function App() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [activeSystemId, setActiveSystemId] = useState<string>(content.products.items[0]?.id ?? '');
 
-  const [selectedCaseStudy, setSelectedCaseStudy] = useState<CaseStudy | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<InsightArticle | null>(null);
 
@@ -53,6 +49,24 @@ export function App() {
       if (found) setSelectedProduct(found);
     },
     [content.products.items]
+  );
+
+  // Case studies are still managed in the admin console, but are intentionally
+  // not part of the public site. Filter saved navigation too, so an older
+  // content record cannot render a link to the removed section.
+  const publicNavigation = useMemo(
+    () => ({ ...content.navigation, links: content.navigation.links.filter((link) => link.href !== '#work') }),
+    [content.navigation]
+  );
+
+  const publicFooter = useMemo(
+    () => ({
+      ...content.footer,
+      companyLinks: content.footer.companyLinks.filter((link) => link.href !== '#work'),
+      solutionLinks: content.footer.solutionLinks.filter((link) => link.href !== '#work'),
+      productLinks: content.footer.productLinks.filter((link) => link.href !== '#work'),
+    }),
+    [content.footer]
   );
 
   /** Select a system in the showcase and bring the stage into view. */
@@ -92,7 +106,7 @@ export function App() {
       <ScrollProgress />
 
       <Navbar
-        navigation={content.navigation}
+        navigation={publicNavigation}
         products={content.products.items}
         onOpenPlanner={handleOpenPlanner}
         onOpenPalette={() => setPaletteOpen(true)}
@@ -132,17 +146,9 @@ export function App() {
 
         <Industries content={content.industries} onOpenPlanner={handleOpenPlanner} />
 
-        <FeaturedWork
-          content={content.caseStudies}
-          onSelectCaseStudy={setSelectedCaseStudy}
-          onOpenPlanner={handleOpenPlanner}
-        />
-
         <WhyUs content={content.whyUs} />
 
         <HowWeWork content={content.howWeWork} onOpenPlanner={handleOpenPlanner} />
-
-        <TechStack content={content.techStack} />
 
         <Testimonials content={content.testimonials} />
 
@@ -151,13 +157,13 @@ export function App() {
         <CTA content={content.cta} onOpenPlanner={handleOpenPlanner} />
       </main>
 
-      <Footer brand={content.brand} content={content.footer} onOpenPlanner={handleOpenPlanner} />
+      <Footer brand={content.brand} content={publicFooter} onOpenPlanner={handleOpenPlanner} />
 
       {/* Interactive layers */}
       <CommandPalette
         open={paletteOpen}
         onClose={() => setPaletteOpen(false)}
-        content={content}
+        content={{ ...content, navigation: publicNavigation }}
         onSelectProduct={setSelectedProduct}
         onFocusSystem={handleFocusSystem}
         onOpenPlanner={handleOpenPlanner}
@@ -168,12 +174,6 @@ export function App() {
         onClose={() => setPlannerOpen(false)}
         initialTopic={plannerTopic}
         content={content.planner}
-      />
-
-      <CaseStudyModal
-        caseStudy={selectedCaseStudy}
-        onClose={() => setSelectedCaseStudy(null)}
-        onOpenPlanner={handleOpenPlanner}
       />
 
       <ProductModal

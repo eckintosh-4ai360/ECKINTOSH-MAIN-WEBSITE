@@ -96,7 +96,7 @@ export interface InsightArticle {
 }
 
 export const TRUST_STATS = [
-  { value: "9", label: "Systems Shipped", sub: "Production platforms we own and maintain", highlight: true },
+  { value: "9+", label: "Systems Shipped", sub: "Production platforms we own and maintain", highlight: true },
   { value: "1,000+", label: "People Served Daily", sub: "Students, staff, patients, shoppers & clients", highlight: false },
   { value: "8", label: "Industries Supported", sub: "Education, Health, Retail, HR, Beauty & more", highlight: false },
   { value: "Ghana", label: "Built in Africa", sub: "Accra", highlight: true }
@@ -1331,7 +1331,6 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       { label: 'Systems', href: '#systems' },
       { label: 'Services', href: '#services' },
       { label: 'Industries', href: '#industries' },
-      { label: 'Our Work', href: '#work' },
       { label: 'About', href: '#why-us' },
       { label: 'Insights', href: '#insights' },
       { label: 'Contact', href: '#contact' },
@@ -1524,7 +1523,6 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       { label: 'About', href: '#why-us' },
       { label: 'Services', href: '#services' },
       { label: 'Industries', href: '#industries' },
-      { label: 'Our Work', href: '#work' },
       { label: 'Contact', href: '#contact' },
     ],
     solutionLinks: [
