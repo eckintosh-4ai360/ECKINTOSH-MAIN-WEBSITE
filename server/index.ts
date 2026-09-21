@@ -11,6 +11,13 @@ import { DEFAULT_SITE_CONTENT, type CaseStudy, type SiteContent } from '../src/d
 import { mergeSiteContent, stampContentVersion } from '../src/data/contentMerge';
 import { query } from './db';
 import { caseStudyFromRow, initializeDatabase, normalizeCaseStudy, type CaseStudyRow } from './migrate';
+import {
+  loadNotificationSettings,
+  notifyNewInquiry,
+  saveNotificationSettings,
+  sendTestNotification,
+  toPublicSettings,
+} from './mailer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -298,6 +305,34 @@ app.get('/api/content', async (_req, res) => {
   }
 });
 
+app.get('/api/admin/settings/notifications', requireAdmin, async (_req, res) => {
+  try {
+    res.json(toPublicSettings(await loadNotificationSettings()));
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Failed to load notification settings.');
+  }
+});
+
+app.put('/api/admin/settings/notifications', requireAdmin, async (req, res) => {
+  try {
+    res.json(toPublicSettings(await saveNotificationSettings(req.body)));
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Failed to save notification settings.');
+  }
+});
+
+app.post('/api/admin/settings/notifications/test', requireAdmin, async (_req, res) => {
+  try {
+    res.json({ ok: true, recipients: await sendTestNotification() });
+  } catch (error) {
+    console.error(error);
+    // Gmail's own rejection text is the most useful thing the admin can see.
+    sendError(res, 400, error instanceof Error ? error.message : 'Failed to send the test email.');
+  }
+});
+
 app.get('/api/case-studies', async (_req, res) => {
   try {
     res.json(await listCaseStudies(false));
@@ -333,7 +368,12 @@ app.post('/api/inquiries', async (req, res) => {
       ]
     );
 
-    res.status(201).json(inquiryFromRow(result.rows[0]));
+    const saved = inquiryFromRow(result.rows[0]);
+    res.status(201).json(saved);
+
+    // After responding: the visitor should never wait on Gmail, and a mail
+    // failure must not turn a captured inquiry into an error for them.
+    void notifyNewInquiry(saved);
   } catch (error) {
     console.error(error);
     sendError(res, 500, 'Failed to submit inquiry.');

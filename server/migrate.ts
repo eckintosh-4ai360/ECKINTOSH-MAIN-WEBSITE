@@ -133,6 +133,17 @@ export async function initializeDatabase(): Promise<void> {
     )
   `);
 
+  // Operational settings (Gmail notification credentials, etc.) kept out of
+  // site_content so editing website copy can never clobber them.
+  await query(`
+    create table if not exists app_settings (
+      key text primary key,
+      value jsonb not null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )
+  `);
+
   await query(`
     create table if not exists media_assets (
       id uuid primary key default gen_random_uuid(),

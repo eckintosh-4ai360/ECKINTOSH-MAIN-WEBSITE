@@ -10,6 +10,7 @@ import {
   LogOut,
   PanelLeft,
   Search,
+  Settings,
   X,
 } from 'lucide-react';
 import { signOutAdmin } from '../lib/adminAuth';
@@ -19,8 +20,9 @@ import { ProjectsPanel } from './ProjectsPanel';
 import { ContentPanel } from './ContentPanel';
 import { MediaPanel } from './MediaPanel';
 import { AnalyticsPanel } from './AnalyticsPanel';
+import { SettingsPanel } from './SettingsPanel';
 
-type Tab = 'content' | 'projects' | 'inquiries' | 'media' | 'analytics';
+type Tab = 'content' | 'projects' | 'inquiries' | 'media' | 'analytics' | 'settings';
 
 const navigation: { id: Tab; label: string; description: string; icon: typeof FileJson }[] = [
   { id: 'content', label: 'Website content', description: 'Copy, navigation & sections', icon: FileJson },
@@ -28,6 +30,7 @@ const navigation: { id: Tab; label: string; description: string; icon: typeof Fi
   { id: 'inquiries', label: 'Inbox', description: 'Requests & contact messages', icon: Inbox },
   { id: 'media', label: 'Media library', description: 'Images and video uploads', icon: Image },
   { id: 'analytics', label: 'Traffic', description: 'First-party pageview analytics', icon: BarChart3 },
+  { id: 'settings', label: 'Settings', description: 'Email notifications & integrations', icon: Settings },
 ];
 
 const pageCopy: Record<Tab, { eyebrow: string; title: string; description: string }> = {
@@ -55,6 +58,11 @@ const pageCopy: Record<Tab, { eyebrow: string; title: string; description: strin
     eyebrow: 'Traffic',
     title: 'See what visitors are looking at.',
     description: 'Cookie-free pageview counts collected straight from this site — no third-party script.',
+  },
+  settings: {
+    eyebrow: 'Configuration',
+    title: 'Know the moment someone reaches out.',
+    description: 'Connect a Gmail account so every new inquiry lands in your inbox as well as the admin inbox.',
   },
 };
 
@@ -291,6 +299,7 @@ export const AdminDashboard: React.FC = () => {
           {tab === 'inquiries' && <InquiriesPanel targetId={searchTarget?.scope === 'inquiries' ? searchTarget.target : undefined} />}
           {tab === 'media' && <MediaPanel targetId={searchTarget?.scope === 'media' ? searchTarget.target : undefined} />}
           {tab === 'analytics' && <AnalyticsPanel />}
+          {tab === 'settings' && <SettingsPanel />}
         </main>
       </div>
     </div>
