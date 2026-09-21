@@ -10,7 +10,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "node --import tsx server/index.ts",
-    "migrate": "node --import tsx server/run-migrate.ts"
+    "migrate": "node --import tsx server/run-migrate.ts",
+    "admin:set-password": "node --import tsx server/set-admin-password.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
