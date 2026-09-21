@@ -47,7 +47,7 @@ export const CTA: React.FC<CTAProps> = ({ content, onOpenPlanner }) => {
           {/* Pitch */}
           <Reveal className="lg:col-span-3">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[11px] font-semibold">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              {/* <Sparkles className="w-3.5 h-3.5 text-amber-400" /> */}
               {content.eyebrow}
             </div>
 

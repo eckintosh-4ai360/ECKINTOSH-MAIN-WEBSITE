@@ -84,7 +84,7 @@ export const SystemsShowcase: React.FC<SystemsShowcaseProps> = ({
             className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] px-3 py-1.5 rounded-full border transition-colors duration-500"
             style={{ color: accent.hex2, borderColor: `${accent.hex}55`, backgroundColor: `${accent.hex}14` }}
           >
-            <Sparkles className="w-3.5 h-3.5" />
+        
             {content.eyebrow}
           </span>
           <h2 id="systems-heading" className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-4 leading-[1.1]">
