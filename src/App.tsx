@@ -10,7 +10,6 @@ import { Industries } from './components/Industries';
 import { WhyUs } from './components/WhyUs';
 import { HowWeWork } from './components/HowWeWork';
 import { Testimonials } from './components/Testimonials';
-import { Insights } from './components/Insights';
 import { CTA } from './components/CTA';
 import { Footer } from './components/Footer';
 import { BackToTop } from './components/BackToTop';
@@ -20,10 +19,9 @@ import { CommandPalette } from './components/CommandPalette';
 // Modals
 import { ProjectPlannerModal } from './components/ProjectPlannerModal';
 import { ProductModal } from './components/ProductModal';
-import { InsightArticleModal } from './components/InsightArticleModal';
 
 // Data types
-import type { Product, InsightArticle } from './data/contentData';
+import type { Product } from './data/contentData';
 import { useSiteContent } from './lib/siteContent';
 import { trackPageview } from './lib/analytics';
 
@@ -36,7 +34,6 @@ export function App() {
   const [activeSystemId, setActiveSystemId] = useState<string>(content.products.items[0]?.id ?? '');
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedArticle, setSelectedArticle] = useState<InsightArticle | null>(null);
 
   const handleOpenPlanner = useCallback((topic?: string) => {
     setPlannerTopic(topic || '');
@@ -51,11 +48,14 @@ export function App() {
     [content.products.items]
   );
 
-  // Case studies are still managed in the admin console, but are intentionally
-  // not part of the public site. Filter saved navigation too, so an older
-  // content record cannot render a link to the removed section.
+  // These sections remain editable in admin, but are intentionally not part of
+  // the public site. Filter saved navigation so older content cannot render
+  // links to the removed anchors.
   const publicNavigation = useMemo(
-    () => ({ ...content.navigation, links: content.navigation.links.filter((link) => link.href !== '#work') }),
+    () => ({
+      ...content.navigation,
+      links: content.navigation.links.filter((link) => !['#work', '#insights'].includes(link.href)),
+    }),
     [content.navigation]
   );
 
@@ -152,8 +152,6 @@ export function App() {
 
         <Testimonials content={content.testimonials} />
 
-        <Insights content={content.insights} onSelectArticle={setSelectedArticle} onOpenPlanner={handleOpenPlanner} />
-
         <CTA content={content.cta} onOpenPlanner={handleOpenPlanner} />
       </main>
 
@@ -179,12 +177,6 @@ export function App() {
       <ProductModal
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
-        onOpenPlanner={handleOpenPlanner}
-      />
-
-      <InsightArticleModal
-        article={selectedArticle}
-        onClose={() => setSelectedArticle(null)}
         onOpenPlanner={handleOpenPlanner}
       />
 

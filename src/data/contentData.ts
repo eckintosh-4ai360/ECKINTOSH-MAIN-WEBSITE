@@ -970,32 +970,32 @@ export const HOW_WE_WORK_STEPS = [
   {
     step: "01",
     title: "Discover",
-    summary: "Understand your business and identify the real problem.",
-    details: "We conduct deep discovery sessions to analyze your existing workflows, identify operational friction, define success metrics, and map out clear technical requirements before writing a single line of code."
+    summary: "Clarify the opportunity.",
+    details: "We map workflows, priorities and success measures."
   },
   {
     step: "02",
     title: "Design",
-    summary: "Create the experience and architecture.",
-    details: "Our UI/UX designers and systems architects collaborate to create interactive wireframes, seamless user journeys, and robust database schemas that feel natural and intuitive."
+    summary: "Shape the right solution.",
+    details: "We turn findings into focused flows and technical plans."
   },
   {
     step: "03",
     title: "Build",
-    summary: "Develop and test the solution.",
-    details: "Using iterative agile sprints, our engineers build your platform with clean, documented code, rigorous security testing, mobile money payment integrations, and automated quality assurance."
+    summary: "Build with confidence.",
+    details: "We ship in short cycles with testing built in."
   },
   {
     step: "04",
     title: "Launch",
-    summary: "Deploy and train your team.",
-    details: "We handle cloud infrastructure deployment, data migration, domain setup, and conduct comprehensive hands-on training for your administrators, staff, and end-users."
+    summary: "Go live smoothly.",
+    details: "We deploy, migrate data and train your team."
   },
   {
     step: "05",
     title: "Grow",
-    summary: "Maintain, improve and scale.",
-    details: "Post-launch, we actively monitor performance, maintain security protocols, provide quick technical support, and regularly roll out feature enhancements as your operational needs expand."
+    summary: "Improve as you grow.",
+    details: "We monitor, support and evolve the product with you."
   }
 ];
 
@@ -1332,7 +1332,6 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       { label: 'Services', href: '#services' },
       { label: 'Industries', href: '#industries' },
       { label: 'About', href: '#why-us' },
-      { label: 'Insights', href: '#insights' },
       { label: 'Contact', href: '#contact' },
     ],
     ctaLabel: "Let's Talk",
@@ -1471,7 +1470,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
   howWeWork: {
     eyebrow: 'Our Delivery Process',
     title: 'How we turn vision into production technology.',
-    description: 'A structured, predictable 5-stage lifecycle designed for corporate clarity, speed to launch, and minimal risk.',
+    description: 'A clear five-step path from a focused brief to a product that keeps improving.',
     items: HOW_WE_WORK_STEPS,
     ctaLabel: 'Start Stage 01: Discover Your System Requirements',
     ctaTopic: 'Process & Discovery Call',
