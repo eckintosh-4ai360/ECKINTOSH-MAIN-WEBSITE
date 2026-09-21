@@ -706,8 +706,29 @@ if (process.env.VERCEL) {
 
   initializeDatabase()
     .then(() => {
-      app.listen(port, () => {
-        console.log(`Eckintosh API running on http://localhost:${port}`);
+      const server = app.listen(port, () => {
+        // Deferred to the macrotask queue: on Windows the socket can bind one
+        // address family and fail the other, and EADDRINUSE arrives via
+        // nextTick. Without this the process claims to be running a line
+        // before it exits.
+        setImmediate(() => console.log(`Eckintosh API running on http://localhost:${port}`));
+      });
+
+      // Without this, a leftover API process makes the new one die on an
+      // unhandled EADDRINUSE. The watcher just reports "Completed running" and
+      // the only visible symptom is ECONNREFUSED in the Vite proxy log.
+      server.on('error', (error: NodeJS.ErrnoException) => {
+        if (error.code === 'EADDRINUSE') {
+          console.error(
+            `Port ${port} is already in use — another API process is still running.
+` +
+              'Stop it first (Windows: netstat -ano | findstr :' +
+              `${port}` +
+              ', then taskkill /PID <pid> /F).'
+          );
+          process.exit(1);
+        }
+        throw error;
       });
     })
     .catch((error) => {
