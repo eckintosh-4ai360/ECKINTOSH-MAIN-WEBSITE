@@ -96,7 +96,7 @@ export interface InsightArticle {
 }
 
 export const TRUST_STATS = [
-  { value: "9+", label: "Systems Shipped", sub: "Production platforms we own and maintain", highlight: true },
+  { value: "8+", label: "Systems Shipped", sub: "Production platforms we own and maintain", highlight: true },
   { value: "1,000+", label: "People Served Daily", sub: "Students, staff, patients, shoppers & clients", highlight: false },
   { value: "8", label: "Industries Supported", sub: "Education, Health, Retail, HR, Beauty & more", highlight: false },
   { value: "Ghana", label: "Built in Africa", sub: "Accra", highlight: true }
@@ -229,53 +229,6 @@ export const PRODUCTS: Product[] = [
       feesCollected: "GHS 42,500",
       attendanceRate: "98.4%",
       activeModules: ["Academic Portal", "Fee Management", "Parent SMS", "Staff Ledger"]
-    }
-  },
-  {
-    id: "ats-recruitment",
-    name: "Applicant Tracking & E-Recruitment System",
-    shortName: "Recruitment & ATS",
-    subtitle: "Publish roles, screen applicants and run the whole hiring pipeline in one place.",
-    tagline: "From job posting to signed offer letter, tracked end to end.",
-    badge: "Enterprise Hiring Suite",
-    status: "Live in Production",
-    category: "HR & Talent Technology",
-    accent: "violet",
-    iconName: "Users",
-    description:
-      "An end-to-end recruitment platform for organisations that receive far more applications than they can read. Branded career pages capture applicants, structured screening scores rank them objectively, and every interview, note and offer stays attached to the candidate record.",
-    keyFeatures: [
-      "Branded career portal with structured application forms",
-      "Automatic CV parsing and weighted shortlisting scores",
-      "Drag-and-drop hiring pipeline with stage-based automation",
-      "Interview scheduling, scorecards and offer letter generation"
-    ],
-    metrics: [
-      { label: "Applications Processed", value: "9,400+" },
-      { label: "Screening Time Cut", value: "-72%" },
-      { label: "Time to Hire", value: "11 days" },
-      { label: "Hiring Managers Onboard", value: "38" }
-    ],
-    modules: [
-      { name: "Career Portal", desc: "Public, branded job board with role filters and applicant accounts.", iconName: "Globe" },
-      { name: "CV Parsing", desc: "Extracts skills, education and experience into comparable fields.", iconName: "FileText" },
-      { name: "Shortlisting Engine", desc: "Weighted criteria scoring with bias-reducing blind review mode.", iconName: "Filter" },
-      { name: "Pipeline Board", desc: "Kanban stages from applied to hired with SLA timers per stage.", iconName: "LayoutDashboard" },
-      { name: "Interview Suite", desc: "Panel scheduling, calendar invites and standard scorecards.", iconName: "CalendarCheck" },
-      { name: "Offers & Onboarding", desc: "Generated offer letters, e-signature and new-hire checklists.", iconName: "ShieldCheck" }
-    ],
-    roles: ["HR Director", "Recruiter", "Hiring Manager", "Interview Panel", "Applicant"],
-    integrations: ["Google Calendar", "Microsoft 365", "Zoom", "Hubtel SMS", "DocuSign", "LinkedIn Jobs"],
-    outcomes: [
-      { value: "-72%", label: "Less manual CV screening" },
-      { value: "11 days", label: "Average time to hire" },
-      { value: "1 record", label: "Single source of truth per candidate" }
-    ],
-    stack: ["React", "TypeScript", "Node.js", "PostgreSQL", "Elasticsearch", "AWS S3"],
-    platforms: ["Recruiter Web App", "Public Career Portal", "Applicant Mobile Web"],
-    pricingNote: "Licensed per active job requisition or annually for unlimited hiring.",
-    demoData: {
-      activeModules: ["Career Portal", "Pipeline Board", "Interview Suite", "Offer Desk"]
     }
   },
   {
@@ -883,33 +836,6 @@ export const CASE_STUDIES: CaseStudy[] = [
     ]
   },
   {
-    id: "ats-case",
-    title: "Applicant Tracking & E-Recruitment",
-    client: "Corporate HR Department",
-    industry: "HR • Talent • Automation",
-    tags: ["HR", "Automation", "Enterprise"],
-    summary: "A hiring pipeline that took 214 applications per role from an unreadable inbox to a ranked shortlist in minutes.",
-    challenge: "Applications arrived as email attachments in a shared inbox. Screening meant opening CVs one at a time, shortlists were argued rather than evidenced, and candidates were left without status updates for weeks.",
-    solution: "We built a branded career portal feeding a structured pipeline. CVs are parsed into comparable fields and scored against weighted criteria the panel agrees up front, with a blind review mode that hides identity during the first pass. Interviews, scorecards and offers all stay attached to the candidate record.",
-    architecture: [
-      "Public career portal with structured application capture",
-      "CV parsing service normalising skills and experience",
-      "Weighted scoring engine with configurable criteria",
-      "Calendar-integrated panel scheduling and scorecards"
-    ],
-    technologies: ["React", "TypeScript", "Node.js", "PostgreSQL", "Elasticsearch", "Google Calendar API"],
-    impact: [
-      { metric: "-72%", detail: "Less time spent on manual CV screening" },
-      { metric: "11 days", detail: "Average time from application to signed offer" },
-      { metric: "9,400+", detail: "Applications processed through the platform" }
-    ],
-    heroImage: "/images/case-ats.jpg",
-    uiHighlights: [
-      { title: "Ranked Shortlisting", desc: "Weighted, evidence-backed scores replace opinion-led screening." },
-      { title: "Pipeline Board", desc: "Every candidate sits in one stage with an SLA timer running." }
-    ]
-  },
-  {
     id: "learning-platform-case",
     title: "Educational Learning Platform",
     client: "Professional Training Institute",
@@ -1201,7 +1127,7 @@ export interface PlannerOption {
   iconName: string;
 }
 
-export const CONTENT_VERSION = 3;
+export const CONTENT_VERSION = 4;
 
 export interface SiteContent {
   contentVersion?: number;
@@ -1407,7 +1333,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     ],
     floatingCards: [
       { title: 'GHS 42,500 Collected', subtitle: 'MTN MoMo auto-settled', iconName: 'DollarSign' },
-      { title: '9 Systems Live', subtitle: 'Built, shipped and maintained', iconName: 'TrendingUp' },
+      { title: '8 Systems Live', subtitle: 'Built, shipped and maintained', iconName: 'TrendingUp' },
     ],
   },
   trustBar: {
@@ -1433,7 +1359,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
   },
   products: {
     eyebrow: 'Systems We Have Built',
-    title: 'Nine production systems. All ours, end to end.',
+    title: 'Eight production systems. All ours, end to end.',
     description:
       'These are not concept slides. Each one is a working platform we designed, engineered, deployed and still maintain. Open any of them below and use the real interface.',
     items: PRODUCTS,
@@ -1452,7 +1378,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     title: "We don't just show screenshots. We show what we solved.",
     description:
       'Explore how we analyze operational bottlenecks, architect robust software backbones, and deliver measurable outcomes for our enterprise clients.',
-    filters: ['All', 'Education', 'Health', 'Retail', 'HR', 'E-Commerce', 'Mobile Money', 'Civic Tech'],
+    filters: ['All', 'Education', 'Health', 'Retail', 'E-Commerce', 'Mobile Money', 'Civic Tech'],
     bannerTitle: 'Have a unique system operational challenge?',
     bannerDescription: 'We write clean code engineered specifically around your organizational workflows.',
     bannerCtaLabel: 'Schedule Technical Consultation',
@@ -1531,7 +1457,6 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     ],
     productLinks: [
       { label: 'School Management', href: '#systems' },
-      { label: 'Recruitment & ATS', href: '#systems' },
       { label: 'AI Productivity Assistant', href: '#systems' },
       { label: 'Pharmacy Management', href: '#systems' },
       { label: 'Inventory & POS', href: '#systems' },
@@ -1553,7 +1478,6 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     projectTypePrompt: 'Select the primary focus for your project:',
     projectTypeOptions: [
       { title: 'School Management System', desc: 'Admissions, academics, fees and parent portal', iconName: 'GraduationCap' },
-      { title: 'Recruitment & ATS', desc: 'Career portal, screening and hiring pipeline', iconName: 'Users' },
       { title: 'AI Productivity Platform', desc: 'Team workspace with AI task ranking and Code Ops', iconName: 'Sparkles' },
       { title: 'Pharmacy Management', desc: 'Dispensing, batch expiry and claims', iconName: 'Pill' },
       { title: 'Inventory & POS', desc: 'Offline-first retail checkout and stock control', iconName: 'ShoppingCart' },

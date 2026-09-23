@@ -33,7 +33,7 @@ const MetricValue: React.FC<{ value: string; active: boolean; className?: string
 };
 
 /**
- * The centrepiece of the site: pick one of the nine systems on the left and
+ * The centrepiece of the site: pick one of the eight systems on the left and
  * the whole panel re-themes around it while a live walkthrough of that
  * system's real interface plays on the right.
  */
@@ -314,7 +314,7 @@ export const SystemsShowcase: React.FC<SystemsShowcaseProps> = ({
           <div className="mt-10 rounded-2xl border border-white/10 bg-gradient-to-r from-white/[0.05] to-transparent p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <h4 className="text-base md:text-lg font-bold text-white">
-                None of these nine is quite your problem?
+                None of these eight is quite your problem?
               </h4>
               <p className="text-sm text-slate-400 mt-1">
                 Most of our work starts that way. Tell us how your operation actually runs and we will design the system

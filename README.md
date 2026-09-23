@@ -26,7 +26,7 @@ src/
     screens/           one file per system: its real screens
     registry.ts        productId -> system definition
     SystemViewer.tsx   the scrubbable walkthrough player
-  data/contentData.ts  all editable copy plus the nine system records
+  data/contentData.ts  all editable copy plus the eight system records
   data/contentMerge.ts merges saved content over the shipped defaults
   admin/               the admin console (hash route `#/admin`)
 server/                Express API, migrations and the content store
@@ -34,7 +34,7 @@ server/                Express API, migrations and the content store
 
 ### The system walkthroughs
 
-Each of the nine systems plays as a short product film: a `SystemViewer` walks
+Each of the eight systems plays as a short product film: a `SystemViewer` walks
 its screens in sequence inside browser chrome, with a scene timeline, a scripted
 cursor and voice-over style captions. The player pauses when scrolled out of
 view and respects `prefers-reduced-motion`.

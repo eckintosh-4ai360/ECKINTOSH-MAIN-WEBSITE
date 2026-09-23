@@ -41,7 +41,7 @@ export const SystemsIndex: React.FC<SystemsIndexProps> = ({
               Every system, at a glance.
             </h2>
             <p className="text-base text-slate-600 mt-4 leading-relaxed">
-              Nine platforms, each solving a specific operational problem. Pick one to open its live interface, or read
+              Eight platforms, each solving a specific operational problem. Pick one to open its live interface, or read
               the full specification.
             </p>
           </div>

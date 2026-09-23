@@ -1,6 +1,5 @@
 import type { SystemDefinition } from './types';
 import { aiSystem } from './screens/ai';
-import { atsSystem } from './screens/ats';
 import { barbershopSystem } from './screens/barbershop';
 import { beautySystem } from './screens/beauty';
 import { ecommerceSystem } from './screens/ecommerce';
@@ -11,7 +10,6 @@ import { schoolSystem } from './screens/school';
 
 export const SYSTEM_DEFINITIONS: SystemDefinition[] = [
   schoolSystem,
-  atsSystem,
   aiSystem,
   pharmacySystem,
   posSystem,
