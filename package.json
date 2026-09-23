@@ -7,7 +7,7 @@
     "dev": "concurrently \"npm:dev:api\" \"npm:dev:web\"",
     "dev:web": "vite",
     "dev:api": "node --import tsx --watch server/index.ts",
-    "build": "vite build",
+    "build": "vite build && node scripts/build-api.mjs",
     "preview": "vite preview",
     "start": "node --import tsx server/index.ts",
     "migrate": "node --import tsx server/run-migrate.ts",

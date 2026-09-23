@@ -122,9 +122,9 @@ export function App() {
           onFocusSystem={handleFocusSystem}
         />
 
-        <TrustBar content={content.trustBar} />
+        {/* <TrustBar content={content.trustBar} /> */}
 
-        <CapabilityMarquee />
+        {/* <CapabilityMarquee /> */}
 
         {/* Flagship: interactive walkthroughs of every system we have shipped */}
         <SystemsShowcase
