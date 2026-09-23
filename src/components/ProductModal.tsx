@@ -2,13 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {
   ArrowRight,
   CheckCircle2,
-  Cpu,
   Layers,
-  Lock,
   MonitorPlay,
-  Plug,
-  ServerCog,
-  ShieldCheck,
   Users,
   X,
 } from 'lucide-react';
@@ -25,13 +20,12 @@ interface ProductModalProps {
   onOpenPlanner: (productName?: string) => void;
 }
 
-type Tab = 'overview' | 'interface' | 'modules' | 'engineering';
+type Tab = 'overview' | 'interface' | 'modules';
 
 const TABS: { id: Tab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { id: 'overview', label: 'Overview', icon: Layers },
   { id: 'interface', label: 'Live interface', icon: MonitorPlay },
   { id: 'modules', label: 'Modules & roles', icon: Users },
-  { id: 'engineering', label: 'Engineering', icon: ServerCog },
 ];
 
 /** Full specification sheet for a single system, including its live walkthrough. */
@@ -248,79 +242,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
             </div>
           )}
 
-          {tab === 'engineering' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-up">
-              <div className="rounded-xl bg-white/[0.02] border border-white/10 p-4">
-                <h3 className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-3 flex items-center gap-1.5">
-                  <Cpu className="w-3.5 h-3.5" /> Built with
-                </h3>
-                <div className="flex flex-wrap gap-1.5">
-                  {product.stack.map((item) => (
-                    <span
-                      key={item}
-                      className="px-2.5 py-1 rounded-lg text-[12px] font-mono bg-white/5 border border-white/10 text-slate-300"
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </div>
 
-                <h3 className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 mt-4 mb-2.5 flex items-center gap-1.5">
-                  <MonitorPlay className="w-3.5 h-3.5" /> Ships as
-                </h3>
-                <ul className="space-y-1.5">
-                  {product.platforms.map((platform) => (
-                    <li key={platform} className="flex items-center gap-2 text-[13px] text-slate-300">
-                      <CheckCircle2 className="w-3.5 h-3.5 shrink-0" style={{ color: accent.hex2 }} />
-                      {platform}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="space-y-4">
-                <div className="rounded-xl bg-white/[0.02] border border-white/10 p-4">
-                  <h3 className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-3 flex items-center gap-1.5">
-                    <Plug className="w-3.5 h-3.5" /> Integrations
-                  </h3>
-                  <div className="flex flex-wrap gap-1.5">
-                    {product.integrations.map((integration) => (
-                      <span
-                        key={integration}
-                        className="px-2.5 py-1 rounded-lg text-[12px] font-medium bg-white/5 border border-white/10 text-slate-300"
-                      >
-                        {integration}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="rounded-xl bg-white/[0.02] border border-white/10 p-4">
-                  <h3 className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-3 flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5" /> Security & operations
-                  </h3>
-                  <ul className="space-y-1.5 text-[12.5px] text-slate-400">
-                    <li className="flex items-start gap-2">
-                      <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5 text-emerald-400" />
-                      TLS on every route, hashed credentials, signed sessions
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5 text-emerald-400" />
-                      Role-based permissions with a full action audit trail
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5 text-emerald-400" />
-                      Automated daily backups with point-in-time restore
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5 text-emerald-400" />
-                      You own the source code and the data, on your cloud or ours
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Footer CTA */}
           <div
