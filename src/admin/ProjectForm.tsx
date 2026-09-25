@@ -176,7 +176,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ initial, onCancel, onS
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className={labelClass}>Impact Metrics</label>
-              <button type="button" onClick={() => setImpact((r) => [...r, { metric: '', detail: '' }])} className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+              <button type="button" onClick={() => setImpact((r) => [...r, { metric: '', detail: '' }])} className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700">
                 <Plus className="w-3.5 h-3.5" /> Add row
               </button>
             </div>
@@ -185,7 +185,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ initial, onCancel, onS
                 <div key={idx} className="grid grid-cols-1 sm:grid-cols-[1fr_2fr_auto] gap-2">
                   <input className={inputClass} placeholder="94%" value={row.metric} onChange={(e) => updateImpact(idx, 'metric', e.target.value)} />
                   <input className={inputClass} placeholder="On-time fee collection" value={row.detail} onChange={(e) => updateImpact(idx, 'detail', e.target.value)} />
-                  <button type="button" onClick={() => setImpact((r) => r.filter((_, i) => i !== idx))} className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-300">
+                  <button type="button" onClick={() => setImpact((r) => r.filter((_, i) => i !== idx))} className="rounded-xl border border-red-200 bg-red-50 p-2 text-red-600 hover:bg-red-100">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -197,7 +197,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ initial, onCancel, onS
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className={labelClass}>Product Experience Highlights</label>
-              <button type="button" onClick={() => setUiHighlights((r) => [...r, { title: '', desc: '' }])} className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+              <button type="button" onClick={() => setUiHighlights((r) => [...r, { title: '', desc: '' }])} className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700">
                 <Plus className="w-3.5 h-3.5" /> Add row
               </button>
             </div>
@@ -206,7 +206,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ initial, onCancel, onS
                 <div key={idx} className="grid grid-cols-1 sm:grid-cols-[1fr_2fr_auto] gap-2">
                   <input className={inputClass} placeholder="Live Fleet Tracking" value={row.title} onChange={(e) => updateHighlight(idx, 'title', e.target.value)} />
                   <input className={inputClass} placeholder="Short description" value={row.desc} onChange={(e) => updateHighlight(idx, 'desc', e.target.value)} />
-                  <button type="button" onClick={() => setUiHighlights((r) => r.filter((_, i) => i !== idx))} className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-300">
+                  <button type="button" onClick={() => setUiHighlights((r) => r.filter((_, i) => i !== idx))} className="rounded-xl border border-red-200 bg-red-50 p-2 text-red-600 hover:bg-red-100">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -214,7 +214,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ initial, onCancel, onS
             </div>
           </div>
 
-          {error && <p className="text-xs text-red-400">{error}</p>}
+          {error && <p className="text-xs text-red-600">{error}</p>}
 
           <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-5">
             <button type="button" onClick={onCancel} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50">
