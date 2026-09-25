@@ -39,22 +39,22 @@ export const InsightArticleModal: React.FC<InsightArticleModalProps> = ({
       <div
         ref={trapRef}
         tabIndex={-1}
-        className="relative w-full max-w-3xl bg-[#0F1D33] border border-white/10 rounded-2xl shadow-2xl overflow-hidden text-white my-auto max-h-[90vh] flex flex-col"
+        className="relative my-auto flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-2xl shadow-slate-900/20"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 z-20 flex items-center justify-between p-5 md:p-6 bg-[#08111F]/90 backdrop-blur-md border-b border-white/10">
+        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white/95 p-5 backdrop-blur-md md:p-6">
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30">
+            <span className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
               {article.category}
             </span>
-            <span className="text-xs text-slate-400 flex items-center gap-1">
+            <span className="flex items-center gap-1 text-xs text-slate-500">
               <Clock className="w-3 h-3" /> {article.readTime}
             </span>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10"
+            className="rounded-xl border border-slate-200 bg-slate-50 p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
             aria-label="Close dialog"
           >
             <X className="w-5 h-5" />
@@ -64,22 +64,22 @@ export const InsightArticleModal: React.FC<InsightArticleModalProps> = ({
         {/* Scrollable Article Content */}
         <div className="p-6 md:p-8 space-y-6 overflow-y-auto custom-scrollbar">
           <div>
-            <h1 className="text-xl md:text-3xl font-extrabold text-white leading-tight">{article.title}</h1>
-            <div className="flex items-center justify-between mt-4 pb-4 border-b border-white/10 text-xs text-slate-400">
+            <h1 className="text-xl font-extrabold leading-tight text-slate-900 md:text-3xl">{article.title}</h1>
+            <div className="mt-4 flex items-center justify-between border-b border-slate-200 pb-4 text-xs text-slate-500">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-blue-600 font-bold text-white flex items-center justify-center text-xs">
                   {article.author.avatar}
                 </div>
                 <div>
-                  <div className="text-white font-medium">{article.author.name}</div>
-                  <div className="text-slate-400 text-[11px]">{article.author.role}</div>
+                  <div className="font-medium text-slate-900">{article.author.name}</div>
+                  <div className="text-[11px] text-slate-500">{article.author.role}</div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {article.date}</span>
                 <button 
                   onClick={handleShare}
-                  className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 transition-colors flex items-center gap-1"
+                  className="flex items-center gap-1 rounded-lg bg-slate-100 p-2 text-slate-700 transition-colors hover:bg-slate-200"
                 >
                   {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
                   <span>{copied ? 'Copied' : 'Share'}</span>
@@ -89,11 +89,11 @@ export const InsightArticleModal: React.FC<InsightArticleModalProps> = ({
           </div>
 
           {/* Key Takeaways */}
-          <div className="p-5 rounded-xl bg-blue-950/40 border border-blue-500/20 text-xs text-slate-200">
-            <h3 className="text-xs uppercase tracking-wider text-blue-400 font-bold mb-2 flex items-center gap-1.5">
+          <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 text-xs text-slate-700">
+            <h3 className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-700">
               <BookOpen className="w-4 h-4" /> Key Insights & Action Items
             </h3>
-            <ul className="space-y-1.5 list-disc list-inside text-slate-300">
+            <ul className="list-inside list-disc space-y-1.5 text-slate-700">
               {article.keyTakeaways.map((point, idx) => (
                 <li key={idx} className="leading-relaxed">{point}</li>
               ))}
@@ -101,17 +101,17 @@ export const InsightArticleModal: React.FC<InsightArticleModalProps> = ({
           </div>
 
           {/* Body Paragraphs */}
-          <div className="space-y-4 text-sm text-slate-300 leading-relaxed font-normal">
+          <div className="space-y-4 text-sm font-normal leading-relaxed text-slate-700">
             {article.contentParagraphs.map((para, i) => (
               <p key={i}>{para}</p>
             ))}
           </div>
 
           {/* Call to Action Box */}
-          <div className="p-6 rounded-xl bg-gradient-to-r from-blue-950 via-slate-900 to-slate-900 border border-blue-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 mt-8">
+          <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 via-white to-slate-50 p-6 sm:flex-row">
             <div>
-              <h4 className="text-base font-bold text-white">Ready to implement these solutions in your organization?</h4>
-              <p className="text-xs text-slate-300 mt-1">Talk to our software engineering team in Accra today.</p>
+              <h4 className="text-base font-bold text-slate-900">Ready to implement these solutions in your organization?</h4>
+              <p className="mt-1 text-xs text-slate-600">Talk to our software engineering team in Accra today.</p>
             </div>
             <button
               onClick={() => {

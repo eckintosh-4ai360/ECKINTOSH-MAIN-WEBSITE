@@ -31,21 +31,21 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
       <div
         ref={trapRef}
         tabIndex={-1}
-        className="relative w-full max-w-4xl bg-[#0F1D33] border border-white/10 rounded-2xl shadow-2xl overflow-hidden text-white my-auto max-h-[90vh] flex flex-col"
+        className="relative my-auto flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-2xl shadow-slate-900/20"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Sticky Header */}
-        <div className="sticky top-0 z-20 flex items-center justify-between p-5 md:p-6 bg-[#08111F]/90 backdrop-blur-md border-b border-white/10">
+        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white/95 p-5 backdrop-blur-md md:p-6">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
               <Sparkles className="w-3.5 h-3.5" /> Case Study
             </span>
-            <h2 className="text-xl md:text-2xl font-bold mt-1 text-white">{caseStudy.title}</h2>
-            <p className="text-sm text-slate-400">{caseStudy.client} • {caseStudy.industry}</p>
+            <h2 className="mt-1 text-xl font-bold text-slate-900 md:text-2xl">{caseStudy.title}</h2>
+            <p className="text-sm text-slate-500">{caseStudy.client} • {caseStudy.industry}</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10"
+            className="rounded-xl border border-slate-200 bg-slate-50 p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
             aria-label="Close dialog"
           >
             <X className="w-5 h-5" />
@@ -57,26 +57,26 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
             {caseStudy.tags.map((tag) => (
-              <span key={tag} className="px-3 py-1 text-xs font-medium bg-slate-800 text-slate-300 rounded-md border border-slate-700">
+              <span key={tag} className="rounded-md border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
                 {tag}
               </span>
             ))}
           </div>
 
           {/* Overview */}
-          <div className="p-5 rounded-xl bg-blue-950/40 border border-blue-500/20 text-slate-200">
-            <h3 className="text-xs uppercase tracking-wider text-blue-400 font-bold mb-1">Executive Summary</h3>
-            <p className="text-base text-slate-200 font-medium leading-relaxed">{caseStudy.summary}</p>
+          <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 text-slate-700">
+            <h3 className="mb-1 text-xs font-bold uppercase tracking-wider text-blue-700">Executive Summary</h3>
+            <p className="text-base font-medium leading-relaxed text-slate-700">{caseStudy.summary}</p>
           </div>
 
           {/* Impact Metrics Bar */}
           <div>
-            <h3 className="text-sm uppercase tracking-wider text-slate-400 font-semibold mb-3">Key Outcomes & Real Impact</h3>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-600">Key Outcomes & Real Impact</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {caseStudy.impact.map((item, idx) => (
-                <div key={idx} className="p-4 rounded-xl bg-slate-900/80 border border-white/10 hover:border-blue-500/40 transition-all">
-                  <div className="text-2xl md:text-3xl font-extrabold text-blue-400 font-mono">{item.metric}</div>
-                  <div className="text-xs text-slate-300 mt-1">{item.detail}</div>
+                <div key={idx} className="rounded-xl border border-slate-200 bg-slate-50 p-4 transition-colors hover:border-blue-300">
+                  <div className="font-mono text-2xl font-extrabold text-blue-600 md:text-3xl">{item.metric}</div>
+                  <div className="mt-1 text-xs text-slate-600">{item.detail}</div>
                 </div>
               ))}
             </div>
@@ -84,31 +84,31 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
 
           {/* Two Column: Challenge & Solution */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-5 rounded-xl bg-slate-900/60 border border-white/10">
-              <div className="flex items-center gap-2 text-amber-400 font-bold text-sm mb-2">
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-5">
+              <div className="mb-2 flex items-center gap-2 text-sm font-bold text-amber-700">
                 <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
                 The Challenge
               </div>
-              <p className="text-sm text-slate-300 leading-relaxed">{caseStudy.challenge}</p>
+              <p className="text-sm leading-relaxed text-slate-700">{caseStudy.challenge}</p>
             </div>
 
-            <div className="p-5 rounded-xl bg-slate-900/60 border border-white/10">
-              <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm mb-2">
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5">
+              <div className="mb-2 flex items-center gap-2 text-sm font-bold text-emerald-700">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 The Solution
               </div>
-              <p className="text-sm text-slate-300 leading-relaxed">{caseStudy.solution}</p>
+              <p className="text-sm leading-relaxed text-slate-700">{caseStudy.solution}</p>
             </div>
           </div>
 
           {/* UI & Product Experience Highlights */}
           <div>
-            <h3 className="text-sm uppercase tracking-wider text-slate-400 font-semibold mb-3">Product Experience Highlights</h3>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-600">Product Experience Highlights</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {caseStudy.uiHighlights.map((hl, i) => (
-                <div key={i} className="p-4 rounded-xl bg-white/[0.03] border border-white/10">
-                  <div className="text-sm font-semibold text-white mb-1">{hl.title}</div>
-                  <div className="text-xs text-slate-400 leading-relaxed">{hl.desc}</div>
+                <div key={i} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="mb-1 text-sm font-semibold text-slate-900">{hl.title}</div>
+                  <div className="text-xs leading-relaxed text-slate-600">{hl.desc}</div>
                 </div>
               ))}
             </div>
@@ -116,10 +116,10 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
 
           {/* System Architecture & Tech Stack */}
           <div>
-            <h3 className="text-sm uppercase tracking-wider text-slate-400 font-semibold mb-3">Technologies & Architecture</h3>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-600">Technologies & Architecture</h3>
             <div className="flex flex-wrap gap-2">
               {caseStudy.technologies.map((tech) => (
-                <span key={tech} className="px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-300 border border-blue-500/20 text-xs font-semibold">
+                <span key={tech} className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
                   {tech}
                 </span>
               ))}
@@ -127,10 +127,10 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
           </div>
 
           {/* Bottom CTA Box */}
-          <div className="p-6 rounded-xl bg-gradient-to-r from-blue-900/60 via-indigo-900/40 to-slate-900 border border-blue-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+          <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 via-white to-slate-50 p-6 sm:flex-row">
             <div>
-              <h4 className="text-lg font-bold text-white">Have a similar operational challenge?</h4>
-              <p className="text-xs text-slate-300 mt-1">We can design, build and deploy a modern custom solution for your enterprise.</p>
+              <h4 className="text-lg font-bold text-slate-900">Have a similar operational challenge?</h4>
+              <p className="mt-1 text-xs text-slate-600">We can design, build and deploy a modern custom solution for your enterprise.</p>
             </div>
             <button
               onClick={() => {
