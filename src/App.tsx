@@ -6,7 +6,6 @@ import { CapabilityMarquee } from './components/CapabilityMarquee';
 import { SystemsShowcase } from './components/SystemsShowcase';
 import { WhatWeDo } from './components/WhatWeDo';
 import { SystemsIndex } from './components/SystemsIndex';
-import { Industries } from './components/Industries';
 import { WhyUs } from './components/WhyUs';
 import { Testimonials } from './components/Testimonials';
 import { CTA } from './components/CTA';
@@ -53,7 +52,7 @@ export function App() {
   const publicNavigation = useMemo(
     () => ({
       ...content.navigation,
-      links: content.navigation.links.filter((link) => !['#work', '#insights'].includes(link.href)),
+      links: content.navigation.links.filter((link) => !['#work', '#insights', '#industries'].includes(link.href)),
     }),
     [content.navigation]
   );
@@ -61,9 +60,9 @@ export function App() {
   const publicFooter = useMemo(
     () => ({
       ...content.footer,
-      companyLinks: content.footer.companyLinks.filter((link) => link.href !== '#work'),
-      solutionLinks: content.footer.solutionLinks.filter((link) => link.href !== '#work'),
-      productLinks: content.footer.productLinks.filter((link) => link.href !== '#work'),
+      companyLinks: content.footer.companyLinks.filter((link) => !['#work', '#industries'].includes(link.href)),
+      solutionLinks: content.footer.solutionLinks.filter((link) => !['#work', '#industries'].includes(link.href)),
+      productLinks: content.footer.productLinks.filter((link) => !['#work', '#industries'].includes(link.href)),
     }),
     [content.footer]
   );
@@ -142,8 +141,6 @@ export function App() {
           onFocusSystem={handleFocusSystem}
           onOpenPlanner={handleOpenPlanner}
         />
-
-        <Industries content={content.industries} onOpenPlanner={handleOpenPlanner} />
 
         <WhyUs content={content.whyUs} />
 

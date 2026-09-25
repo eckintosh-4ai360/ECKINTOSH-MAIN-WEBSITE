@@ -1217,7 +1217,6 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       { label: 'Home', href: '#hero' },
       { label: 'Systems', href: '#systems' },
       { label: 'Services', href: '#services' },
-      { label: 'Industries', href: '#industries' },
       { label: 'About', href: '#why-us' },
       { label: 'Contact', href: '#contact' },
     ],
@@ -1400,7 +1399,6 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     companyLinks: [
       { label: 'About', href: '#why-us' },
       { label: 'Services', href: '#services' },
-      { label: 'Industries', href: '#industries' },
       { label: 'Contact', href: '#contact' },
     ],
     solutionLinks: [
