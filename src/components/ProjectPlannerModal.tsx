@@ -9,10 +9,17 @@ interface ProjectPlannerModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialTopic?: string;
+  initialStep?: 1 | 2 | 3;
   content: SiteContent['planner'];
 }
 
-export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen, onClose, initialTopic = '', content }) => {
+export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({
+  isOpen,
+  onClose,
+  initialTopic = '',
+  initialStep = 1,
+  content,
+}) => {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [projectType, setProjectType] = useState<string>(content.defaultProjectType);
   const [timeline, setTimeline] = useState<string>(content.defaultTimeline);
@@ -31,6 +38,10 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({ isOpen
       setNotes(`Interested in: ${initialTopic}`);
     }
   }, [initialTopic]);
+
+  useEffect(() => {
+    if (isOpen) setStep(initialStep);
+  }, [initialStep, isOpen]);
 
   useEffect(() => {
     setProjectType((current) => current || content.defaultProjectType);

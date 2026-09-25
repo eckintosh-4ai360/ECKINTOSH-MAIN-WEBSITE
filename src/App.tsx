@@ -28,13 +28,15 @@ export function App() {
 
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [plannerTopic, setPlannerTopic] = useState('');
+  const [plannerInitialStep, setPlannerInitialStep] = useState<1 | 2 | 3>(1);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [activeSystemId, setActiveSystemId] = useState<string>(content.products.items[0]?.id ?? '');
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const handleOpenPlanner = useCallback((topic?: string) => {
+  const handleOpenPlanner = useCallback((topic?: string, startAtContact = false) => {
     setPlannerTopic(topic || '');
+    setPlannerInitialStep(startAtContact ? 3 : 1);
     setPlannerOpen(true);
   }, []);
 
@@ -159,10 +161,11 @@ export function App() {
       />
 
       <ProjectPlannerModal
-        isOpen={plannerOpen}
-        onClose={() => setPlannerOpen(false)}
-        initialTopic={plannerTopic}
-        content={content.planner}
+          isOpen={plannerOpen}
+          onClose={() => setPlannerOpen(false)}
+          initialTopic={plannerTopic}
+          initialStep={plannerInitialStep}
+          content={content.planner}
       />
 
       <ProductModal
