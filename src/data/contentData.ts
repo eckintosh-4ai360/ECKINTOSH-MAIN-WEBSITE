@@ -892,39 +892,6 @@ export const WHY_US_PILLARS = [
   }
 ];
 
-export const HOW_WE_WORK_STEPS = [
-  {
-    step: "01",
-    title: "Discover",
-    summary: "Clarify the opportunity.",
-    details: "We map workflows, priorities and success measures."
-  },
-  {
-    step: "02",
-    title: "Design",
-    summary: "Shape the right solution.",
-    details: "We turn findings into focused flows and technical plans."
-  },
-  {
-    step: "03",
-    title: "Build",
-    summary: "Build with confidence.",
-    details: "We ship in short cycles with testing built in."
-  },
-  {
-    step: "04",
-    title: "Launch",
-    summary: "Go live smoothly.",
-    details: "We deploy, migrate data and train your team."
-  },
-  {
-    step: "05",
-    title: "Grow",
-    summary: "Improve as you grow.",
-    details: "We monitor, support and evolve the product with you."
-  }
-];
-
 export const TECH_CATEGORIES = [
   {
     category: "Frontend",
@@ -1187,11 +1154,6 @@ export interface SiteContent {
     items: typeof WHY_US_PILLARS;
     commitmentLabel: string;
   };
-  howWeWork: SectionHeaderContent & {
-    items: typeof HOW_WE_WORK_STEPS;
-    ctaLabel: string;
-    ctaTopic: string;
-  };
   techStack: SectionHeaderContent & {
     items: typeof TECH_CATEGORIES;
   };
@@ -1391,14 +1353,6 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       'We operate as an extension of your leadership team, bringing technical clarity, strict accountability, and long-term systems reliability to every partnership.',
     items: WHY_US_PILLARS,
     commitmentLabel: 'Standard Engineering Commitment',
-  },
-  howWeWork: {
-    eyebrow: 'Our Delivery Process',
-    title: 'How we turn vision into production technology.',
-    description: 'A clear five-step path from a focused brief to a product that keeps improving.',
-    items: HOW_WE_WORK_STEPS,
-    ctaLabel: 'Start Stage 01: Discover Your System Requirements',
-    ctaTopic: 'Process & Discovery Call',
   },
   techStack: {
     eyebrow: 'Battle-Tested Architecture',

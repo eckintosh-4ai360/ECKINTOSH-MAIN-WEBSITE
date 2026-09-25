@@ -8,7 +8,6 @@ import { WhatWeDo } from './components/WhatWeDo';
 import { SystemsIndex } from './components/SystemsIndex';
 import { Industries } from './components/Industries';
 import { WhyUs } from './components/WhyUs';
-import { HowWeWork } from './components/HowWeWork';
 import { Testimonials } from './components/Testimonials';
 import { CTA } from './components/CTA';
 import { Footer } from './components/Footer';
@@ -147,8 +146,6 @@ export function App() {
         <Industries content={content.industries} onOpenPlanner={handleOpenPlanner} />
 
         <WhyUs content={content.whyUs} />
-
-        <HowWeWork content={content.howWeWork} onOpenPlanner={handleOpenPlanner} />
 
         <Testimonials content={content.testimonials} />
 

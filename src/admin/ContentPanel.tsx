@@ -16,7 +16,6 @@ const SECTION_LABELS: Record<string, string> = {
   industries: 'Industries',
   caseStudies: 'Case studies section',
   whyUs: 'Why us',
-  howWeWork: 'How we work',
   techStack: 'Tech stack',
   testimonials: 'Testimonials',
   insights: 'Insights',
