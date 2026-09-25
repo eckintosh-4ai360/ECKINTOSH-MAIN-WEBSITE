@@ -168,23 +168,23 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       aria-label="Command palette"
     >
       <div
-        className="w-full max-w-xl rounded-2xl bg-[#0F1D33] border border-white/10 shadow-2xl overflow-hidden animate-scale-in"
+        className="w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-2xl shadow-slate-900/20 animate-scale-in"
         onClick={(event) => event.stopPropagation()}
         onKeyDown={onKeyDown}
       >
-        <div className="flex items-center gap-2.5 px-4 h-13 py-3 border-b border-white/10">
+        <div className="flex h-13 items-center gap-2.5 border-b border-slate-200 px-4 py-3">
           <Search className="w-4 h-4 text-slate-500 shrink-0" />
           <input
             ref={inputRef}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search systems, sections or actions…"
-            className="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 outline-none"
+            className="flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 outline-none"
           />
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-md text-slate-500 hover:text-white hover:bg-white/5 transition-colors"
+            className="rounded-md p-1 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -214,20 +214,20 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                     onMouseEnter={() => setCursor(index)}
                     onClick={command.run}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left transition-colors ${
-                      active ? 'bg-white/[0.07]' : 'hover:bg-white/[0.04]'
+                      active ? 'bg-blue-50' : 'hover:bg-slate-50'
                     }`}
                   >
                     <span
                       className="w-7 h-7 rounded-lg grid place-items-center shrink-0"
                       style={{
-                        backgroundColor: command.color ? `${command.color}22` : 'rgba(255,255,255,0.06)',
+                        backgroundColor: command.color ? `${command.color}22` : 'rgba(15,23,42,0.06)',
                         color: command.color ?? '#94a3b8',
                       }}
                     >
                       <Icon className="w-3.5 h-3.5" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[13px] font-semibold text-white truncate">{command.label}</span>
+                      <span className="block truncate text-[13px] font-semibold text-slate-900">{command.label}</span>
                       <span className="block text-[11px] text-slate-500 truncate">{command.hint}</span>
                     </span>
                     {active && <CornerDownLeft className="w-3.5 h-3.5 text-slate-500 shrink-0" />}
@@ -238,15 +238,15 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           ))}
         </div>
 
-        <div className="px-4 py-2 border-t border-white/10 flex items-center gap-3 text-[10px] text-slate-500">
+        <div className="flex items-center gap-3 border-t border-slate-200 px-4 py-2 text-[10px] text-slate-500">
           <span className="flex items-center gap-1">
-            <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono">↑↓</kbd> navigate
+            <kbd className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 font-mono">↑↓</kbd> navigate
           </span>
           <span className="flex items-center gap-1">
-            <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono">↵</kbd> open
+            <kbd className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 font-mono">↵</kbd> open
           </span>
           <span className="flex items-center gap-1">
-            <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono">esc</kbd> close
+            <kbd className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 font-mono">esc</kbd> close
           </span>
           <span className="ml-auto">{results.length} results</span>
         </div>
