@@ -20,7 +20,7 @@ export const WhyUs: React.FC<{ content: SiteContent['whyUs'] }> = ({ content }) 
         <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
           {content.eyebrow}
         </span>
-        <h2 id="why-us-heading" className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-4 leading-tight">
+        <h2 id="why-us-heading" className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mt-4 leading-tight">
           {content.title}
         </h2>
         <p className="text-base text-slate-600 mt-4 leading-relaxed">{content.description}</p>

@@ -37,7 +37,7 @@ export const SystemsIndex: React.FC<SystemsIndexProps> = ({
             <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
               The full catalogue
             </span>
-            <h2 id="solutions-heading" className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-4 leading-tight">
+            <h2 id="solutions-heading" className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mt-4 leading-tight">
               Every system, at a glance.
             </h2>
             <p className="text-base text-slate-600 mt-4 leading-relaxed">
