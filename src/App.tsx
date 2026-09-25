@@ -114,10 +114,7 @@ export function App() {
       <main id="main-content">
         <Hero
           content={content.hero}
-          products={content.products.items}
           onOpenPlanner={handleOpenPlanner}
-          onSelectProduct={handleSelectProductById}
-          onFocusSystem={handleFocusSystem}
         />
 
         {/* <TrustBar content={content.trustBar} /> */}
