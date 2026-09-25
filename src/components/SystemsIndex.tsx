@@ -130,17 +130,6 @@ export const SystemsIndex: React.FC<SystemsIndexProps> = ({
                   </div>
 
                   <div className="relative mt-4 pt-3.5 border-t border-slate-100">
-                    <div className="grid grid-cols-2 gap-2 mb-3">
-                      {product.outcomes.slice(0, 2).map((outcome) => (
-                        <div key={outcome.label} className="rounded-lg bg-slate-50 border border-slate-100 px-2 py-1.5">
-                          <div className="text-[13px] font-black tabular-nums" style={{ color: accent.hex }}>
-                            {outcome.value}
-                          </div>
-                          <div className="text-[9.5px] text-slate-500 leading-tight">{outcome.label}</div>
-                        </div>
-                      ))}
-                    </div>
-
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
