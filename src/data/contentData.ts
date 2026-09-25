@@ -1293,8 +1293,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
   services: {
     eyebrow: 'What We Do',
     title: 'From idea to intelligent digital product.',
-    description:
-      'We partner with organizations to eliminate operational friction and engineer reliable software systems tailored to unique institutional logic.',
+    description: 'We build reliable software systems that eliminate operational friction.',
     items: SERVICES,
     detailEyebrow: 'Service Details',
     featuresHeading: 'Core Engineering Features',
@@ -1305,9 +1304,8 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
   },
   products: {
     eyebrow: 'Systems We Have Built',
-    title: 'Eight production systems. All ours, end to end.',
-    description:
-      'These are not concept slides. Each one is a working platform we designed, engineered, deployed and still maintain. Open any of them below and use the real interface.',
+    title: 'Products built to solve real problems.',
+    description: 'We build repeatable software systems for institutions and enterprises.',
     items: PRODUCTS,
     ctaLabel: 'Build a Custom System',
     ctaTopic: 'Custom Product Engineering',
@@ -1333,8 +1331,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
   whyUs: {
     eyebrow: 'Why Choose Eckintosh',
     title: 'Technology built around your business.',
-    description:
-      'We operate as an extension of your leadership team, bringing technical clarity, strict accountability, and long-term systems reliability to every partnership.',
+    description: 'We bring technical clarity, accountability, and reliable systems to every partnership.',
     items: WHY_US_PILLARS,
     commitmentLabel: 'Standard Engineering Commitment',
   },
