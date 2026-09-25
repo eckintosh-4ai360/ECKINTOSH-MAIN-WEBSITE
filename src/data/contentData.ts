@@ -149,21 +149,6 @@ export const SERVICES: Service[] = [
     idealFor: "Schools, healthcare clinics, utility providers, and corporate offices."
   },
   {
-    id: "ai-automation",
-    title: "AI & Automation",
-    shortDesc: "Use AI and automation to reduce repetitive work and improve decision-making.",
-    fullDesc: "Embed intelligent algorithms, automated document parsing, predictive data reporting, and smart chatbots into your existing workflows to elevate output quality and cut turnaround time.",
-    iconName: "Cpu",
-    features: [
-      "Automated Document Processing",
-      "Predictive Analytics & Forecasting",
-      "Smart Customer Support Bots",
-      "Automated Reconciliation"
-    ],
-    deliverables: ["AI Workflow Agents", "Automated Pipelines", "Custom Model Tuning"],
-    idealFor: "Forward-thinking enterprises looking to streamline heavy administrative tasks."
-  },
-  {
     id: "web-experiences",
     title: "Websites & Digital Experiences",
     shortDesc: "Fast, responsive web experiences optimized for high conversion and modern brand positioning.",
