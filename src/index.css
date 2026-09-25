@@ -149,6 +149,43 @@
   will-change: transform;
 }
 
+/* Systems orbit: slow outer ring, data flowing down the active spoke, a breathing hub. */
+@keyframes orbitSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes orbitFlow {
+  to { stroke-dashoffset: -6; }
+}
+
+@keyframes hubPulse {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes cycleProgress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.orbit-spin {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  animation: orbitSpin 90s linear infinite;
+}
+
+.orbit-flow {
+  stroke-dasharray: 1.5 1.5;
+  animation: orbitFlow 1s linear infinite;
+}
+
+.hub-pulse { animation: hubPulse 3.2s ease-out infinite; }
+
+.cycle-progress {
+  transform-origin: left;
+  animation: cycleProgress linear both;
+}
+
 .animate-marquee {
   animation: marquee 38s linear infinite;
 }
