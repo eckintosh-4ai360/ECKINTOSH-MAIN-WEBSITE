@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight, Building2, CheckCircle2, MessageSquare, Send, X } from 'lucide-react';
-import type { SiteContent } from '../data/contentData';
+import React, { useEffect, useId, useMemo, useState } from 'react';
+import { ArrowLeft, CheckCircle2, ChevronDown, MessageSquare, ShieldCheck, X } from 'lucide-react';
+import type { Service, SiteContent } from '../data/contentData';
 import { getIcon } from '../lib/icons';
 import { submitInquiry } from '../lib/inquiries';
 import { useBodyScrollLock, useEscape, useFocusTrap } from '../hooks';
@@ -8,78 +8,116 @@ import { useBodyScrollLock, useEscape, useFocusTrap } from '../hooks';
 interface ProjectPlannerModalProps {
   isOpen: boolean;
   onClose: () => void;
+  /** What the visitor clicked, e.g. "Demo request: Pharmacy Management System". */
   initialTopic?: string;
-  initialStep?: 1 | 2 | 3;
   content: SiteContent['planner'];
+  services: Service[];
+  contactCards: SiteContent['cta']['contactCards'];
 }
 
+const NOT_SURE = 'Not sure yet, help me choose';
+
+// Words too generic to tell one option from another.
+const GENERIC_WORDS = new Set(['system', 'systems', 'platform', 'management', 'software', 'build', 'eckintosh', 'and', 'the']);
+const keywords = (text: string) =>
+  text
+    .toLowerCase()
+    .split(/[^a-z0-9-]+/)
+    .filter((word) => word && !GENERIC_WORDS.has(word));
+
+/** Picks the option that shares the most keywords with the clicked topic. */
+function matchInterest(topic: string, options: string[]): string {
+  const topicWords = new Set(keywords(topic));
+  let best = '';
+  let bestScore = 0;
+  for (const option of options) {
+    const score = keywords(option).filter((word) => topicWords.has(word)).length;
+    if (score > bestScore) {
+      best = option;
+      bestScore = score;
+    }
+  }
+  return best;
+}
+
+const HISTORY_KEY = 'eckintoshPlanner';
+
+/** A single-page request form that opens over the site like its own page. */
 export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({
   isOpen,
   onClose,
   initialTopic = '',
-  initialStep = 1,
   content,
+  services,
+  contactCards,
 }) => {
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-  const [projectType, setProjectType] = useState<string>(content.defaultProjectType);
-  const [timeline, setTimeline] = useState<string>(content.defaultTimeline);
-  const [budget, setBudget] = useState<string>('');
-  const [fullName, setFullName] = useState<string>('');
-  const [organization, setOrganization] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [notes, setNotes] = useState<string>('');
-  const [submitted, setSubmitted] = useState<boolean>(false);
-  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [interest, setInterest] = useState('');
+  const [timeline, setTimeline] = useState('');
+  const [budget, setBudget] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [organization, setOrganization] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const headingId = useId();
 
+  const systemOptions = useMemo(() => content.projectTypeOptions.map((option) => option.title), [content.projectTypeOptions]);
+  const serviceOptions = useMemo(() => services.map((service) => service.title), [services]);
+
+  // Each time the page opens, start fresh and preselect whatever was clicked.
   useEffect(() => {
-    if (initialTopic) {
-      setNotes(`Interested in: ${initialTopic}`);
-    }
-  }, [initialTopic]);
-
-  useEffect(() => {
-    if (isOpen) setStep(initialStep);
-  }, [initialStep, isOpen]);
-
-  useEffect(() => {
-    setProjectType((current) => current || content.defaultProjectType);
-    setTimeline((current) => current || content.defaultTimeline);
-  }, [content.defaultProjectType, content.defaultTimeline]);
-
-  const resetForm = () => {
-    setStep(1);
+    if (!isOpen) return;
     setSubmitted(false);
     setError(null);
-    onClose();
+    setInterest(matchInterest(initialTopic, [...systemOptions, ...serviceOptions]));
+  }, [initialTopic, isOpen, serviceOptions, systemOptions]);
+
+  // Behave like a page: the browser's back button closes it.
+  useEffect(() => {
+    if (!isOpen) return;
+    if (!window.history.state?.[HISTORY_KEY]) {
+      window.history.pushState({ ...window.history.state, [HISTORY_KEY]: true }, '');
+    }
+    const onPopState = () => onClose();
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [isOpen, onClose]);
+
+  const close = () => {
+    // Unwind our history entry; the popstate listener then closes the page.
+    if (window.history.state?.[HISTORY_KEY]) window.history.back();
+    else onClose();
   };
 
   useBodyScrollLock(isOpen);
-  useEscape(isOpen, resetForm);
+  useEscape(isOpen, close);
   const trapRef = useFocusTrap<HTMLDivElement>(isOpen);
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setSubmitting(true);
     setError(null);
     try {
       await submitInquiry({
-        projectType,
+        projectType: interest,
         timeline,
         budget,
         fullName,
         organization,
         phone,
         email,
-        notes,
+        // Keep the button they came from, so the team knows the context.
+        notes: [initialTopic && `Opened from: ${initialTopic}`, message].filter(Boolean).join('\n\n'),
       });
       setSubmitted(true);
-      setStep(4);
+      trapRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to submit inquiry.');
+      setError(err instanceof Error ? err.message : 'Failed to send your request.');
     } finally {
       setSubmitting(false);
     }
@@ -87,290 +125,317 @@ export const ProjectPlannerModal: React.FC<ProjectPlannerModalProps> = ({
 
   // A plain anchor rather than window.open: popup blockers on mobile Safari
   // and in-app browsers silently swallow scripted opens, leaving the button dead.
-  const whatsappDirectUrl =
-    `https://wa.me/${content.whatsappNumber}?text=${encodeURIComponent(
-      `Hello Eckintosh Technologies,\n\nI want to start a project:\n- Service: ${projectType}\n- Timeline: ${timeline}\n- Name: ${fullName}\n- Organization: ${organization}\n- Phone: ${phone}\n- Notes: ${notes || 'N/A'}`
-    )}`;
+  const whatsappDetails = [
+    `I'm interested in: ${interest || 'a project'}`,
+    fullName && `Name: ${fullName}`,
+    organization && `Organization: ${organization}`,
+    timeline && `Timeline: ${timeline}`,
+    message && `Details: ${message}`,
+  ].filter(Boolean);
+  const whatsappUrl = `https://wa.me/${content.whatsappNumber}?text=${encodeURIComponent(
+    `Hello Eckintosh Technologies,\n\n${whatsappDetails.join('\n')}`
+  )}`;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn"
-      onClick={resetForm}
+      ref={trapRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
-      aria-label={content.title}
+      aria-labelledby={headingId}
+      className="fixed inset-0 z-[90] overflow-y-auto bg-white text-neutral-950 animate-fadeIn"
     >
-      <div
-        ref={trapRef}
-        tabIndex={-1}
-        className="relative my-auto flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-2xl shadow-slate-900/20"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white/95 p-5 backdrop-blur-md md:p-6">
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-blue-600">{content.eyebrow}</div>
-            <h2 className="mt-0.5 text-xl font-bold text-slate-900">{content.title}</h2>
-          </div>
+      {/* Page bar */}
+      <div className="sticky top-0 z-10 border-b border-black/[0.08] bg-white/85 backdrop-blur-xl backdrop-saturate-150">
+        <div className="mx-auto flex h-12 max-w-[1080px] items-center justify-between px-4 sm:px-6">
           <button
-            onClick={resetForm}
-            className="rounded-xl border border-slate-200 bg-slate-50 p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
-            aria-label="Close modal"
+            type="button"
+            onClick={close}
+            className="-ml-2 inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-[13px] font-medium text-neutral-700 hover:text-neutral-950"
           >
-            <X className="w-5 h-5" />
+            <ArrowLeft className="h-4 w-4" /> Back to site
+          </button>
+          <span className="flex items-center gap-2" aria-hidden="true">
+            <img src="/logo.png" alt="" className="h-5 w-auto" />
+            <span className="text-[14px] font-bold text-neutral-950">ECKINTOSH</span>
+          </span>
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Close"
+            className="grid h-9 w-9 place-items-center rounded-full text-neutral-600 hover:bg-black/[0.05] hover:text-neutral-950"
+          >
+            <X className="h-5 w-5" />
           </button>
         </div>
+      </div>
 
-        {!submitted && (
-          <div className="flex border-b border-slate-200 bg-slate-50 px-6 py-3">
-            {[1, 2, 3].map((s) => (
-              <div key={s} className="flex-1 flex items-center gap-2">
-                <div
-                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                    step === s
-                      ? 'bg-blue-600 text-white ring-2 ring-blue-400/50'
-                      : step > s
-                        ? 'bg-emerald-500 text-slate-950 font-extrabold'
-                        : 'bg-slate-200 text-slate-500'
-                  }`}
+      {/* Phones read intro, form, then the extras; wide screens keep intro and extras in the left column. */}
+      <div className="animate-fade-up mx-auto grid max-w-[1080px] gap-y-10 px-6 py-10 md:py-16 lg:grid-cols-[1fr_1.3fr] lg:grid-rows-[auto_1fr] lg:gap-x-20 lg:gap-y-0">
+        {/* Intro */}
+        <header className="lg:col-start-1 lg:row-start-1 lg:pt-2">
+          <p className="text-[15px] font-semibold text-blue-600">{content.eyebrow}</p>
+          <h1 id={headingId} className="mt-2 text-[32px] font-bold leading-[1.08] tracking-[-0.025em] md:text-[44px]">
+            {content.title}
+          </h1>
+          <p className="mt-4 max-w-md text-[17px] leading-relaxed text-neutral-600">
+            Share a few details and a senior engineer will get back to you.
+          </p>
+        </header>
+
+        {/* What happens next, and other ways to reach us */}
+        <aside className="lg:col-start-1 lg:row-start-2">
+          <ol className="space-y-5 border-t border-black/10 pt-8 lg:mt-10">
+            {['We review what you need.', 'We reach out to talk it through.', 'You get a clear plan and quote.'].map(
+              (stepText, index) => (
+                <li key={stepText} className="flex items-center gap-4 text-[15px] text-neutral-800">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#f5f5f7] text-[13px] font-semibold text-neutral-700">
+                    {index + 1}
+                  </span>
+                  {stepText}
+                </li>
+              )
+            )}
+          </ol>
+
+          <ul className="mt-10 space-y-3 border-t border-black/10 pt-8 text-[14px] text-neutral-600">
+            {contactCards.map((card) => {
+              const Icon = getIcon(card.iconName, ShieldCheck);
+              return (
+                <li key={card.label} className="flex items-center gap-3">
+                  <Icon className="h-4 w-4 shrink-0 text-blue-600" />
+                  {card.label}
+                </li>
+              );
+            })}
+          </ul>
+        </aside>
+
+        {/* Form or confirmation */}
+        <div className="row-start-2 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+          {submitted ? (
+            <div className="rounded-[28px] bg-[#f5f5f7] p-8 text-center md:p-12">
+              <CheckCircle2 className="mx-auto h-14 w-14 text-emerald-600" />
+              <h2 className="mt-5 text-[28px] font-bold tracking-[-0.02em]">{content.successTitle}</h2>
+              <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-neutral-600">
+                Thank you, <span className="font-semibold text-neutral-900">{fullName}</span>. {content.successDescription}
+              </p>
+              <dl className="mx-auto mt-6 max-w-sm space-y-1.5 rounded-2xl bg-white p-5 text-left text-[14px]">
+                <SummaryRow label="Interested in" value={interest} />
+                {timeline && <SummaryRow label="Timeline" value={timeline} />}
+                <SummaryRow label="Phone" value={phone} />
+              </dl>
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-6 py-3 text-[15px] font-medium text-white hover:bg-emerald-700"
                 >
-                  {step > s ? 'OK' : s}
-                </div>
-                <span className={`hidden text-xs sm:inline ${step === s ? 'font-semibold text-slate-900' : 'text-slate-500'}`}>
-                  {s === 1 ? 'Solution Type' : s === 2 ? 'Timeline & Budget' : 'Contact Details'}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar">
-          {step === 1 && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-slate-700">{content.projectTypePrompt}</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {content.projectTypeOptions.map((opt) => {
-                  const Icon = getIcon(opt.iconName, Building2);
-                  const selected = projectType === opt.title;
-                  return (
-                    <button
-                      type="button"
-                      key={opt.title}
-                      onClick={() => setProjectType(opt.title)}
-                      className={`p-4 rounded-xl border cursor-pointer transition-all text-left ${
-                        selected
-                          ? 'border-blue-500 bg-blue-50 shadow-md shadow-blue-500/10'
-                          : 'border-slate-200 bg-slate-50 hover:border-slate-300'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={`rounded-lg p-2 ${selected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
-                          <Icon className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <div className="text-sm font-bold text-slate-900">{opt.title}</div>
-                          <div className="mt-0.5 text-xs text-slate-600">{opt.desc}</div>
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="pt-4 flex justify-end">
-                <button
-                  onClick={() => setStep(2)}
-                  className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-2 transition-all"
-                >
-                  Next: Timeline & Budget <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div className="space-y-6">
-              <div>
-                <label className="mb-2 block text-xs font-semibold text-slate-700">Target Launch Timeline</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {content.timelineOptions.map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => setTimeline(option)}
-                      className={`p-3 rounded-xl border text-xs font-medium transition-all ${
-                        timeline === option
-                          ? 'bg-blue-600 text-white border-blue-400'
-                          : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'
-                      }`}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="planner-budget"
-                  className="mb-2 block text-xs font-semibold text-slate-700"
-                >
-                  Estimated Investment
-                </label>
-                <input
-                  id="planner-budget"
-                  type="text"
-                  value={budget}
-                  onChange={(e) => setBudget(e.target.value)}
-                  placeholder={content.budgetPlaceholder}
-                  className="w-full rounded-xl border border-slate-300 bg-white p-3 text-xs text-slate-900 placeholder:text-slate-400 transition-all focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-                <p className="mt-2 text-[11px] text-slate-500">
-                  Optional. A rough figure or range is enough to scope the build.
-                </p>
-              </div>
-
-              <div className="flex items-center justify-between border-t border-slate-200 pt-4">
-                <button
-                  onClick={() => setStep(1)}
-                  className="flex items-center gap-1.5 rounded-xl bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-200"
-                >
-                  <ArrowLeft className="w-4 h-4" /> Back
-                </button>
-                <button
-                  onClick={() => setStep(3)}
-                  className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-2 transition-all"
-                >
-                  Next: Contact Details <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {step === 3 && (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-700">Your Full Name *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Kwame Mensah"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-700">Organization / School Name</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Apex High School / Grace Ltd"
-                    value={organization}
-                    onChange={(e) => setOrganization(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-700">Phone / WhatsApp Number *</label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="e.g. +233 24 123 4567"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-700">Email Address *</label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="e.g. kwame@organization.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">Project Details or Questions</label>
-                <textarea
-                  rows={3}
-                  placeholder="Tell us what you're trying to build or solve..."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              {error && <p className="text-xs text-red-600">{error}</p>}
-
-              <div className="flex items-center justify-between border-t border-slate-200 pt-2">
+                  <MessageSquare className="h-4 w-4" /> Continue on WhatsApp
+                </a>
                 <button
                   type="button"
-                  onClick={() => setStep(2)}
-                  className="flex items-center gap-1.5 rounded-xl bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-200"
+                  onClick={close}
+                  className="rounded-full px-6 py-3 text-[15px] font-medium text-blue-600 hover:underline"
                 >
-                  <ArrowLeft className="w-4 h-4" /> Back
+                  Back to site
                 </button>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <Field label={content.projectTypePrompt.replace(/[:\s]+$/, '')} htmlFor="planner-interest">
+                <SelectBox id="planner-interest" value={interest} onChange={setInterest} required>
+                  <option value="" disabled>
+                    Choose a system or service
+                  </option>
+                  <optgroup label="Systems">
+                    {systemOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </optgroup>
+                  {serviceOptions.length > 0 && (
+                    <optgroup label="Services">
+                      {serviceOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </optgroup>
+                  )}
+                  <option value={NOT_SURE}>{NOT_SURE}</option>
+                </SelectBox>
+              </Field>
+
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="Full name" htmlFor="planner-name" required>
+                  <input
+                    id="planner-name"
+                    type="text"
+                    required
+                    autoComplete="name"
+                    placeholder="Kwame Mensah"
+                    value={fullName}
+                    onChange={(event) => setFullName(event.target.value)}
+                    className={INPUT}
+                  />
+                </Field>
+                <Field label="Organization" htmlFor="planner-org" optional>
+                  <input
+                    id="planner-org"
+                    type="text"
+                    autoComplete="organization"
+                    placeholder="Apex High School"
+                    value={organization}
+                    onChange={(event) => setOrganization(event.target.value)}
+                    className={INPUT}
+                  />
+                </Field>
+              </div>
+
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="Phone or WhatsApp" htmlFor="planner-phone" required>
+                  <input
+                    id="planner-phone"
+                    type="tel"
+                    required
+                    autoComplete="tel"
+                    placeholder="+233 24 123 4567"
+                    value={phone}
+                    onChange={(event) => setPhone(event.target.value)}
+                    className={INPUT}
+                  />
+                </Field>
+                <Field label="Email" htmlFor="planner-email" required>
+                  <input
+                    id="planner-email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    placeholder="kwame@organization.com"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    className={INPUT}
+                  />
+                </Field>
+              </div>
+
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="Timeline" htmlFor="planner-timeline" optional>
+                  <SelectBox id="planner-timeline" value={timeline} onChange={setTimeline}>
+                    <option value="">No fixed date</option>
+                    {content.timelineOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </SelectBox>
+                </Field>
+                <Field label="Budget" htmlFor="planner-budget" optional>
+                  <input
+                    id="planner-budget"
+                    type="text"
+                    placeholder={content.budgetPlaceholder}
+                    value={budget}
+                    onChange={(event) => setBudget(event.target.value)}
+                    className={INPUT}
+                  />
+                </Field>
+              </div>
+
+              <Field label="Tell us about your project" htmlFor="planner-message" optional>
+                <textarea
+                  id="planner-message"
+                  rows={4}
+                  placeholder="What are you trying to build or fix?"
+                  value={message}
+                  onChange={(event) => setMessage(event.target.value)}
+                  className={`${INPUT} resize-y`}
+                />
+              </Field>
+
+              {error && (
+                <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-[14px] text-red-700">
+                  {error}
+                </p>
+              )}
+
+              <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center">
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-600/30"
+                  className="rounded-full bg-blue-600 px-8 py-3.5 text-[16px] font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  <Send className="w-3.5 h-3.5" /> {submitting ? 'Submitting...' : 'Submit Inquiry'}
+                  {submitting ? 'Sending...' : 'Send request'}
                 </button>
-              </div>
-            </form>
-          )}
-
-          {step === 4 && (
-            <div className="text-center py-6 space-y-4">
-              <div className="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900">{content.successTitle}</h3>
-              <p className="mx-auto max-w-md text-xs leading-relaxed text-slate-600">
-                Thank you, <span className="font-semibold text-slate-900">{fullName}</span>. {content.successDescription} ({projectType})
-              </p>
-
-              <div className="space-y-1 rounded-xl border border-slate-200 bg-slate-50 p-4 text-left text-xs text-slate-700">
-                <div>
-                  <span className="text-slate-400">Solution:</span> {projectType}
-                </div>
-                <div>
-                  <span className="text-slate-400">Timeline:</span> {timeline}
-                </div>
-                <div>
-                  <span className="text-slate-400">Phone:</span> {phone}
-                </div>
-              </div>
-
-              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <a
-                  href={whatsappDirectUrl}
+                  href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20"
+                  className="inline-flex items-center justify-center gap-2 text-[15px] font-medium text-neutral-700 hover:text-neutral-950 hover:underline"
                 >
-                  <MessageSquare className="w-4 h-4" /> Connect Directly on WhatsApp
+                  <MessageSquare className="h-4 w-4 text-emerald-600" /> Or chat on WhatsApp
                 </a>
-                <button
-                  onClick={resetForm}
-                  className="w-full rounded-xl bg-slate-100 px-5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-200 sm:w-auto"
-                >
-                  Close Window
-                </button>
               </div>
-            </div>
+            </form>
           )}
         </div>
       </div>
     </div>
   );
 };
+
+const FIELD_BASE =
+  'w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-[15px] placeholder:text-neutral-400 transition-shadow focus:border-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-600/15';
+const INPUT = `${FIELD_BASE} text-neutral-950`;
+
+const Field: React.FC<{
+  label: string;
+  htmlFor: string;
+  required?: boolean;
+  optional?: boolean;
+  children: React.ReactNode;
+}> = ({ label, htmlFor, required, optional, children }) => (
+  <div>
+    <label htmlFor={htmlFor} className="mb-1.5 block text-[13px] font-medium text-neutral-700">
+      {label}
+      {required && <span className="text-blue-600"> *</span>}
+      {optional && <span className="font-normal text-neutral-400"> (optional)</span>}
+    </label>
+    {children}
+  </div>
+);
+
+const SelectBox: React.FC<{
+  id: string;
+  value: string;
+  onChange: (value: string) => void;
+  required?: boolean;
+  children: React.ReactNode;
+}> = ({ id, value, onChange, required, children }) => (
+  <div className="relative">
+    <select
+      id={id}
+      value={value}
+      required={required}
+      onChange={(event) => onChange(event.target.value)}
+      // Grey until something is chosen, like a placeholder; the list itself stays dark.
+      className={`${FIELD_BASE} cursor-pointer appearance-none pr-11 [&_option]:text-neutral-950 ${
+        value ? 'text-neutral-950' : 'text-neutral-400'
+      }`}
+    >
+      {children}
+    </select>
+    <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+  </div>
+);
+
+const SummaryRow: React.FC<{ label: string; value: string }> = ({ label, value }) => (
+  <div className="flex justify-between gap-4">
+    <dt className="text-neutral-500">{label}</dt>
+    <dd className="text-right font-medium text-neutral-900">{value}</dd>
+  </div>
+);
