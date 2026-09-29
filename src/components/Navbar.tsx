@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, ChevronDown, Command, Menu, Search, X } from 'lucide-react';
 import type { Product, SiteContent } from '../data/contentData';
+import { systemCategoryFor } from '../data/systemCategories';
 import { getIcon } from '../lib/icons';
 import { accentOf } from '../systems/theme';
 
@@ -146,7 +147,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                                 <span className="block text-[12px] font-semibold text-slate-200 group-hover/item:text-white truncate">
                                   {product.shortName}
                                 </span>
-                                <span className="block text-[10px] text-slate-500 truncate">{product.category}</span>
+                                <span className="block text-[10px] text-slate-500 truncate">{systemCategoryFor(product)}</span>
                               </span>
                             </button>
                           );

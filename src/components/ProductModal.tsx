@@ -8,6 +8,7 @@ import {
   X,
 } from 'lucide-react';
 import type { Product } from '../data/contentData';
+import { systemCategoryFor } from '../data/systemCategories';
 import { getIcon } from '../lib/icons';
 import { accentOf } from '../systems/theme';
 import { systemFor } from '../systems/registry';
@@ -86,7 +87,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     {product.status}
                   </span>
-                  <span className="text-[11px] text-slate-500">· {product.category}</span>
+                  <span className="text-[11px] text-slate-500">· {systemCategoryFor(product)}</span>
                 </div>
                 <h2 className="mt-1 text-lg font-black leading-tight text-slate-900 md:text-2xl">{product.name}</h2>
                 <p className="mt-0.5 text-sm text-slate-600">{product.tagline}</p>
