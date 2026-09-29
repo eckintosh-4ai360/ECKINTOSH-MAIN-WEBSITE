@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { ArrowRight, CheckCircle2, Search } from 'lucide-react';
+import React from 'react';
+import { ChevronRight } from 'lucide-react';
 import type { Product, SiteContent } from '../data/contentData';
 import { HIDDEN_SYSTEM_IDS, SYSTEM_CATEGORIES, systemCategoryFor } from '../data/systemCategories';
+import { FEATURED_SYSTEM_IDS, SYSTEM_MEDIA, type SystemMedia } from '../data/siteMedia';
 import { getIcon } from '../lib/icons';
 import { accentOf } from '../systems/theme';
+import { BrowserFrame, Photo, SectionHeading, pillClass } from './ui';
 import { Reveal } from './Reveal';
 
 interface SystemsIndexProps {
@@ -12,157 +14,232 @@ interface SystemsIndexProps {
   onOpenPlanner: (topic?: string) => void;
 }
 
-const STATUS_TONE: Record<string, string> = {
-  'Live in Production': 'text-emerald-600 bg-emerald-50 border-emerald-200',
-  'Enterprise Ready': 'text-blue-600 bg-blue-50 border-blue-200',
-  'In Beta': 'text-amber-600 bg-amber-50 border-amber-200',
+const categoryRank = (product: Product) => {
+  const index = SYSTEM_CATEGORIES.findIndex((category) =>
+    (category.productIds as readonly string[]).includes(product.id)
+  );
+  return index === -1 ? SYSTEM_CATEGORIES.length : index;
 };
 
-/** Scannable catalogue of the systems available on the public site. */
-export const SystemsIndex: React.FC<SystemsIndexProps> = ({
-  content,
-  onSelectProduct,
-  onOpenPlanner,
-}) => {
+/** Product-launch style tiles: flagship systems full width, the rest two-up. */
+export const SystemsIndex: React.FC<SystemsIndexProps> = ({ content, onSelectProduct, onOpenPlanner }) => {
   const catalogue = content.items
     .filter((item) => !HIDDEN_SYSTEM_IDS.has(item.id))
-    .sort((a, b) => {
-      const rank = (product: Product) => {
-        const categoryIndex = SYSTEM_CATEGORIES.findIndex((category) =>
-          (category.productIds as readonly string[]).includes(product.id)
-        );
-        return categoryIndex === -1 ? SYSTEM_CATEGORIES.length : categoryIndex;
-      };
-      return rank(a) - rank(b);
-    });
-  const categories = ['All', ...Array.from(new Set(catalogue.map(systemCategoryFor)))];
-  const [filter, setFilter] = useState('All');
-  const visible = filter === 'All' ? catalogue : catalogue.filter((item) => systemCategoryFor(item) === filter);
+    .sort((a, b) => categoryRank(a) - categoryRank(b));
+
+  const featured = FEATURED_SYSTEM_IDS.map((id) => catalogue.find((item) => item.id === id)).filter(
+    (item): item is Product => Boolean(item)
+  );
+  const rest = catalogue.filter((item) => !featured.includes(item));
+
+  const tileProps = { onSelectProduct, onOpenPlanner };
 
   return (
-    <section id="solutions" aria-labelledby="solutions-heading" className="bg-white py-20 md:py-28 text-slate-900 border-y border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Reveal className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-          <div className="max-w-2xl">
-            <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
-              The full catalogue
-            </span>
-            <h2 id="solutions-heading" className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mt-4 leading-tight">
-              Explore our systems at a glance.
-            </h2>
-            <p className="text-base text-slate-600 mt-4 leading-relaxed">
-              Explore {catalogue.length} systems across management, commerce, learning, and sales. Open any system for its details and interface.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => onOpenPlanner(content.ctaTopic)}
-            className="self-start md:self-end shrink-0 px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs flex items-center gap-2 whitespace-nowrap transition-all shadow-md hover:shadow-lg"
-          >
-            {content.ctaLabel} <ArrowRight className="w-4 h-4" />
-          </button>
+    <section id="solutions" aria-labelledby="solutions-heading" className="bg-white pb-20 pt-20 md:pb-28 md:pt-28">
+      <div className="mx-auto max-w-7xl px-3 sm:px-4">
+        <Reveal className="px-3 pb-10 sm:px-4 md:pb-14">
+          <SectionHeading id="solutions-heading" lead={content.eyebrow} rest={content.title} description={content.description} />
         </Reveal>
 
-        {/* Category filter */}
-        <div className="flex items-center gap-1.5 flex-wrap mb-7">
-          <Search className="w-3.5 h-3.5 text-slate-400 mr-1" />
-          {categories.map((category) => (
-            <button
-              key={category}
-              type="button"
-              onClick={() => setFilter(category)}
-              className={`px-3 py-1.5 rounded-lg text-[11.5px] font-semibold border transition-all ${
-                filter === category
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
-              }`}
-            >
-              {category}
-            </button>
+        <div className="space-y-3">
+          {featured.map((product) => (
+            <SystemTile key={product.id} product={product} featured {...tileProps} />
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {visible.map((product, index) => {
-            const accent = accentOf(product.accent);
-            const Icon = getIcon(product.iconName);
-            return (
-              <Reveal key={product.id} delay={Math.min(index, 5) * 60}>
-                <article
-                  className="group relative h-full rounded-2xl bg-white border border-slate-200 p-5 flex flex-col lift hover:shadow-[0_24px_60px_-30px_rgba(15,23,42,0.45)]"
-                  style={{ transitionProperty: 'transform, box-shadow, border-color' }}
-                  onMouseEnter={(event) => {
-                    event.currentTarget.style.borderColor = `${accent.hex}66`;
-                  }}
-                  onMouseLeave={(event) => {
-                    event.currentTarget.style.borderColor = '';
-                  }}
-                >
-                  {/* Accent wash on hover */}
-                  <span
-                    className="pointer-events-none absolute inset-x-0 top-0 h-24 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{ background: `linear-gradient(180deg, ${accent.hex}12, transparent)` }}
-                  />
-
-                  <div className="relative flex items-start justify-between gap-2 mb-4">
-                    <span
-                      className="w-11 h-11 rounded-xl grid place-items-center shrink-0 transition-transform duration-300 group-hover:scale-105"
-                      style={{ backgroundColor: `${accent.hex}14`, color: accent.hex }}
-                    >
-                      <Icon className="w-5 h-5" />
-                    </span>
-                    <span
-                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold border whitespace-nowrap ${
-                        STATUS_TONE[product.status] ?? 'text-slate-600 bg-slate-50 border-slate-200'
-                      }`}
-                    >
-                      {product.status}
-                    </span>
-                  </div>
-
-                  <div className="relative flex-1">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      {systemCategoryFor(product)}
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900 leading-snug mt-0.5">{product.shortName}</h3>
-                    <p className="text-[13px] text-slate-600 leading-relaxed mt-2">{product.subtitle}</p>
-
-                    <ul className="mt-3.5 space-y-1.5">
-                      {product.keyFeatures.slice(0, 3).map((feature) => (
-                        <li key={feature} className="flex items-start gap-1.5 text-[11.5px] text-slate-600">
-                          <CheckCircle2 className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: accent.hex }} />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="relative mt-4 pt-3.5 border-t border-slate-100">
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => onSelectProduct(product)}
-                        className="flex-1 px-3 py-2 rounded-xl text-white text-[11.5px] font-bold flex items-center justify-center gap-1.5 transition-all hover:brightness-110"
-                        style={{ backgroundColor: accent.hex }}
-                      >
-                        Explore system <ArrowRight className="w-3 h-3" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onOpenPlanner(`Demo request: ${product.name}`)}
-                        className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11.5px] font-bold transition-colors"
-                      >
-                        Request demo
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              </Reveal>
-            );
-          })}
+        <div className="mt-3 grid gap-3 lg:grid-cols-2">
+          {rest.map((product, index) => (
+            <SystemTile
+              key={product.id}
+              product={product}
+              // An odd tile out closes the grid at full width.
+              wide={rest.length % 2 === 1 && index === rest.length - 1}
+              {...tileProps}
+            />
+          ))}
         </div>
+
+        <p className="mt-12 px-3 text-center text-[17px] text-neutral-600">
+          Need something none of these cover?{' '}
+          <button
+            type="button"
+            onClick={() => onOpenPlanner(content.ctaTopic)}
+            className="inline-flex items-center font-medium text-blue-600 hover:underline"
+          >
+            {content.ctaLabel} <ChevronRight className="h-4 w-4" />
+          </button>
+        </p>
       </div>
     </section>
+  );
+};
+
+interface SystemTileProps {
+  product: Product;
+  featured?: boolean;
+  wide?: boolean;
+  onSelectProduct: (product: Product) => void;
+  onOpenPlanner: (topic?: string) => void;
+}
+
+const SystemTile: React.FC<SystemTileProps> = ({ product, featured = false, wide = false, onSelectProduct, onOpenPlanner }) => {
+  const media = SYSTEM_MEDIA[product.id];
+  const dark = media?.tone === 'dark';
+  const accent = accentOf(product.accent);
+  const headingId = `system-${product.id}`;
+
+  return (
+    <Reveal className={wide ? 'lg:col-span-2' : ''}>
+      <article
+        aria-labelledby={headingId}
+        className={`group relative flex h-full flex-col overflow-hidden rounded-[28px] ${
+          dark ? 'bg-neutral-950 text-white' : 'bg-[#f5f5f7] text-neutral-950'
+        } ${featured ? 'min-h-[620px] md:min-h-[740px]' : 'min-h-[560px] md:min-h-[640px]'}`}
+      >
+        <div className="relative z-10 px-6 pt-12 text-center md:pt-14">
+          <p className="text-[13px] font-semibold" style={{ color: dark ? accent.hex2 : accent.hex }}>
+            {systemCategoryFor(product)}
+          </p>
+          <h3
+            id={headingId}
+            className={`mt-1.5 font-semibold tracking-[-0.025em] ${
+              featured ? 'text-[40px] leading-[1.05] md:text-[56px]' : 'text-[32px] leading-[1.1] md:text-[40px]'
+            }`}
+          >
+            {product.shortName}
+          </h3>
+          <p
+            className={`mx-auto mt-2 max-w-xl ${featured ? 'text-[19px] md:text-[24px]' : 'text-[17px] md:text-[19px]'} leading-snug ${
+              dark ? 'text-neutral-300' : 'text-neutral-600'
+            }`}
+          >
+            {product.tagline}
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <button type="button" onClick={() => onSelectProduct(product)} className={pillClass('primary')}>
+              Learn more
+            </button>
+            <button
+              type="button"
+              onClick={() => onOpenPlanner(`Demo request: ${product.name}`)}
+              className={pillClass(dark ? 'ghost-light' : 'secondary')}
+            >
+              Request a demo
+            </button>
+          </div>
+        </div>
+
+        <div className="relative mt-10 flex flex-1 flex-col md:mt-12">
+          <TileMedia product={product} media={media} featured={featured} wide={wide} dark={dark} />
+        </div>
+      </article>
+    </Reveal>
+  );
+};
+
+const TileMedia: React.FC<{
+  product: Product;
+  media: SystemMedia | undefined;
+  featured: boolean;
+  wide: boolean;
+  dark: boolean;
+}> = ({ product, media, featured, wide, dark }) => {
+  const accent = accentOf(product.accent);
+  const full = featured || wide;
+  const sizes = full ? '(min-width: 1280px) 1256px, 100vw' : '(min-width: 1024px) 50vw, 100vw';
+  const zoom = 'transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]';
+
+  const tileFrom = dark ? 'from-neutral-950' : 'from-[#f5f5f7]';
+
+  // The system in use beside its real screen: stacked on phones, side by side above.
+  if (media?.photo && media.screenshot) {
+    return (
+      <div className="relative flex-1 overflow-hidden md:min-h-[440px]">
+        <div className="relative h-72 sm:h-80 md:absolute md:inset-y-0 md:left-0 md:h-auto md:w-[62%]">
+          <Photo photo={media.photo} sizes={full ? '(min-width: 768px) 62vw, 100vw' : '(min-width: 1024px) 31vw, 100vw'} className={zoom} />
+          <div className={`absolute inset-x-0 top-0 h-20 bg-gradient-to-b ${tileFrom} to-transparent`} />
+          <div className={`absolute inset-y-0 right-0 hidden w-1/3 bg-gradient-to-l ${tileFrom} to-transparent md:block`} />
+        </div>
+        <div
+          className={`relative mx-auto -mt-24 w-[88%] translate-y-6 transition-transform duration-700 group-hover:translate-y-3 md:absolute md:bottom-0 md:right-8 md:mt-0 ${
+            full ? 'md:w-[50%]' : 'md:w-[56%]'
+          }`}
+        >
+          <BrowserFrame shot={media.screenshot} tone={dark ? 'dark' : 'light'} />
+        </div>
+      </div>
+    );
+  }
+
+  // A photo of the system in use, with its headline numbers.
+  if (media?.photo) {
+    return (
+      <div className={`relative flex-1 overflow-hidden ${full ? 'min-h-[340px] md:min-h-[440px]' : 'min-h-[320px]'}`}>
+        <div className="absolute inset-0">
+          <Photo photo={media.photo} sizes={sizes} className={zoom} />
+        </div>
+        {/* Blend the photo's top edge into the tile. */}
+        <div className={`absolute inset-x-0 top-0 h-24 bg-gradient-to-b ${tileFrom} to-transparent`} />
+        <MetricChips product={product} full={full} />
+      </div>
+    );
+  }
+
+  // A real screen rising out of the bottom of the tile.
+  if (media?.screenshot) {
+    return (
+      <div className="relative flex flex-1 items-end justify-center overflow-hidden px-6 md:px-10">
+        <div
+          aria-hidden="true"
+          className="absolute bottom-0 left-1/2 h-2/3 w-3/4 -translate-x-1/2 rounded-full blur-[90px]"
+          style={{ backgroundColor: `${accent.hex}55` }}
+        />
+        <div
+          className={`relative translate-y-8 transition-transform duration-700 group-hover:translate-y-4 ${
+            full ? 'w-full max-w-4xl' : 'w-full'
+          }`}
+        >
+          <BrowserFrame shot={media.screenshot} tone={dark ? 'dark' : 'light'} />
+        </div>
+      </div>
+    );
+  }
+
+  // No media yet: a large icon on a wash of the system's accent.
+  const Icon = getIcon(product.iconName);
+  return (
+    <div className="relative flex flex-1 items-center justify-center overflow-hidden pb-12">
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-10 bottom-0 top-6 rounded-full blur-[80px]"
+        style={{ backgroundColor: `${accent.hex}33` }}
+      />
+      <span
+        className="relative grid h-36 w-36 place-items-center rounded-[36px] text-white shadow-2xl"
+        style={{ background: `linear-gradient(135deg, ${accent.hex}, ${accent.hex2})` }}
+      >
+        <Icon className="h-16 w-16" />
+      </span>
+    </div>
+  );
+};
+
+/** Headline numbers laid over the photo, like the stats on a product page. */
+const MetricChips: React.FC<{ product: Product; full: boolean }> = ({ product, full }) => {
+  const metrics = product.metrics.slice(0, full ? 3 : 2);
+  if (!metrics.length) return null;
+
+  return (
+    <ul className="absolute inset-x-4 bottom-4 flex flex-wrap justify-center gap-2 md:bottom-6 md:gap-3">
+      {metrics.map((metric) => (
+        <li
+          key={metric.label}
+          className="rounded-2xl bg-white/85 px-4 py-2.5 text-center shadow-lg shadow-black/10 backdrop-blur-md md:px-5 md:py-3"
+        >
+          <span className="block text-[17px] font-semibold tracking-tight text-neutral-950 md:text-[21px]">{metric.value}</span>
+          <span className="block text-[11px] text-neutral-600 md:text-[12px]">{metric.label}</span>
+        </li>
+      ))}
+    </ul>
   );
 };
