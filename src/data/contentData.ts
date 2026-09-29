@@ -1414,8 +1414,6 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       { title: 'Pharmacy Management', desc: 'Dispensing, batch expiry and claims', iconName: 'Pill' },
       { title: 'Inventory & POS', desc: 'Offline-first retail checkout and stock control', iconName: 'ShoppingCart' },
       { title: 'E-Commerce Platform', desc: 'Online store with Mobile Money checkout', iconName: 'Store' },
-      { title: 'Beauty & Spa System', desc: 'Bookings, client records and commissions', iconName: 'Scissors' },
-      { title: 'Barbershop System', desc: 'Walk-in queue, checkout and barber earnings', iconName: 'Scissors' },
       { title: 'Learning Platform', desc: 'Courses, assessments and certificates', iconName: 'BookOpen' },
       { title: 'Custom Software Build', desc: 'Something none of the above covers', iconName: 'Code2' },
     ],
