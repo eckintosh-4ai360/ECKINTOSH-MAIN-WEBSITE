@@ -1,64 +1,64 @@
 import React from 'react';
-import { ArrowRight, Code2 } from 'lucide-react';
+import { ChevronRight, Code2 } from 'lucide-react';
 import type { SiteContent } from '../data/contentData';
-import { getIcon as lookupIcon } from '../lib/icons';
+import { SERVICE_PHOTOS } from '../data/siteMedia';
+import { getIcon } from '../lib/icons';
+import { Photo, SectionHeading } from './ui';
+import { Reveal } from './Reveal';
 
 interface WhatWeDoProps {
   content: SiteContent['services'];
-  onOpenPlanner: (serviceName?: string, startAtContact?: boolean) => void;
+  onOpenPlanner: (topic?: string) => void;
 }
 
-/** A focused overview of the five ways clients can work with us. */
-export const WhatWeDo: React.FC<WhatWeDoProps> = ({ content, onOpenPlanner }) => {
-  const getIcon = (iconName: string) => {
-    const Icon = lookupIcon(iconName, Code2);
-    return <Icon className="h-6 w-6 text-blue-600" />;
-  };
+/** The ways clients can work with us, as photo cards that go straight to contact. */
+export const WhatWeDo: React.FC<WhatWeDoProps> = ({ content, onOpenPlanner }) => (
+  <section id="services" aria-labelledby="services-heading" className="bg-[#f5f5f7] py-20 text-neutral-950 md:py-28">
+    <div className="mx-auto max-w-7xl px-6 sm:px-8">
+      <Reveal className="mb-10 md:mb-14">
+        <SectionHeading id="services-heading" lead={content.eyebrow} rest={content.title} description={content.description} />
+      </Reveal>
 
-  return (
-    <section
-      id="services"
-      aria-labelledby="services-heading"
-      className="border-b border-slate-200 bg-[#F7F9FC] py-10 text-slate-900 md:py-28"
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-16 max-w-3xl">
-          <span className="rounded-full border border-blue-200 bg-blue-100/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-600">
-            {content.eyebrow}
-          </span>
-          <h2
-            id="services-heading"
-            className="mt-3 font-heading text-2xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-3xl md:text-4xl"
-          >
-            {content.title}
-          </h2>
-          <p className="mt-4 text-base font-normal leading-relaxed text-slate-600">{content.description}</p>
-        </div>
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {content.items.slice(0, 5).map((service, index) => {
+          const Icon = getIcon(service.iconName, Code2);
+          const photo = SERVICE_PHOTOS[service.id];
+          return (
+            <Reveal key={service.id} delay={index * 70} className="h-full">
+              <article className="group flex h-full flex-col overflow-hidden rounded-[22px] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-[0_24px_60px_-24px_rgba(0,0,0,0.3)]">
+                <div className="relative aspect-[4/3] overflow-hidden bg-neutral-100">
+                  {photo ? (
+                    <Photo
+                      photo={photo}
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                      className="transition-transform duration-700 group-hover:scale-[1.04]"
+                    />
+                  ) : (
+                    <div className="grid h-full place-items-center text-blue-600">
+                      <Icon className="h-12 w-12" />
+                    </div>
+                  )}
+                  <span className="absolute left-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-blue-600 shadow-sm backdrop-blur-md">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                </div>
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {content.items.slice(0, 5).map((service) => (
-            <article
-              key={service.id}
-              className="flex min-h-[19rem] flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/10"
-            >
-              <div>
-                <div className="mb-4 w-fit rounded-xl bg-slate-100/80 p-3">{getIcon(service.iconName)}</div>
-                <h3 className="font-heading text-xl font-bold leading-snug text-slate-900">{service.title}</h3>
-                <p className="mt-3 text-sm font-normal leading-relaxed text-slate-600">{service.shortDesc}</p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => onOpenPlanner(`Service inquiry: ${service.title}`, true)}
-                className="group mt-auto flex w-full items-center justify-between border-t border-slate-100 pt-6 text-sm font-bold text-blue-600 transition-colors hover:text-blue-700"
-              >
-                Discuss with Us
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </button>
-            </article>
-          ))}
-        </div>
+                <div className="flex flex-1 flex-col p-6">
+                  <h3 className="text-[21px] font-semibold leading-snug tracking-[-0.01em]">{service.title}</h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-neutral-600">{service.shortDesc}</p>
+                  <button
+                    type="button"
+                    onClick={() => onOpenPlanner(`Service inquiry: ${service.title}`)}
+                    className="mt-auto inline-flex items-center gap-0.5 self-start pt-6 text-[15px] font-medium text-blue-600 hover:underline"
+                  >
+                    Discuss with us <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </button>
+                </div>
+              </article>
+            </Reveal>
+          );
+        })}
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
