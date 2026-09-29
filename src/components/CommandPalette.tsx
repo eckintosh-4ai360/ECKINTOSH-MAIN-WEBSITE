@@ -72,7 +72,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       {
         id: 'action-planner',
         label: 'Start a project brief',
-        hint: 'Scope, timeline and budget in four steps',
+        hint: 'One short form, straight to our team',
         group: 'Actions',
         icon: Sparkles,
         run: () => {
