@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Globe, Layers, MessageSquare, Share2 } from 'lucide-react';
+import { ChevronRight, Globe } from 'lucide-react';
 import type { NavLink, SiteContent } from '../data/contentData';
 
 interface FooterProps {
@@ -8,126 +8,93 @@ interface FooterProps {
   onOpenPlanner: (topic?: string) => void;
 }
 
+/** Hash routes that render a separate page need a reload to switch views. */
+const openRoute = (event: React.MouseEvent, route: string) => {
+  event.preventDefault();
+  window.location.hash = route;
+  window.location.reload();
+};
+
 export const Footer: React.FC<FooterProps> = ({ brand, content, onOpenPlanner }) => {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     const element = document.querySelector(href);
     if (element) {
-      const yOffset = -80;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      const y = element.getBoundingClientRect().top + window.pageYOffset - 48;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
 
   return (
-    <footer className="bg-[#030712] text-slate-400 py-16 border-t border-white/10 text-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10 pb-12 border-b border-white/10">
-          <div className="lg:col-span-2 space-y-4">
-            <a href="#hero" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold">
-                <Layers className="w-4 h-4" />
-              </div>
-              <span className="text-lg font-extrabold text-white font-heading">
-                {brand.name}
-                <span className="text-blue-500">{brand.suffix}</span>
-              </span>
-            </a>
+    <footer className="bg-[#f5f5f7] text-[12px] leading-relaxed text-neutral-500">
+      <div className="mx-auto max-w-[1080px] px-6">
+        <div className="flex flex-col gap-4 border-b border-black/10 py-8 md:flex-row md:items-center md:justify-between">
+          <p className="max-w-xl">{content.description}</p>
+          <button
+            type="button"
+            onClick={() => onOpenPlanner(content.directConnectTopic)}
+            className="inline-flex shrink-0 items-center self-start font-medium text-blue-600 hover:underline md:self-auto"
+          >
+            Tell us what you need built <ChevronRight className="h-3.5 w-3.5" />
+          </button>
+        </div>
 
-            <p className="text-slate-400 text-xs leading-relaxed max-w-sm">{content.description}</p>
-
-            <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono pt-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>{content.statusLine}</span>
-            </div>
-
-            <button
-              onClick={() => onOpenPlanner(content.directConnectTopic)}
-              className="mt-2 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold transition-all group"
-            >
-              Tell us what you need built
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-          </div>
-
+        <div className="grid grid-cols-2 gap-x-6 gap-y-8 py-10 md:grid-cols-4">
           <FooterLinkColumn title="Company" links={content.companyLinks} onNavClick={handleNavClick} />
           <FooterLinkColumn title="Solutions" links={content.solutionLinks} onNavClick={handleNavClick} />
-          <nav aria-labelledby="footer-systems-heading" className="lg:col-span-2">
-            <h4 id="footer-systems-heading" className="text-white font-bold uppercase tracking-wider text-[11px] mb-4 font-mono">
-              Systems
-            </h4>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
-              {content.productLinks.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    onClick={(event) => handleNavClick(event, link.href)}
-                    className="hover:text-white transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
+          <FooterLinkColumn title="Systems" links={content.productLinks} onNavClick={handleNavClick} />
+          <nav aria-labelledby="footer-connect-heading">
+            <h3 id="footer-connect-heading" className="font-semibold text-neutral-800">
+              Connect
+            </h3>
+            <ul className="mt-3 space-y-2.5">
+              <li>
+                <a href={content.whatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-neutral-900 hover:underline">
+                  {content.whatsappLabel}
+                </a>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onOpenPlanner(content.directConnectTopic)}
+                  className="hover:text-neutral-900 hover:underline"
+                >
+                  {content.directConnectLabel}
+                </button>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" aria-hidden="true" />
+                {content.statusLine}
+              </li>
             </ul>
           </nav>
         </div>
 
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 font-mono text-[11px]">
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
+        <div className="flex flex-col gap-3 border-t border-black/10 py-6 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+            <span className="flex items-center gap-1.5">
+              <img src="/logo.png" alt="" className="h-3.5 w-auto" />
+              <span className="font-semibold text-neutral-700">
+                {brand.name}
+                {brand.suffix}
+              </span>
+            </span>
             <span>{content.copyright}</span>
-            <a
-              href="#/privacy"
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.hash = '/privacy';
-                window.location.reload();
-              }}
-              className="hover:text-white transition-colors"
-            >
-              Privacy Policy
-            </a>
-            <a
-              href="#/terms"
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.hash = '/terms';
-                window.location.reload();
-              }}
-              className="hover:text-white transition-colors"
-            >
-              Terms of Service
-            </a>
           </div>
 
-          <div className="flex items-center gap-4">
-            <a
-              href={content.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors flex items-center gap-1"
-            >
-              <MessageSquare className="w-3.5 h-3.5 text-emerald-400" /> {content.whatsappLabel}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+            <a href="#/privacy" onClick={(e) => openRoute(e, '/privacy')} className="hover:text-neutral-900 hover:underline">
+              Privacy Policy
             </a>
-            <button
-              onClick={() => onOpenPlanner(content.directConnectTopic)}
-              className="hover:text-white transition-colors flex items-center gap-1"
-            >
-              <Share2 className="w-3.5 h-3.5 text-blue-400" /> {content.directConnectLabel}
-            </button>
-            <span className="flex items-center gap-1 text-slate-400">
-              <Globe className="w-3.5 h-3.5" /> {content.locationLabel}
-            </span>
-            <a
-              href="#/admin"
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.hash = '/admin';
-                window.location.reload();
-              }}
-              className="text-slate-600 hover:text-slate-400 transition-colors"
-            >
+            <a href="#/terms" onClick={(e) => openRoute(e, '/terms')} className="hover:text-neutral-900 hover:underline">
+              Terms of Service
+            </a>
+            <a href="#/admin" onClick={(e) => openRoute(e, '/admin')} className="text-neutral-400 hover:text-neutral-700">
               Admin
             </a>
+            <span className="flex items-center gap-1 text-neutral-700">
+              <Globe className="h-3.5 w-3.5" /> {content.locationLabel}
+            </span>
           </div>
         </div>
       </div>
@@ -142,14 +109,14 @@ const FooterLinkColumn: React.FC<{
 }> = ({ title, links, onNavClick }) => {
   const headingId = `footer-${title.toLowerCase()}-heading`;
   return (
-    <nav aria-labelledby={headingId} className="space-y-3">
-      <h3 id={headingId} className="text-xs font-bold uppercase tracking-wider text-white font-mono">
+    <nav aria-labelledby={headingId}>
+      <h3 id={headingId} className="font-semibold text-neutral-800">
         {title}
       </h3>
-      <ul className="space-y-2">
+      <ul className="mt-3 space-y-2.5">
         {links.map((link) => (
           <li key={`${title}-${link.label}`}>
-            <a href={link.href} onClick={(e) => onNavClick(e, link.href)} className="hover:text-white transition-colors">
+            <a href={link.href} onClick={(e) => onNavClick(e, link.href)} className="hover:text-neutral-900 hover:underline">
               {link.label}
             </a>
           </li>
