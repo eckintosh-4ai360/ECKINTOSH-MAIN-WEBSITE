@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { QuickLinks } from './components/QuickLinks';
 import { WhatWeDo } from './components/WhatWeDo';
 import { SystemsIndex } from './components/SystemsIndex';
 import { WhyUs } from './components/WhyUs';
@@ -34,15 +35,15 @@ export function App() {
 
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [plannerTopic, setPlannerTopic] = useState('');
-  const [plannerInitialStep, setPlannerInitialStep] = useState<1 | 2 | 3>(1);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const handleOpenPlanner = useCallback((topic?: string, startAtContact = false) => {
+  const handleOpenPlanner = useCallback((topic?: string) => {
     setPlannerTopic(topic || '');
-    setPlannerInitialStep(startAtContact ? 3 : 1);
     setPlannerOpen(true);
   }, []);
+
+  const handleClosePlanner = useCallback(() => setPlannerOpen(false), []);
 
   // These sections remain editable in admin, but are intentionally not part of
   // the public site. Filter saved navigation so older content cannot render
@@ -91,7 +92,7 @@ export function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#08111F] text-slate-100 font-sans antialiased">
+    <div className="min-h-screen bg-white text-neutral-950 font-sans antialiased">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2.5 focus:rounded-xl focus:bg-blue-600 focus:text-white focus:text-sm focus:font-semibold focus:shadow-lg"
@@ -104,6 +105,7 @@ export function App() {
       <Navbar
         navigation={publicNavigation}
         products={publicProducts}
+        whatsappUrl={content.footer.whatsappUrl}
         onOpenPlanner={handleOpenPlanner}
         onOpenPalette={() => setPaletteOpen(true)}
         onSelectProduct={setSelectedProduct}
@@ -115,7 +117,12 @@ export function App() {
           onOpenPlanner={handleOpenPlanner}
         />
 
-        <WhatWeDo content={content.services} onOpenPlanner={handleOpenPlanner} />
+        <QuickLinks
+          products={publicProducts}
+          customTopic={content.products.ctaTopic}
+          onSelectProduct={setSelectedProduct}
+          onOpenPlanner={handleOpenPlanner}
+        />
 
         <SystemsIndex
           content={publicProductContent}
@@ -123,7 +130,9 @@ export function App() {
           onOpenPlanner={handleOpenPlanner}
         />
 
-        <WhyUs content={content.whyUs} />
+        <WhatWeDo content={content.services} onOpenPlanner={handleOpenPlanner} />
+
+        <WhyUs content={content.whyUs} location={content.footer.locationLabel} />
 
         <Testimonials content={content.testimonials} />
 
@@ -142,11 +151,12 @@ export function App() {
       />
 
       <ProjectPlannerModal
-          isOpen={plannerOpen}
-          onClose={() => setPlannerOpen(false)}
-          initialTopic={plannerTopic}
-          initialStep={plannerInitialStep}
-          content={content.planner}
+        isOpen={plannerOpen}
+        onClose={handleClosePlanner}
+        initialTopic={plannerTopic}
+        content={content.planner}
+        services={content.services.items}
+        contactCards={content.cta.contactCards}
       />
 
       <ProductModal
