@@ -20,17 +20,26 @@ import { ProductModal } from './components/ProductModal';
 
 // Data types
 import type { Product } from './data/contentData';
+import { HIDDEN_SYSTEM_IDS } from './data/systemCategories';
 import { useSiteContent } from './lib/siteContent';
 import { trackPageview } from './lib/analytics';
 
 export function App() {
   const { content } = useSiteContent();
+  const publicProducts = useMemo(
+    () => content.products.items.filter((product) => !HIDDEN_SYSTEM_IDS.has(product.id)),
+    [content.products.items]
+  );
+  const publicProductContent = useMemo(
+    () => ({ ...content.products, items: publicProducts }),
+    [content.products, publicProducts]
+  );
 
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [plannerTopic, setPlannerTopic] = useState('');
   const [plannerInitialStep, setPlannerInitialStep] = useState<1 | 2 | 3>(1);
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const [activeSystemId, setActiveSystemId] = useState<string>(content.products.items[0]?.id ?? '');
+  const [activeSystemId, setActiveSystemId] = useState<string>(publicProducts[0]?.id ?? '');
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
@@ -64,16 +73,18 @@ export function App() {
       ...content.footer,
       companyLinks: content.footer.companyLinks.filter((link) => !['#work', '#industries'].includes(link.href)),
       solutionLinks: content.footer.solutionLinks.filter((link) => !['#work', '#industries'].includes(link.href)),
-      productLinks: content.footer.productLinks.filter((link) => !['#work', '#industries'].includes(link.href)),
+      productLinks: content.footer.productLinks.filter((link) =>
+        !['#work', '#industries'].includes(link.href) && !['Beauty & Spa', 'Barbershop'].includes(link.label)
+      ),
     }),
     [content.footer]
   );
 
-  /** Select a system in the showcase and bring the stage into view. */
+  /** Select a system in the showcase and bring its card into view. */
   const handleFocusSystem = useCallback((productId: string) => {
     setActiveSystemId(productId);
     window.requestAnimationFrame(() => {
-      document.getElementById('systems')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById(`system-card-${productId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   }, []);
 
@@ -107,7 +118,7 @@ export function App() {
 
       <Navbar
         navigation={publicNavigation}
-        products={content.products.items}
+        products={publicProducts}
         onOpenPlanner={handleOpenPlanner}
         onOpenPalette={() => setPaletteOpen(true)}
         onFocusSystem={handleFocusSystem}
@@ -123,9 +134,9 @@ export function App() {
 
         {/* <CapabilityMarquee /> */}
 
-        {/* Flagship: interactive walkthroughs of every system we have shipped */}
+        {/* Systems grouped by the work they help clients do */}
         <SystemsShowcase
-          content={content.products}
+          content={publicProductContent}
           activeId={activeSystemId}
           onActiveIdChange={setActiveSystemId}
           onSelectProduct={setSelectedProduct}
@@ -135,9 +146,8 @@ export function App() {
         <WhatWeDo content={content.services} onOpenPlanner={handleOpenPlanner} />
 
         <SystemsIndex
-          content={content.products}
+          content={publicProductContent}
           onSelectProduct={setSelectedProduct}
-          onFocusSystem={handleFocusSystem}
           onOpenPlanner={handleOpenPlanner}
         />
 
@@ -154,7 +164,7 @@ export function App() {
       <CommandPalette
         open={paletteOpen}
         onClose={() => setPaletteOpen(false)}
-        content={{ ...content, navigation: publicNavigation }}
+        content={{ ...content, products: publicProductContent, navigation: publicNavigation }}
         onSelectProduct={setSelectedProduct}
         onFocusSystem={handleFocusSystem}
         onOpenPlanner={handleOpenPlanner}

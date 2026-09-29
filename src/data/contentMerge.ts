@@ -39,6 +39,12 @@ export function mergeSiteContent(stored: unknown): SiteContent {
   if (!isPlainObject(stored)) return DEFAULT_SITE_CONTENT;
   const keepStoredArrays = stored.contentVersion === CONTENT_VERSION;
   const merged = merge(DEFAULT_SITE_CONTENT, stored, keepStoredArrays) as SiteContent;
+  if (merged.products.title === 'Products built to solve real problems.') {
+    merged.products.title = DEFAULT_SITE_CONTENT.products.title;
+  }
+  if (merged.products.description === 'We build repeatable software systems for institutions and enterprises.') {
+    merged.products.description = DEFAULT_SITE_CONTENT.products.description;
+  }
   return { ...merged, contentVersion: CONTENT_VERSION };
 }
 

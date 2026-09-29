@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { ArrowRight, CheckCircle2, Play, Search } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Search } from 'lucide-react';
 import type { Product, SiteContent } from '../data/contentData';
+import { HIDDEN_SYSTEM_IDS, SYSTEM_CATEGORIES, systemCategoryFor } from '../data/systemCategories';
 import { getIcon } from '../lib/icons';
 import { accentOf } from '../systems/theme';
 import { Reveal } from './Reveal';
@@ -8,7 +9,6 @@ import { Reveal } from './Reveal';
 interface SystemsIndexProps {
   content: SiteContent['products'];
   onSelectProduct: (product: Product) => void;
-  onFocusSystem: (productId: string) => void;
   onOpenPlanner: (topic?: string) => void;
 }
 
@@ -22,12 +22,22 @@ const STATUS_TONE: Record<string, string> = {
 export const SystemsIndex: React.FC<SystemsIndexProps> = ({
   content,
   onSelectProduct,
-  onFocusSystem,
   onOpenPlanner,
 }) => {
-  const categories = ['All', ...Array.from(new Set(content.items.map((item) => item.category)))];
+  const catalogue = content.items
+    .filter((item) => !HIDDEN_SYSTEM_IDS.has(item.id))
+    .sort((a, b) => {
+      const rank = (product: Product) => {
+        const categoryIndex = SYSTEM_CATEGORIES.findIndex((category) =>
+          (category.productIds as readonly string[]).includes(product.id)
+        );
+        return categoryIndex === -1 ? SYSTEM_CATEGORIES.length : categoryIndex;
+      };
+      return rank(a) - rank(b);
+    });
+  const categories = ['All', ...Array.from(new Set(catalogue.map(systemCategoryFor)))];
   const [filter, setFilter] = useState('All');
-  const visible = filter === 'All' ? content.items : content.items.filter((item) => item.category === filter);
+  const visible = filter === 'All' ? catalogue : catalogue.filter((item) => systemCategoryFor(item) === filter);
 
   return (
     <section id="solutions" aria-labelledby="solutions-heading" className="bg-white py-20 md:py-28 text-slate-900 border-y border-slate-200">
@@ -38,11 +48,10 @@ export const SystemsIndex: React.FC<SystemsIndexProps> = ({
               The full catalogue
             </span>
             <h2 id="solutions-heading" className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mt-4 leading-tight">
-              Every system, at a glance.
+              Explore our systems at a glance.
             </h2>
             <p className="text-base text-slate-600 mt-4 leading-relaxed">
-              Eight platforms, each solving a specific operational problem. Pick one to open its live interface, or read
-              the full specification.
+              Explore {catalogue.length} systems across management, commerce, learning, and sales. Open any system for its details and interface.
             </p>
           </div>
 
@@ -114,7 +123,7 @@ export const SystemsIndex: React.FC<SystemsIndexProps> = ({
 
                   <div className="relative flex-1">
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      {product.category}
+                      {systemCategoryFor(product)}
                     </div>
                     <h3 className="text-lg font-bold text-slate-900 leading-snug mt-0.5">{product.shortName}</h3>
                     <p className="text-[13px] text-slate-600 leading-relaxed mt-2">{product.subtitle}</p>
@@ -133,18 +142,18 @@ export const SystemsIndex: React.FC<SystemsIndexProps> = ({
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => onFocusSystem(product.id)}
+                        onClick={() => onSelectProduct(product)}
                         className="flex-1 px-3 py-2 rounded-xl text-white text-[11.5px] font-bold flex items-center justify-center gap-1.5 transition-all hover:brightness-110"
                         style={{ backgroundColor: accent.hex }}
                       >
-                        <Play className="w-3 h-3 fill-white" /> See it running
+                        Explore system <ArrowRight className="w-3 h-3" />
                       </button>
                       <button
                         type="button"
-                        onClick={() => onSelectProduct(product)}
+                        onClick={() => onOpenPlanner(`Demo request: ${product.name}`)}
                         className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11.5px] font-bold transition-colors"
                       >
-                        Details
+                        Request demo
                       </button>
                     </div>
                   </div>
