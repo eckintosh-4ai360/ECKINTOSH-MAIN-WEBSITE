@@ -10,7 +10,7 @@ interface NavbarProps {
   products: Product[];
   onOpenPlanner: (topic?: string) => void;
   onOpenPalette: () => void;
-  onFocusSystem: (productId: string) => void;
+  onSelectProduct: (product: Product) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -18,7 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   products,
   onOpenPlanner,
   onOpenPalette,
-  onFocusSystem,
+  onSelectProduct,
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -95,7 +95,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Desktop nav */}
         <nav className="hidden lg:flex items-center gap-1" aria-label="Primary">
           {navigation.links.map((link) => {
-            const isSystems = link.href === '#systems';
+            const isSystems = link.href === '#solutions';
             const active = activeSection === link.href;
 
             if (isSystems) {
@@ -133,7 +133,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                               type="button"
                               onClick={() => {
                                 setSystemsOpen(false);
-                                onFocusSystem(product.id);
+                                onSelectProduct(product);
                               }}
                               className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl hover:bg-white/[0.06] text-left transition-colors group/item"
                             >
@@ -239,7 +239,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       type="button"
                       onClick={() => {
                         setMobileMenuOpen(false);
-                        onFocusSystem(product.id);
+                        onSelectProduct(product);
                       }}
                       className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl bg-white/[0.02] border border-white/[0.06] text-left"
                     >

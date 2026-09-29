@@ -1200,7 +1200,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
   navigation: {
     links: [
       { label: 'Home', href: '#hero' },
-      { label: 'Systems', href: '#systems' },
+      { label: 'Systems', href: '#solutions' },
       { label: 'Services', href: '#services' },
       { label: 'About', href: '#why-us' },
       { label: 'Contact', href: '#contact' },
@@ -1303,7 +1303,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     ctaPrefix: 'Discuss',
   },
   products: {
-    eyebrow: 'Systems We Have Built',
+    eyebrow: 'Systems Catalogue',
     title: 'Systems built around your work.',
     description: 'Explore the systems we build, from everyday management to commerce, learning, and sales.',
     items: PRODUCTS,
@@ -1390,12 +1390,12 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       { label: 'AI & Automation', href: '#services' },
     ],
     productLinks: [
-      { label: 'School Management', href: '#systems' },
-      { label: 'AI Productivity Assistant', href: '#systems' },
-      { label: 'Pharmacy Management', href: '#systems' },
-      { label: 'Inventory & POS', href: '#systems' },
-      { label: 'E-Commerce Platform', href: '#systems' },
-      { label: 'Learning Platform', href: '#systems' },
+      { label: 'School Management', href: '#solutions' },
+      { label: 'AI Productivity Assistant', href: '#solutions' },
+      { label: 'Pharmacy Management', href: '#solutions' },
+      { label: 'Inventory & POS', href: '#solutions' },
+      { label: 'E-Commerce Platform', href: '#solutions' },
+      { label: 'Learning Platform', href: '#solutions' },
     ],
     copyright: 'Copyright 2026 Eckintosh Technologies. All rights reserved.',
     whatsappLabel: 'WhatsApp',

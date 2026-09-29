@@ -20,7 +20,6 @@ interface CommandPaletteProps {
   onClose: () => void;
   content: SiteContent;
   onSelectProduct: (product: Product) => void;
-  onFocusSystem: (productId: string) => void;
   onOpenPlanner: (topic?: string) => void;
 }
 
@@ -33,7 +32,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   onClose,
   content,
   onSelectProduct,
-  onFocusSystem,
   onOpenPlanner,
 }) => {
   const [query, setQuery] = useState('');
@@ -53,7 +51,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       icon: getIcon(product.iconName),
       color: accentOf(product.accent).hex,
       run: () => {
-        onFocusSystem(product.id);
+        onSelectProduct(product);
         onClose();
       },
     }));
@@ -108,7 +106,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     ];
 
     return [...systems, ...navigation, ...actions];
-  }, [content, onClose, onFocusSystem, onOpenPlanner, onSelectProduct]);
+  }, [content, onClose, onOpenPlanner, onSelectProduct]);
 
   const results = useMemo(() => {
     const term = query.trim().toLowerCase();

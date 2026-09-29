@@ -18,7 +18,7 @@ const STATUS_TONE: Record<string, string> = {
   'In Beta': 'text-amber-600 bg-amber-50 border-amber-200',
 };
 
-/** Light, scannable grid of every system — the counterpart to the dark deep-dive. */
+/** Scannable catalogue of the systems available on the public site. */
 export const SystemsIndex: React.FC<SystemsIndexProps> = ({
   content,
   onSelectProduct,

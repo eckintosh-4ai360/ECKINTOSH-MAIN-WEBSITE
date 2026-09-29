@@ -69,7 +69,7 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenPlanner }) => {
             </button>
 
             <a
-              href="#systems"
+              href="#solutions"
               className="group flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[0.06] px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-colors hover:border-white/40 hover:bg-white/[0.12]"
             >
               {content.secondaryCtaLabel}
@@ -80,8 +80,8 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenPlanner }) => {
       </div>
 
       <a
-        href="#systems"
-        aria-label="Scroll to our work"
+        href="#services"
+        aria-label="Scroll to our services"
         className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-slate-400 transition-colors hover:text-white md:flex"
       >
         Scroll

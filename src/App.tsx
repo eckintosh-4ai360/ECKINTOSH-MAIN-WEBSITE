@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
-import { TrustBar } from './components/TrustBar';
-import { CapabilityMarquee } from './components/CapabilityMarquee';
-import { SystemsShowcase } from './components/SystemsShowcase';
 import { WhatWeDo } from './components/WhatWeDo';
 import { SystemsIndex } from './components/SystemsIndex';
 import { WhyUs } from './components/WhyUs';
@@ -39,8 +36,6 @@ export function App() {
   const [plannerTopic, setPlannerTopic] = useState('');
   const [plannerInitialStep, setPlannerInitialStep] = useState<1 | 2 | 3>(1);
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const [activeSystemId, setActiveSystemId] = useState<string>(publicProducts[0]?.id ?? '');
-
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const handleOpenPlanner = useCallback((topic?: string, startAtContact = false) => {
@@ -49,21 +44,15 @@ export function App() {
     setPlannerOpen(true);
   }, []);
 
-  const handleSelectProductById = useCallback(
-    (productId: string) => {
-      const found = content.products.items.find((product) => product.id === productId) || content.products.items[0];
-      if (found) setSelectedProduct(found);
-    },
-    [content.products.items]
-  );
-
   // These sections remain editable in admin, but are intentionally not part of
   // the public site. Filter saved navigation so older content cannot render
   // links to the removed anchors.
   const publicNavigation = useMemo(
     () => ({
       ...content.navigation,
-      links: content.navigation.links.filter((link) => !['#work', '#insights', '#industries'].includes(link.href)),
+      links: content.navigation.links
+        .filter((link) => !['#work', '#insights', '#industries'].includes(link.href))
+        .map((link) => link.href === '#systems' ? { ...link, href: '#solutions' } : link),
     }),
     [content.navigation]
   );
@@ -71,22 +60,18 @@ export function App() {
   const publicFooter = useMemo(
     () => ({
       ...content.footer,
-      companyLinks: content.footer.companyLinks.filter((link) => !['#work', '#industries'].includes(link.href)),
-      solutionLinks: content.footer.solutionLinks.filter((link) => !['#work', '#industries'].includes(link.href)),
-      productLinks: content.footer.productLinks.filter((link) =>
-        !['#work', '#industries'].includes(link.href) && !['Beauty & Spa', 'Barbershop'].includes(link.label)
-      ),
+      companyLinks: content.footer.companyLinks
+        .filter((link) => !['#work', '#industries'].includes(link.href))
+        .map((link) => link.href === '#systems' ? { ...link, href: '#solutions' } : link),
+      solutionLinks: content.footer.solutionLinks
+        .filter((link) => !['#work', '#industries'].includes(link.href))
+        .map((link) => link.href === '#systems' ? { ...link, href: '#solutions' } : link),
+      productLinks: content.footer.productLinks
+        .filter((link) => !['#work', '#industries'].includes(link.href) && !['Beauty & Spa', 'Barbershop'].includes(link.label))
+        .map((link) => link.href === '#systems' ? { ...link, href: '#solutions' } : link),
     }),
     [content.footer]
   );
-
-  /** Select a system in the showcase and bring its card into view. */
-  const handleFocusSystem = useCallback((productId: string) => {
-    setActiveSystemId(productId);
-    window.requestAnimationFrame(() => {
-      document.getElementById(`system-card-${productId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-  }, []);
 
   // Global ⌘K / Ctrl+K shortcut.
   useEffect(() => {
@@ -121,25 +106,12 @@ export function App() {
         products={publicProducts}
         onOpenPlanner={handleOpenPlanner}
         onOpenPalette={() => setPaletteOpen(true)}
-        onFocusSystem={handleFocusSystem}
+        onSelectProduct={setSelectedProduct}
       />
 
       <main id="main-content">
         <Hero
           content={content.hero}
-          onOpenPlanner={handleOpenPlanner}
-        />
-
-        {/* <TrustBar content={content.trustBar} /> */}
-
-        {/* <CapabilityMarquee /> */}
-
-        {/* Systems grouped by the work they help clients do */}
-        <SystemsShowcase
-          content={publicProductContent}
-          activeId={activeSystemId}
-          onActiveIdChange={setActiveSystemId}
-          onSelectProduct={setSelectedProduct}
           onOpenPlanner={handleOpenPlanner}
         />
 
@@ -166,7 +138,6 @@ export function App() {
         onClose={() => setPaletteOpen(false)}
         content={{ ...content, products: publicProductContent, navigation: publicNavigation }}
         onSelectProduct={setSelectedProduct}
-        onFocusSystem={handleFocusSystem}
         onOpenPlanner={handleOpenPlanner}
       />
 
