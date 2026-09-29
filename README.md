@@ -26,8 +26,10 @@ src/
     screens/           one file per system: its real screens
     registry.ts        productId -> system definition
     SystemViewer.tsx   the scrubbable walkthrough player
+  components/ui.tsx    shared Photo, BrowserFrame, pill buttons and section headings
   data/contentData.ts  all editable copy plus the eight system records
   data/contentMerge.ts merges saved content over the shipped defaults
+  data/siteMedia.ts    which photo or screenshot each system and service shows
   admin/               the admin console (hash route `#/admin`)
 server/                Express API, migrations and the content store
 ```
@@ -91,6 +93,36 @@ that each hotspot lands under the cursor, which is what keeps desktop-width text
 legible there. Hotspots therefore do double duty — pick points that are both
 worth pointing at and worth zooming into. If a file is missing, the frame says
 so in place rather than breaking the reel.
+
+### Photography
+
+The public page pairs each system and service with a photo or a real product
+screenshot, mapped in `src/data/siteMedia.ts`. Photos sit in `public/images/`
+as `<name>-800.webp` and `<name>-1600.webp`; the `Photo` component serves the
+right one through `srcset`. A system with no entry falls back to its icon.
+
+To swap a photo, export both widths as WebP under the same name, or add a new
+entry to `PHOTOS` and point the system or service at it. They are stock images,
+so replace them with photos of real clients and the team as those become
+available.
+
+| File | Photographer | Source |
+| --- | --- | --- |
+| engineers | X (@disruptxn) | https://unsplash.com/photos/kwzWjTnDPLk |
+| phone-user | Francisco Venâncio | https://unsplash.com/photos/G_ov3T7WCZg |
+| shopper | Vitaly Gariev | https://unsplash.com/photos/pzrDjRo-qGs |
+| accra | Barnabas Lartey-Odoi Tetteh | https://unsplash.com/photos/5YdLNHzwux4 |
+| business | The Jopwell Collection | https://unsplash.com/photos/LJL7wx7PM3Y |
+| mobile-app | Tran Mau Tri Tam | https://unsplash.com/photos/QwAL909kTiY |
+| web-design | Tran Mau Tri Tam | https://unsplash.com/photos/h7v_38e3iGE |
+| coding | Arif Riyanto | https://unsplash.com/photos/G1N9kDHqBrQ |
+| pharmacy | Ninthgrid | https://unsplash.com/photos/uNawp6qgpcE |
+| classroom | Emmanuel Ikwuegbu | https://unsplash.com/photos/VC6MGt9ZoBA |
+| shop-owner | Ali Mkumbwa | https://unsplash.com/photos/EOkN2pRjFsg |
+| learner | Vitaly Gariev | https://unsplash.com/photos/4JFBqeP3VRQ |
+
+All are free for commercial use under the [Unsplash License](https://unsplash.com/license);
+attribution isn't required but is kept here.
 
 ### Editable content
 
