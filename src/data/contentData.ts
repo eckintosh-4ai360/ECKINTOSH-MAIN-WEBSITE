@@ -187,7 +187,6 @@ export const PRODUCTS: Product[] = [
     ],
     metrics: [
       { label: "Active Students", value: "1,248" },
-      { label: "Term Fees Processed", value: "GHS 42,500+" },
       { label: "Collection Efficiency", value: "+94%" },
       { label: "Teacher Hours Saved", value: "18 hrs/wk" }
     ],
@@ -211,7 +210,6 @@ export const PRODUCTS: Product[] = [
     pricingNote: "Per-term licence by enrolment band. Setup, data migration and staff training included.",
     demoData: {
       totalStudents: "1,248",
-      feesCollected: "GHS 42,500",
       attendanceRate: "98.4%",
       activeModules: ["Academic Portal", "Fee Management", "Parent SMS", "Staff Ledger"]
     }
@@ -1239,7 +1237,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
         productId: 'school-management',
         stats: [
           { iconName: 'Users', label: 'Active Enrolled', value: '1,248', suffix: 'Students' },
-          { iconName: 'DollarSign', label: 'Fees Collected', value: 'GHS 42,500' },
+          { iconName: 'CalendarCheck', label: 'Attendance Rate', value: '98.4%' },
         ],
         note: 'GES terminal assessment and parent SMS gateway integrated',
         actionLabel: 'Open System',
@@ -1278,7 +1276,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       },
     ],
     floatingCards: [
-      { title: 'GHS 42,500 Collected', subtitle: 'MTN MoMo auto-settled', iconName: 'DollarSign' },
+      { title: '+38% Efficiency', subtitle: 'Operational improvement delivered', iconName: 'TrendingUp' },
       { title: '8 Systems Live', subtitle: 'Built, shipped and maintained', iconName: 'TrendingUp' },
     ],
   },

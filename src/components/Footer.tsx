@@ -71,12 +71,11 @@ export const Footer: React.FC<FooterProps> = ({ brand, content, onOpenPlanner })
         </div>
 
         <div className="flex flex-col gap-3 border-t border-black/10 py-6 md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-            <span className="flex items-center gap-1.5">
-              <img src="/logo.png" alt="" className="h-3.5 w-auto" />
-              <span className="font-semibold text-neutral-700">
-                {brand.name}
-                {brand.suffix}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span className="flex items-center gap-2.5">
+              <img src="/logo.png" alt="Eckintosh" className="h-5 w-auto object-contain" />
+              <span className="text-[11px] font-semibold tracking-[0.05em] uppercase text-neutral-500">
+                {brand.tagline}
               </span>
             </span>
             <span>{content.copyright}</span>

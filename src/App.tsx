@@ -45,9 +45,6 @@ export function App() {
 
   const handleClosePlanner = useCallback(() => setPlannerOpen(false), []);
 
-  // These sections remain editable in admin, but are intentionally not part of
-  // the public site. Filter saved navigation so older content cannot render
-  // links to the removed anchors.
   const publicNavigation = useMemo(
     () => ({
       ...content.navigation,

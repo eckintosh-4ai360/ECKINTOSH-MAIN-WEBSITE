@@ -108,8 +108,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="flex shrink-0 items-center gap-2"
             aria-label="Eckintosh home"
           >
-            <img src="/logo.png" alt="" className="h-7 w-auto object-contain" />
-            {/* <span className="text-[15px] font-bold tracking-[-0.01em] text-neutral-950">ECKINTOSH</span> */}
+            <img src="/logo.png" alt="Eckintosh" className="h-7 w-auto object-contain" />
           </a>
 
           {/* Desktop nav */}

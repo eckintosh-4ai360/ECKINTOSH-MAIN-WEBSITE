@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Layers } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 interface LegalPageProps {
   title: string;
@@ -16,18 +16,15 @@ const goHome = (e: React.MouseEvent) => {
 /** Shared shell for the standalone legal pages (#/privacy, #/terms). */
 export const LegalPage: React.FC<LegalPageProps> = ({ title, updated, children }) => (
   <div className="min-h-screen bg-[#08111F] text-slate-100 font-sans antialiased">
-    <header className="border-b border-white/10 py-4">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
-        <a href="#hero" onClick={goHome} className="flex items-center gap-2.5 group shrink-0">
-          <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold">
-            <Layers className="w-4 h-4" />
-          </div>
-          <span className="text-lg font-extrabold tracking-tight text-white">ECKINTOSH</span>
+    <header className="border-b border-black/[0.08] bg-white/85 backdrop-blur-xl backdrop-saturate-150">
+      <div className="mx-auto flex h-12 max-w-[1080px] items-center justify-between gap-4 px-4 sm:px-6">
+        <a href="#hero" onClick={goHome} className="flex shrink-0 items-center gap-2" aria-label="Eckintosh home">
+          <img src="/logo.png" alt="Eckintosh" className="h-7 w-auto object-contain" />
         </a>
         <a
           href="#hero"
           onClick={goHome}
-          className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+          className="flex items-center gap-1.5 text-xs font-semibold text-neutral-600 transition-colors hover:text-neutral-950"
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Back to site
         </a>
